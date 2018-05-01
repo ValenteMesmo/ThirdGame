@@ -7,40 +7,97 @@ using Microsoft.Xna.Framework.Input;
 using static Android.Net.Wifi.P2p.WifiP2pManager;
 using System.Collections.Generic;
 using Android.Net.Wifi;
+using Android.App;
+using Android.Net;
+using Java.Net;
 
 namespace ThirdGame
 {
-    public class PeerListListener : IPeerListListener
+    public interface WifiDirect
     {
-        public IntPtr Handle { get; set; }
+        Func<IEnumerable<WifiP2pDevice>> OnPeersChanged { get; set; }
+        void Connect(WifiP2pDevice device);
+    }
+
+    public class AndroidWifiDirect2 : WifiDirect, IConnectionInfoListener, IPeerListListener
+    {
+        private readonly WifiP2pManager WifiP2pManager;
+
+        public Channel wifip2pChannel { get; }
+        public Func<IEnumerable<WifiP2pDevice>> OnPeersChanged { get; set; }
+
+        public IntPtr Handle { get; }
+
+        public AndroidWifiDirect2(WifiP2pManager WifiP2pManager
+            , Channel wifip2pChannel)
+        {
+            this.WifiP2pManager = WifiP2pManager;
+            this.wifip2pChannel = wifip2pChannel;
+            //WifiP2pManager.RequestConnectionInfo(wifip2pChannel,this);
+        }
+
+        public void Connect(WifiP2pDevice device)
+        {
+            WifiP2pConfig config = new WifiP2pConfig();
+            config.DeviceAddress = device.DeviceAddress;//set device address from WifiP2pDevice received;
+            config.Wps.Setup = WpsInfo.Pbc;
+            config.GroupOwnerIntent = 4;
+            WifiP2pManager.Connect(wifip2pChannel, config, new MyActionListener(() =>
+            {
+                //device.
+            }));
+        }
+
+        public void OnConnectionInfoAvailable(WifiP2pInfo info)
+        {
+            // InetAddress from WifiP2pInfo struct.
+            var groupOwnerAddress = info.GroupOwnerAddress.HostAddress;
+
+            // After the group negotiation, we can determine the group owner
+            // (server).
+            if (info.groupFormed && info.isGroupOwner)
+            {
+                // Do whatever tasks are specific to the group owner.
+                // One common case is creating a group owner thread and accepting
+                // incoming connections.
+            }
+            else if (info.groupFormed)
+            {
+                // The other device acts as the peer (client). In this case,
+                // you'll want to create a peer thread that connects
+                // to the group owner.
+            }
+        }
 
         public void Dispose()
         {
+
         }
 
         public void OnPeersAvailable(WifiP2pDeviceList peers)
         {
-            List<WifiP2pDevice> devices = (new List<WifiP2pDevice>());
-            devices.AddRange(peers.DeviceList);
-            //olha a lista ai!
-
-
-
         }
     }
+
 
     public class WiFiDirectBroadcastReceiver : BroadcastReceiver
     {
         private WifiP2pManager mManager;
         private Channel mChannel;
-        private Activity1 mActivity;
+        private Activity mActivity;
 
-        public WiFiDirectBroadcastReceiver(WifiP2pManager manager, Channel channel,
-                Activity1 activity) : base()
+        public AndroidWifiDirect2 myWrapper { get; }
+
+        public WiFiDirectBroadcastReceiver(
+            WifiP2pManager manager
+            , Channel channel
+            ,AndroidWifiDirect2 myWrapper
+            , Activity activity) : base()
         {
             this.mManager = manager;
             this.mChannel = channel;
             this.mActivity = activity;
+            this.myWrapper = myWrapper;
         }
 
         public override void OnReceive(Context context, Intent intent)
@@ -68,15 +125,23 @@ namespace ThirdGame
                 // the activity implements the listener interface
                 if (mManager != null)
                 {
-                    mManager.RequestPeers(mChannel, new PeerListListener());
-
-
-                   
-            }
+                    mManager.RequestPeers(mChannel, myWrapper);
+                }
             }
             else if (WifiP2pConnectionChangedAction == action)
             {
                 // Respond to new connection or disconnections
+                NetworkInfo networkInfo = (NetworkInfo)intent
+                .GetParcelableExtra(WifiP2pManager.ExtraNetworkInfo);
+
+                if (networkInfo.IsConnected)
+                {
+
+                    // We are connected with the other device, request connection
+                    // info to find group owner IP
+
+                    mManager.RequestConnectionInfo(mChannel, myWrapper);
+                }
             }
             else if (WifiP2pThisDeviceChangedAction == action)
             {
