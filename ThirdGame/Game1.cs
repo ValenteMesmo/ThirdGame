@@ -1,51 +1,27 @@
-using System;
+using Android.App;
 using Android.Content;
+using Android.Net;
+using Android.Net.Wifi;
 using Android.Net.Wifi.P2p;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System;
 using static Android.Net.Wifi.P2p.WifiP2pManager;
-using System.Collections.Generic;
-using Android.Net.Wifi;
-using Android.App;
-using Android.Net;
-using Java.Net;
 
 namespace ThirdGame
 {
     public interface WifiDirect
     {
-        Func<IEnumerable<WifiP2pDevice>> OnPeersChanged { get; set; }
-        void Connect(WifiP2pDevice device);
+        Action<string> NewAddressFound { get; set; }
     }
 
-    public class AndroidWifiDirect2 : WifiDirect, IConnectionInfoListener, IPeerListListener
+    public class ConnectionInfoListener : IConnectionInfoListener
     {
-        private readonly WifiP2pManager WifiP2pManager;
-
-        public Channel wifip2pChannel { get; }
-        public Func<IEnumerable<WifiP2pDevice>> OnPeersChanged { get; set; }
-
         public IntPtr Handle { get; }
 
-        public AndroidWifiDirect2(WifiP2pManager WifiP2pManager
-            , Channel wifip2pChannel)
+        public void Dispose()
         {
-            this.WifiP2pManager = WifiP2pManager;
-            this.wifip2pChannel = wifip2pChannel;
-            //WifiP2pManager.RequestConnectionInfo(wifip2pChannel,this);
-        }
-
-        public void Connect(WifiP2pDevice device)
-        {
-            WifiP2pConfig config = new WifiP2pConfig();
-            config.DeviceAddress = device.DeviceAddress;//set device address from WifiP2pDevice received;
-            config.Wps.Setup = WpsInfo.Pbc;
-            config.GroupOwnerIntent = 4;
-            WifiP2pManager.Connect(wifip2pChannel, config, new MyActionListener(() =>
-            {
-                //device.
-            }));
         }
 
         public void OnConnectionInfoAvailable(WifiP2pInfo info)
@@ -55,18 +31,32 @@ namespace ThirdGame
 
             // After the group negotiation, we can determine the group owner
             // (server).
-            if (info.groupFormed && info.isGroupOwner)
+            if (info.GroupFormed && info.IsGroupOwner)
             {
                 // Do whatever tasks are specific to the group owner.
                 // One common case is creating a group owner thread and accepting
                 // incoming connections.
             }
-            else if (info.groupFormed)
+            else if (info.GroupFormed)
             {
                 // The other device acts as the peer (client). In this case,
                 // you'll want to create a peer thread that connects
                 // to the group owner.
             }
+        }
+    }
+
+    public class PeerListListener : IPeerListListener
+    {
+        public IntPtr Handle { get; }
+        private readonly WifiP2pManager WifiP2pManager;
+        public Channel wifip2pChannel { get; }
+
+        public PeerListListener(WifiP2pManager WifiP2pManager
+            , Channel wifip2pChannel)
+        {
+            this.WifiP2pManager = WifiP2pManager;
+            this.wifip2pChannel = wifip2pChannel;
         }
 
         public void Dispose()
@@ -76,9 +66,37 @@ namespace ThirdGame
 
         public void OnPeersAvailable(WifiP2pDeviceList peers)
         {
+
+            foreach (var device in peers.DeviceList)
+            {
+                WifiP2pConfig config = new WifiP2pConfig();
+                config.DeviceAddress = device.DeviceAddress;
+                config.Wps.Setup = WpsInfo.Pbc;
+                config.GroupOwnerIntent = 4;
+                WifiP2pManager.Connect(wifip2pChannel, config, new MyActionListener(() =>
+                {
+                    //TODO: call handler
+                }));
+            }
         }
     }
 
+    public class AndroidWifiDirect2 : WifiDirect
+        //, IConnectionInfoListener
+        //, IPeerListListener
+    {
+        private readonly WifiP2pManager WifiP2pManager;
+        public Channel wifip2pChannel { get; }
+        public IntPtr Handle { get; }
+        public Action<string> NewAddressFound { get; set; }
+
+        public AndroidWifiDirect2(WifiP2pManager WifiP2pManager
+            , Channel wifip2pChannel)
+        {
+            this.WifiP2pManager = WifiP2pManager;
+            this.wifip2pChannel = wifip2pChannel;
+        }
+    }
 
     public class WiFiDirectBroadcastReceiver : BroadcastReceiver
     {
@@ -91,7 +109,7 @@ namespace ThirdGame
         public WiFiDirectBroadcastReceiver(
             WifiP2pManager manager
             , Channel channel
-            ,AndroidWifiDirect2 myWrapper
+            , AndroidWifiDirect2 myWrapper
             , Activity activity) : base()
         {
             this.mManager = manager;
@@ -125,14 +143,14 @@ namespace ThirdGame
                 // the activity implements the listener interface
                 if (mManager != null)
                 {
-                    mManager.RequestPeers(mChannel, myWrapper);
+                    mManager.RequestPeers(mChannel, new PeerListListener(mManager, mChannel));
                 }
             }
             else if (WifiP2pConnectionChangedAction == action)
             {
                 // Respond to new connection or disconnections
                 NetworkInfo networkInfo = (NetworkInfo)intent
-                .GetParcelableExtra(WifiP2pManager.ExtraNetworkInfo);
+                    .GetParcelableExtra(WifiP2pManager.ExtraNetworkInfo);
 
                 if (networkInfo.IsConnected)
                 {
@@ -140,7 +158,7 @@ namespace ThirdGame
                     // We are connected with the other device, request connection
                     // info to find group owner IP
 
-                    mManager.RequestConnectionInfo(mChannel, myWrapper);
+                    mManager.RequestConnectionInfo(mChannel, new ConnectionInfoListener());
                 }
             }
             else if (WifiP2pThisDeviceChangedAction == action)
@@ -150,10 +168,6 @@ namespace ThirdGame
         }
     }
 
-
-    /// <summary>
-    /// This is the main type for your game.
-    /// </summary>
     public class Game1 : Game
     {
         GraphicsDeviceManager graphics;

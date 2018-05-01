@@ -1,4 +1,3 @@
-using System;
 using Android.App;
 using Android.Content;
 using Android.Content.PM;
@@ -6,12 +5,10 @@ using Android.Net.Wifi.P2p;
 using Android.OS;
 using Android.Runtime;
 using Android.Views;
-using System.Collections.Generic;
+using System;
 
 namespace ThirdGame
 {
-
-
     public class MyActionListener : WifiP2pManager.IActionListener
     {
         private readonly Action OnSuccessHandler;
