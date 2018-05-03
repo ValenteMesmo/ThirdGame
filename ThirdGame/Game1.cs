@@ -35,7 +35,6 @@ namespace ThirdGame
                 addressList += $@"{address}
 ";
             };
-            SpriteFont = Content.Load<SpriteFont>("SpriteFont");
         }
 
         protected override void Initialize()
@@ -46,6 +45,7 @@ namespace ThirdGame
         protected override void LoadContent()
         {
             spriteBatch = new SpriteBatch(GraphicsDevice);
+            SpriteFont = Content.Load<SpriteFont>("SpriteFont");
         }
 
         protected override void UnloadContent()

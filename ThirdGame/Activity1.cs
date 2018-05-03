@@ -12,21 +12,15 @@ using static Android.Net.Wifi.P2p.WifiP2pManager;
 
 namespace ThirdGame
 {
-    public class MyActionListener : WifiP2pManager.IActionListener
+    public class MyActionListener : Java.Lang.Object, WifiP2pManager.IActionListener
     {
         private readonly Action OnSuccessHandler;
-
-        public IntPtr Handle { get; set; }
 
         public MyActionListener(Action OnSuccessHandler)
         {
             this.OnSuccessHandler = OnSuccessHandler;
         }
-
-        public void Dispose()
-        {
-        }
-
+        
         public void OnFailure(WifiP2pFailureReason reason)
         {
 
@@ -61,7 +55,9 @@ namespace ThirdGame
             var aa = new AndroidWifiDirect2();
             mReceiver = new WiFiDirectBroadcastReceiver(mManager, mChannel, aa, this);
 
-            mManager.DiscoverPeers(mChannel,  new MyActionListener(()=> { }));
+            mManager.DiscoverPeers(mChannel, new MyActionListener(()=> {
+
+            }));
 
 
             mIntentFilter = new IntentFilter();
@@ -89,13 +85,8 @@ namespace ThirdGame
             base.OnPause();
         }
     }
-    public class ConnectionInfoListener : IConnectionInfoListener
+    public class ConnectionInfoListener : Java.Lang.Object, IConnectionInfoListener
     {
-        public IntPtr Handle { get; }
-
-        public void Dispose()
-        {
-        }
 
         public void OnConnectionInfoAvailable(WifiP2pInfo info)
         {
@@ -119,9 +110,8 @@ namespace ThirdGame
         }
     }
 
-    public class PeerListListener : IPeerListListener
+    public class PeerListListener : Java.Lang.Object,  IPeerListListener
     {
-        public IntPtr Handle { get; }
         private readonly WifiP2pManager WifiP2pManager;
         private readonly Func<Action<string>> GetHandler;
 
@@ -135,11 +125,6 @@ namespace ThirdGame
             this.WifiP2pManager = WifiP2pManager;
             this.wifip2pChannel = wifip2pChannel;
             this.GetHandler = GetHandler;
-        }
-
-        public void Dispose()
-        {
-
         }
 
         public void OnPeersAvailable(WifiP2pDeviceList peers)
