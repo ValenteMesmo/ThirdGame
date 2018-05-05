@@ -10,11 +10,12 @@ namespace UnitTestProject
         [TestMethod]
         public void TestMethod1()
         {
-            var input = "loltrollei";
+            var input = "Message test";
             var sut = new MyBlueToothChannel();
             var encoded = sut.Encoding2(input);
             var output = sut.Decoding(encoded);
 
+            Assert.AreEqual(input, output);
         }
     }
 }
