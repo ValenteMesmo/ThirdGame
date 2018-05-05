@@ -16,68 +16,6 @@ using static Android.Net.Wifi.P2p.WifiP2pManager;
 
 namespace ThirdGame
 {
-    public class BluetoothAttempt {
-
-        public void ConnectThread(BluetoothDevice device, bool secure)
-        {
-            var mmDevice = device;
-            BluetoothSocket tmp = null;
-            var mSocketType = secure ? "Secure" : "Insecure";
-
-            // Get a BluetoothSocket for a connection with the
-            // given BluetoothDevice
-            try
-            {
-                if (secure)
-                {
-                    tmp = device.CreateRfcommSocketToServiceRecord(
-                            MY_UUID_SECURE);
-                }
-                else
-                {
-                    tmp = device.CreateInsecureRfcommSocketToServiceRecord(
-                            MY_UUID_INSECURE);
-                }
-            }
-            catch (Exception e)
-            {
-               // Log.e(TAG, "Socket Type: " + mSocketType + "create() failed", e);
-            }
-           var  mmSocket = tmp;
-        }
-
-        public void AcceptThread(bool secure)
-        {
-            BluetoothServerSocket tmp = null;
-            var mSocketType = secure ? "Secure" : "Insecure";
-
-
-
-            BluetoothAdapter mAdapter = BluetoothAdapter.DefaultAdapter;
-
-
-            // Create a new listening server socket
-            try
-            {
-                if (secure)
-                {
-                    tmp = mAdapter.ListenUsingRfcommWithServiceRecord(NAME_SECURE,
-                            MY_UUID_SECURE);
-                }
-                else
-                {
-                    tmp = mAdapter.ListenUsingInsecureRfcommWithServiceRecord(
-                            NAME_INSECURE, MY_UUID_INSECURE);
-                }
-            }
-            catch (Exception e)
-            {
-                //Log.e(TAG, "Socket Type: " + mSocketType + "listen() failed", e);
-            }
-           var mmServerSocket = tmp;
-        }
-    }
-
     public class MyWifiController
     {
         public readonly Action<bool> ToggleWifi;
