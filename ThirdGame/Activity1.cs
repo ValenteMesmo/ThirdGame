@@ -1,4 +1,5 @@
 using Android.App;
+using Android.Bluetooth;
 using Android.Content;
 using Android.Content.PM;
 using Android.Net;
@@ -7,11 +8,156 @@ using Android.Net.Wifi.P2p;
 using Android.OS;
 using Android.Runtime;
 using Android.Views;
+using Java.Lang.Reflect;
 using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using static Android.Net.Wifi.P2p.WifiP2pManager;
 
 namespace ThirdGame
 {
+    public class BluetoothAttempt {
+
+        public void ConnectThread(BluetoothDevice device, bool secure)
+        {
+            var mmDevice = device;
+            BluetoothSocket tmp = null;
+            var mSocketType = secure ? "Secure" : "Insecure";
+
+            // Get a BluetoothSocket for a connection with the
+            // given BluetoothDevice
+            try
+            {
+                if (secure)
+                {
+                    tmp = device.CreateRfcommSocketToServiceRecord(
+                            MY_UUID_SECURE);
+                }
+                else
+                {
+                    tmp = device.CreateInsecureRfcommSocketToServiceRecord(
+                            MY_UUID_INSECURE);
+                }
+            }
+            catch (Exception e)
+            {
+               // Log.e(TAG, "Socket Type: " + mSocketType + "create() failed", e);
+            }
+           var  mmSocket = tmp;
+        }
+
+        public void AcceptThread(bool secure)
+        {
+            BluetoothServerSocket tmp = null;
+            var mSocketType = secure ? "Secure" : "Insecure";
+
+
+
+            BluetoothAdapter mAdapter = BluetoothAdapter.DefaultAdapter;
+
+
+            // Create a new listening server socket
+            try
+            {
+                if (secure)
+                {
+                    tmp = mAdapter.ListenUsingRfcommWithServiceRecord(NAME_SECURE,
+                            MY_UUID_SECURE);
+                }
+                else
+                {
+                    tmp = mAdapter.ListenUsingInsecureRfcommWithServiceRecord(
+                            NAME_INSECURE, MY_UUID_INSECURE);
+                }
+            }
+            catch (Exception e)
+            {
+                //Log.e(TAG, "Socket Type: " + mSocketType + "listen() failed", e);
+            }
+           var mmServerSocket = tmp;
+        }
+    }
+
+    public class MyWifiController
+    {
+        public readonly Action<bool> ToggleWifi;
+        public readonly Func<bool> IsWifiEnabled;
+        public readonly Func<IEnumerable<ScanResult>> GetScanResult;
+        public readonly Action<string, string> ChangeSsidAndPassword;
+        private readonly Func<WifiConfiguration> GetConfig;
+        private readonly Action<WifiConfiguration> SetConfig;
+
+        public MyWifiController(WifiManager wifiManager)
+        {
+            Method[] wmMethods = wifiManager.Class.GetDeclaredMethods();
+
+            //Verify The Wifi AP State And Get It's Configuration
+            foreach (Method m in wmMethods)
+            {
+                //Get The Wifi AP State
+                if (m.Name.Equals("isWifiApEnabled"))
+                {
+                    IsWifiEnabled = () => (Boolean)m.Invoke(wifiManager);
+                }
+
+                //Get The AP Configuration
+                if (m.Name.Equals("getWifiApConfiguration"))
+                {
+                    GetConfig = () => (WifiConfiguration)m.Invoke(wifiManager, null);                   
+                }
+
+                if (m.Name.Equals("setWifiApConfiguration"))
+                {
+                    SetConfig = configuration => m.Invoke(wifiManager, configuration);
+                }
+
+                if (m.Name.Equals("setWifiApEnabled"))
+                {
+                    ToggleWifi = value => m.Invoke(wifiManager, GetConfig(), value);
+                }
+
+                if (m.Name.Equals("getScanResults"))
+                {
+                    GetScanResult = ()=> wifiManager.ScanResults;
+                }
+
+                
+            }
+
+
+            ChangeSsidAndPassword = (ssid, password) =>
+            {
+                var wifiConfig = GetConfig();
+
+                wifiConfig.Ssid = ssid;
+                wifiConfig.PreSharedKey = password;
+
+                SetConfig(wifiConfig);
+            };
+
+        }
+
+    }
+
+    public class ActionListernerForPeersListener : Java.Lang.Object, WifiP2pManager.IActionListener
+    {
+        private readonly Action OnErrorHandler;
+
+        public ActionListernerForPeersListener(Action OnErrorHandler)
+        {
+            this.OnErrorHandler = OnErrorHandler;
+        }
+
+        public void OnFailure(WifiP2pFailureReason reason)
+        {
+            OnErrorHandler();
+        }
+
+        public void OnSuccess()
+        {
+        }
+    }
+
     public class MyActionListener : Java.Lang.Object, WifiP2pManager.IActionListener
     {
         private readonly Action OnSuccessHandler;
@@ -20,7 +166,7 @@ namespace ThirdGame
         {
             this.OnSuccessHandler = OnSuccessHandler;
         }
-        
+
         public void OnFailure(WifiP2pFailureReason reason)
         {
 
@@ -42,8 +188,8 @@ namespace ThirdGame
         , ConfigurationChanges = ConfigChanges.Orientation | ConfigChanges.Keyboard | ConfigChanges.KeyboardHidden | ConfigChanges.ScreenSize)]
     public class Activity1 : Microsoft.Xna.Framework.AndroidGameActivity
     {
-        private WiFiDirectBroadcastReceiver mReceiver;
-        private IntentFilter mIntentFilter;
+        //private WiFiDirectBroadcastReceiver mReceiver;
+        //private IntentFilter mIntentFilter;
 
         protected override void OnCreate(Bundle bundle)
         {
@@ -52,27 +198,48 @@ namespace ThirdGame
 
             var mManager = (WifiP2pManager)GetSystemService(WifiP2pService);
             var mChannel = mManager.Initialize(this, MainLooper, null);//mainloop mesmo!?
-            var aa = new AndroidWifiDirect2();
-            mReceiver = new WiFiDirectBroadcastReceiver(mManager, mChannel, aa, this);
+            var methods = mChannel.Class.GetMethods();
+            
+            foreach (var m in methods) {
+                var name = m.Name;
+            }
+            //var aa = new AndroidWifiDirect2();
+            //mReceiver = new WiFiDirectBroadcastReceiver(mManager, mChannel, aa, this);
 
-            mManager.DiscoverPeers(mChannel, new MyActionListener(()=> {
+            //NewMethod(mManager, mChannel);
 
-            }));
+            //mIntentFilter = new IntentFilter();
+            //mIntentFilter.AddAction(WifiP2pManager.WifiP2pStateChangedAction);
+            //mIntentFilter.AddAction(WifiP2pManager.WifiP2pPeersChangedAction);
+            //mIntentFilter.AddAction(WifiP2pManager.WifiP2pConnectionChangedAction);
+            //mIntentFilter.AddAction(WifiP2pManager.WifiP2pThisDeviceChangedAction);
+            //RegisterReceiver(mReceiver, mIntentFilter);
 
+            var controller = new MyWifiController((WifiManager)GetSystemService(Context.WifiService));
+            //SetHotSpot(true);
+            controller.ToggleWifi(true);
+            Task.Factory.StartNew(() =>
+            {
+                int i = 0;
+                while (true)
+                {
+                    Task.Delay(5000);
+                    controller.ChangeSsidAndPassword($"oi_teste_{i++}", $"oi_teste_{ i * 2}");
+                }
+            });
 
-            mIntentFilter = new IntentFilter();
-            mIntentFilter.AddAction(WifiP2pManager.WifiP2pStateChangedAction);
-            mIntentFilter.AddAction(WifiP2pManager.WifiP2pPeersChangedAction);
-            mIntentFilter.AddAction(WifiP2pManager.WifiP2pConnectionChangedAction);
-            mIntentFilter.AddAction(WifiP2pManager.WifiP2pThisDeviceChangedAction);
-            RegisterReceiver(mReceiver, mIntentFilter);
-
-
-
-            var g = new Game1(aa);
+            var g = new Game1(controller);
             SetContentView((View)g.Services.GetService(typeof(View)));
             g.Run();
         }
+
+        //private static void NewMethod(WifiP2pManager mManager, Channel mChannel)
+        //{
+        //    mManager.DiscoverPeers(mChannel, new ActionListernerForPeersListener(() =>
+        //    {
+        //        NewMethod(mManager, mChannel);
+        //    }));
+        //}
 
         protected override void OnResume()
         {
@@ -85,6 +252,7 @@ namespace ThirdGame
             base.OnPause();
         }
     }
+
     public class ConnectionInfoListener : Java.Lang.Object, IConnectionInfoListener
     {
 
@@ -110,7 +278,7 @@ namespace ThirdGame
         }
     }
 
-    public class PeerListListener : Java.Lang.Object,  IPeerListListener
+    public class PeerListListener : Java.Lang.Object, IPeerListListener
     {
         private readonly WifiP2pManager WifiP2pManager;
         private readonly Func<Action<string>> GetHandler;
@@ -187,11 +355,12 @@ namespace ThirdGame
                 int state = intent.GetIntExtra(WifiP2pManager.ExtraWifiState, -1);
                 if (state == (int)Android.Net.Wifi.P2p.WifiP2pState.Enabled)
                 {
-                    // Wifi P2P is enabled
+                    // Wifi P2P is enabled     
+
                 }
                 else
                 {
-                    // Wi-Fi P2P is not enabled
+                    //aqui... tem que ativar aqui....
                 }
             }
             else if (WifiP2pPeersChangedAction == action)
