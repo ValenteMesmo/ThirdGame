@@ -17,13 +17,11 @@ namespace ThirdGame
     {
         private GraphicsDeviceManager graphics;
         private SpriteBatch spriteBatch;
-        public readonly MyWifiController MyWifiController;
         List<string> addressList = new List<string>();
         SpriteFont SpriteFont;
 
-        public Game1(MyWifiController MyWifiController)
+        public Game1()
         {
-            this.MyWifiController = MyWifiController;
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
 
@@ -31,8 +29,6 @@ namespace ThirdGame
             graphics.PreferredBackBufferWidth = 800;
             graphics.PreferredBackBufferHeight = 480;
             graphics.SupportedOrientations = DisplayOrientation.LandscapeLeft | DisplayOrientation.LandscapeRight;
-
-            
             
             //            WifiDirect.NewAddressFound += address => {
             //                addressList += $@"{address}
@@ -62,11 +58,11 @@ namespace ThirdGame
 
             addressList.Clear();
 
-            foreach (var item in MyWifiController.GetScanResult())
-            {
-                if(item.Ssid.StartsWith("oi_teste_"))
-                addressList.Add(item.Ssid);
-            }
+            //foreach (var item in MyWifiController.GetScanResult())
+            //{
+            //    if(item.Ssid.StartsWith("oi_teste_"))
+            //    addressList.Add(item.Ssid);
+            //}
 
             base.Update(gameTime);
         }

@@ -132,52 +132,38 @@ namespace ThirdGame
         protected override void OnCreate(Bundle bundle)
         {
             base.OnCreate(bundle);
-
-
-            var mManager = (WifiP2pManager)GetSystemService(WifiP2pService);
-            var mChannel = mManager.Initialize(this, MainLooper, null);//mainloop mesmo!?
-            var methods = mChannel.Class.GetMethods();
+            //var sut = new MyBlueToothChannel();
+            //sut.SendMessage("ops!");
+            //sut.SendMessage("ops2!");
             
-            foreach (var m in methods) {
-                var name = m.Name;
-            }
-            //var aa = new AndroidWifiDirect2();
-            //mReceiver = new WiFiDirectBroadcastReceiver(mManager, mChannel, aa, this);
+            //var mManager = (WifiP2pManager)GetSystemService(WifiP2pService);
+            //var mChannel = mManager.Initialize(this, MainLooper, null);//mainloop mesmo!?
+            //var methods = mChannel.Class.GetMethods();
 
-            //NewMethod(mManager, mChannel);
+            //foreach (var m in methods) {
+            //    var name = m.Name;
+            //}
 
-            //mIntentFilter = new IntentFilter();
-            //mIntentFilter.AddAction(WifiP2pManager.WifiP2pStateChangedAction);
-            //mIntentFilter.AddAction(WifiP2pManager.WifiP2pPeersChangedAction);
-            //mIntentFilter.AddAction(WifiP2pManager.WifiP2pConnectionChangedAction);
-            //mIntentFilter.AddAction(WifiP2pManager.WifiP2pThisDeviceChangedAction);
-            //RegisterReceiver(mReceiver, mIntentFilter);
+            //var controller = new MyWifiController((WifiManager)GetSystemService(Context.WifiService));
 
-            var controller = new MyWifiController((WifiManager)GetSystemService(Context.WifiService));
-            //SetHotSpot(true);
-            controller.ToggleWifi(true);
-            Task.Factory.StartNew(() =>
-            {
-                int i = 0;
-                while (true)
-                {
-                    Task.Delay(5000);
-                    controller.ChangeSsidAndPassword($"oi_teste_{i++}", $"oi_teste_{ i * 2}");
-                }
-            });
+            //controller.ToggleWifi(true);
+            //Task.Factory.StartNew(() =>
+            //{
+            //    int i = 0;
+            //    while (true)
+            //    {
+            //        Task.Delay(5000);
+            //        controller.ChangeSsidAndPassword($"oi_teste_{i++}", $"oi_teste_{ i * 2}");
+            //    }
+            //});
 
-            var g = new Game1(controller);
+            var g = new Game1();
             SetContentView((View)g.Services.GetService(typeof(View)));
+
+
+            var sattus = new BlueToothWrapper(this);//.asdasd();
             g.Run();
         }
-
-        //private static void NewMethod(WifiP2pManager mManager, Channel mChannel)
-        //{
-        //    mManager.DiscoverPeers(mChannel, new ActionListernerForPeersListener(() =>
-        //    {
-        //        NewMethod(mManager, mChannel);
-        //    }));
-        //}
 
         protected override void OnResume()
         {
