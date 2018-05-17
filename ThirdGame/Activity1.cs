@@ -1,118 +1,139 @@
 using Android.App;
-using Android.Bluetooth;
 using Android.Content;
 using Android.Content.PM;
-using Android.Net;
 using Android.Net.Wifi;
-using Android.Net.Wifi.P2p;
 using Android.OS;
-using Android.Runtime;
 using Android.Views;
 using Java.Lang.Reflect;
 using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
-using static Android.Net.Wifi.P2p.WifiP2pManager;
+using System.Linq;
 
 namespace ThirdGame
 {
-    public class MyWifiController
+    public class HotSpotStarter
     {
-        public readonly Action<bool> ToggleWifi;
-        public readonly Func<bool> IsWifiEnabled;
-        public readonly Func<IEnumerable<ScanResult>> GetScanResult;
-        public readonly Action<string, string> ChangeSsidAndPassword;
-        private readonly Func<WifiConfiguration> GetConfig;
-        private readonly Action<WifiConfiguration> SetConfig;
+        private readonly WifiManager WifiManager;
+        private readonly Action<WifiConfiguration> setWifiApEnabled;
+        private readonly Func<bool> isWifiApEnabled;
+        private readonly Func<int> getWifiApState;
 
-        public MyWifiController(WifiManager wifiManager)
+        public HotSpotStarter(WifiManager WifiManager)
         {
-            Method[] wmMethods = wifiManager.Class.GetDeclaredMethods();
-
-            //Verify The Wifi AP State And Get It's Configuration
-            foreach (Method m in wmMethods)
+            this.WifiManager = WifiManager;
+            Method[] methods = WifiManager.Class.GetDeclaredMethods();
+            foreach (Method method in methods)
             {
-                //Get The Wifi AP State
-                if (m.Name.Equals("isWifiApEnabled"))
+                if (method.Name == "setWifiApEnabled")
                 {
-                    IsWifiEnabled = () => (Boolean)m.Invoke(wifiManager);
+                    setWifiApEnabled = WifiConfiguration => method.Invoke(WifiManager, WifiConfiguration, true);
                 }
 
-                //Get The AP Configuration
-                if (m.Name.Equals("getWifiApConfiguration"))
+                if (method.Name == "isWifiApEnabled")
                 {
-                    GetConfig = () => (WifiConfiguration)m.Invoke(wifiManager, null);                   
+                    isWifiApEnabled = () => (bool)method.Invoke(WifiManager);
                 }
 
-                if (m.Name.Equals("setWifiApConfiguration"))
+                if (method.Name == "getWifiApState")
                 {
-                    SetConfig = configuration => m.Invoke(wifiManager, configuration);
+                    getWifiApState = () => (int)method.Invoke(WifiManager);
                 }
-
-                if (m.Name.Equals("setWifiApEnabled"))
-                {
-                    ToggleWifi = value => m.Invoke(wifiManager, GetConfig(), value);
-                }
-
-                if (m.Name.Equals("getScanResults"))
-                {
-                    GetScanResult = ()=> wifiManager.ScanResults;
-                }
-
-                
             }
 
+            WifiManager.SetWifiEnabled(false);
+        }
 
-            ChangeSsidAndPassword = (ssid, password) =>
+        public void Start()
+        {
+            if (isWifiApEnabled())
+                return;
+
+            WifiManager.SetWifiEnabled(false);
+
+            try
             {
-                var wifiConfig = GetConfig();
+                WifiConfiguration WifiConfiguration = new WifiConfiguration();
+                WifiConfiguration.Ssid = @"""test""";
+                WifiConfiguration.PreSharedKey = @"""pass""";
 
-                wifiConfig.Ssid = ssid;
-                wifiConfig.PreSharedKey = password;
+                WifiConfiguration.AllowedAuthAlgorithms.Set((int)Android.Net.Wifi.AuthAlgorithmType.Shared);
+                setWifiApEnabled(WifiConfiguration);
 
-                SetConfig(wifiConfig);
-            };
+                while (!(Boolean)isWifiApEnabled())
+                {
+                };
 
-        }
-
-    }
-
-    public class ActionListernerForPeersListener : Java.Lang.Object, WifiP2pManager.IActionListener
-    {
-        private readonly Action OnErrorHandler;
-
-        public ActionListernerForPeersListener(Action OnErrorHandler)
-        {
-            this.OnErrorHandler = OnErrorHandler;
-        }
-
-        public void OnFailure(WifiP2pFailureReason reason)
-        {
-            OnErrorHandler();
-        }
-
-        public void OnSuccess()
-        {
+                var status = getWifiApState();
+            }
+            catch (Exception e)
+            {
+            }
         }
     }
 
-    public class MyActionListener : Java.Lang.Object, WifiP2pManager.IActionListener
+    public class WifiConnector
     {
-        private readonly Action OnSuccessHandler;
+        private readonly WifiManager WifiManager;
 
-        public MyActionListener(Action OnSuccessHandler)
+        public WifiConnector(WifiManager WifiManager)
         {
-            this.OnSuccessHandler = OnSuccessHandler;
+            this.WifiManager = WifiManager;
         }
 
-        public void OnFailure(WifiP2pFailureReason reason)
+        private DateTime LastScanRequest;
+        private const int SCAN_COOLDOWN = 10;
+        public IEnumerable<string> GetSsids()
         {
+            if (LastScanRequest.AddSeconds(SCAN_COOLDOWN) < DateTime.Now)
+            {
+                if (WifiManager.IsWifiEnabled == false)
+                    WifiManager.SetWifiEnabled(true);
 
+                WifiManager.StartScan();
+                LastScanRequest = DateTime.Now.AddSeconds(SCAN_COOLDOWN);
+            }
+            return WifiManager.ScanResults.Select(f => f.Ssid);
         }
 
-        public void OnSuccess()
+        public void ConnectTo(string ssid, string password)
         {
-            OnSuccessHandler();
+            if (WifiManager.IsWifiEnabled == false)
+                WifiManager.SetWifiEnabled(true);
+
+            WifiInfo info = WifiManager.ConnectionInfo;
+            String ssidAtual = info.SSID;
+
+
+            WifiManager.SetWifiEnabled(true);
+
+            String networkSSID = @"""test""";
+            String networkPass = @"""pass""";
+
+            WifiConfiguration conf = new WifiConfiguration();
+            conf.Ssid = networkSSID;
+            conf.AllowedKeyManagement.Set((int)Android.Net.Wifi.KeyManagementType.None);
+
+            //conf.WepKeys[0] = "\"" + networkPass + "\"";
+            //conf.WepTxKeyIndex = 0;
+            //conf.AllowedKeyManagement.Set((int)Android.Net.Wifi.KeyManagementType.None);
+            //conf.AllowedGroupCiphers.Set((int)Android.Net.Wifi.GroupCipherType.Wep40);
+
+            conf.PreSharedKey = networkPass;
+            var id = WifiManager.AddNetwork(conf);
+            //WifiManager.ConfiguredNetworks.Add(conf);
+
+            var ssids = WifiManager.ConfiguredNetworks.Select(f => f.Ssid);
+            //foreach (WifiConfiguration i in WifiManager.ConfiguredNetworks)
+            //{
+            //    if (i.Ssid != null && i.Ssid == networkSSID)
+            //    {
+            WifiManager.Disconnect();
+            WifiManager.EnableNetwork(id, true);
+            WifiManager.Reconnect();
+
+            //        break;
+            //    }
+            //}
         }
     }
 
@@ -126,42 +147,18 @@ namespace ThirdGame
         , ConfigurationChanges = ConfigChanges.Orientation | ConfigChanges.Keyboard | ConfigChanges.KeyboardHidden | ConfigChanges.ScreenSize)]
     public class Activity1 : Microsoft.Xna.Framework.AndroidGameActivity
     {
-        //private WiFiDirectBroadcastReceiver mReceiver;
-        //private IntentFilter mIntentFilter;
-
         protected override void OnCreate(Bundle bundle)
         {
             base.OnCreate(bundle);
-            //var sut = new MyBlueToothChannel();
-            //sut.SendMessage("ops!");
-            //sut.SendMessage("ops2!");
-            
-            //var mManager = (WifiP2pManager)GetSystemService(WifiP2pService);
-            //var mChannel = mManager.Initialize(this, MainLooper, null);//mainloop mesmo!?
-            //var methods = mChannel.Class.GetMethods();
+            var WifiManager = (WifiManager)GetSystemService(WifiService);
 
-            //foreach (var m in methods) {
-            //    var name = m.Name;
-            //}
+            var g = new Game1(
+                new WifiConnector(WifiManager)
+                , new HotSpotStarter(WifiManager)
+            );
 
-            //var controller = new MyWifiController((WifiManager)GetSystemService(Context.WifiService));
-
-            //controller.ToggleWifi(true);
-            //Task.Factory.StartNew(() =>
-            //{
-            //    int i = 0;
-            //    while (true)
-            //    {
-            //        Task.Delay(5000);
-            //        controller.ChangeSsidAndPassword($"oi_teste_{i++}", $"oi_teste_{ i * 2}");
-            //    }
-            //});
-
-            var g = new Game1();
             SetContentView((View)g.Services.GetService(typeof(View)));
 
-
-            var sattus = new BlueToothWrapper(this);//.asdasd();
             g.Run();
         }
 
@@ -176,154 +173,5 @@ namespace ThirdGame
             base.OnPause();
         }
     }
-
-    public class ConnectionInfoListener : Java.Lang.Object, IConnectionInfoListener
-    {
-
-        public void OnConnectionInfoAvailable(WifiP2pInfo info)
-        {
-            // InetAddress from WifiP2pInfo struct.
-            var groupOwnerAddress = info.GroupOwnerAddress.HostAddress;
-
-            // After the group negotiation, we can determine the group owner
-            // (server).
-            if (info.GroupFormed && info.IsGroupOwner)
-            {
-                // Do whatever tasks are specific to the group owner.
-                // One common case is creating a group owner thread and accepting
-                // incoming connections.
-            }
-            else if (info.GroupFormed)
-            {
-                // The other device acts as the peer (client). In this case,
-                // you'll want to create a peer thread that connects
-                // to the group owner.
-            }
-        }
-    }
-
-    public class PeerListListener : Java.Lang.Object, IPeerListListener
-    {
-        private readonly WifiP2pManager WifiP2pManager;
-        private readonly Func<Action<string>> GetHandler;
-
-        public Channel wifip2pChannel { get; }
-
-        public PeerListListener(
-            WifiP2pManager WifiP2pManager
-            , Channel wifip2pChannel
-            , Func<Action<string>> GetHandler)
-        {
-            this.WifiP2pManager = WifiP2pManager;
-            this.wifip2pChannel = wifip2pChannel;
-            this.GetHandler = GetHandler;
-        }
-
-        public void OnPeersAvailable(WifiP2pDeviceList peers)
-        {
-
-            foreach (var device in peers.DeviceList)
-            {
-                WifiP2pConfig config = new WifiP2pConfig();
-                config.DeviceAddress = device.DeviceAddress;
-                config.Wps.Setup = WpsInfo.Pbc;
-                config.GroupOwnerIntent = 4;
-                WifiP2pManager.Connect(wifip2pChannel, config, new MyActionListener(
-                    () =>
-                {
-                    GetHandler()(config.DeviceAddress);
-                }
-                )
-                );
-            }
-        }
-    }
-
-    public class AndroidWifiDirect2 : WifiDirect
-    {
-        public Action<string> NewAddressFound { get; set; } = _ => { };
-
-        public AndroidWifiDirect2()
-        {
-
-        }
-    }
-
-    public class WiFiDirectBroadcastReceiver : BroadcastReceiver
-    {
-        private WifiP2pManager mManager;
-        private Channel mChannel;
-        private Activity mActivity;
-
-        public AndroidWifiDirect2 myWrapper { get; }
-
-        public WiFiDirectBroadcastReceiver(
-            WifiP2pManager manager
-            , Channel channel
-            , AndroidWifiDirect2 myWrapper
-            , Activity activity) : base()
-        {
-            this.mManager = manager;
-            this.mChannel = channel;
-            this.mActivity = activity;
-            this.myWrapper = myWrapper;
-        }
-
-        public override void OnReceive(Context context, Intent intent)
-        {
-            var action = intent.Action;
-
-            if (WifiP2pStateChangedAction == action)
-            {
-                // Check to see if Wi-Fi is enabled and notify appropriate activity
-                int state = intent.GetIntExtra(WifiP2pManager.ExtraWifiState, -1);
-                if (state == (int)Android.Net.Wifi.P2p.WifiP2pState.Enabled)
-                {
-                    // Wifi P2P is enabled     
-
-                }
-                else
-                {
-                    //aqui... tem que ativar aqui....
-                }
-            }
-            else if (WifiP2pPeersChangedAction == action)
-            {
-                // request available peers from the wifi p2p manager. This is an
-                // asynchronous call and the calling activity is notified with a
-                // callback on PeerListListener.onPeersAvailable() of passed activity
-                // the activity implements the listener interface
-                if (mManager != null)
-                {
-                    mManager.RequestPeers(
-                        mChannel
-                        , new PeerListListener(
-                            mManager
-                            , mChannel
-                            , () => myWrapper.NewAddressFound));
-                }
-            }
-            else if (WifiP2pConnectionChangedAction == action)
-            {
-                // Respond to new connection or disconnections
-                NetworkInfo networkInfo = (NetworkInfo)intent
-                    .GetParcelableExtra(WifiP2pManager.ExtraNetworkInfo);
-
-                if (networkInfo.IsConnected)
-                {
-
-                    // We are connected with the other device, request connection
-                    // info to find group owner IP
-
-                    mManager.RequestConnectionInfo(mChannel, new ConnectionInfoListener());
-                }
-            }
-            else if (WifiP2pThisDeviceChangedAction == action)
-            {
-                // Respond to this device's wifi state changing
-            }
-        }
-    }
-
 }
 
