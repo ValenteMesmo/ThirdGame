@@ -93,7 +93,7 @@ namespace ThirdGame
                         {
                             addressList.Add(ssid);
                             //todo: remove
-                            wifiConnector.ConnectTo(ssid, "teste");
+                            wifiConnector.ConnectTo(ssid, "987654321");
                         }
                     }
                 }
