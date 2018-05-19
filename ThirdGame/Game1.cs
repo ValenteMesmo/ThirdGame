@@ -89,7 +89,7 @@ namespace ThirdGame
                     addressList.Clear();
                     foreach (var ssid in wifiConnector.GetSsids())
                     {
-                        if (ssid.Contains("c0de") || ssid.Contains("test"))
+                        if (ssid.Contains("c0de") || ssid.Contains("aaaaaaa"))
                         {
                             addressList.Add(ssid);
                             //todo: remove

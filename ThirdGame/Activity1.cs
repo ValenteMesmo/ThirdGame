@@ -1,6 +1,7 @@
 using Android.App;
 using Android.Content;
 using Android.Content.PM;
+using Android.Net;
 using Android.Net.Wifi;
 using Android.OS;
 using Android.Views;
@@ -53,8 +54,8 @@ namespace ThirdGame
             try
             {
                 WifiConfiguration netConfig = new WifiConfiguration();
-                netConfig.Ssid = "test";
-                netConfig.PreSharedKey = "987654321";
+                netConfig.Ssid = WifiConnector.networkSSID;
+                netConfig.PreSharedKey = WifiConnector.networkPass;
                 netConfig.HiddenSSID = false;
                 netConfig.StatusField = Android.Net.Wifi.WifiStatus.Enabled;
                 netConfig.AllowedGroupCiphers.Set((int)Android.Net.Wifi.GroupCipherType.Tkip);
@@ -73,7 +74,7 @@ namespace ThirdGame
 
                 var status = getWifiApState();
             }
-            catch (Exception e)
+            catch (Exception)
             {
             }
         }
@@ -103,77 +104,152 @@ namespace ThirdGame
             return WifiManager.ScanResults.Select(f => f.Ssid);
         }
 
-        public void ConnectTo(string ssid, string password)
+        public const string networkSSID = "aaaaaaaaaaaaa";
+        public const string networkPass = "987654321";
+
+        private string quoted(string text)
         {
-            //if (WifiManager.IsWifiEnabled == false)
+
+            return $@"""{text}""";
+        }
+
+        private DateTime ConnectionCooldown;
+        public void ConnectTo(string ssid, string key)
+        {
+            if (ConnectionCooldown > DateTime.Now)
+                return;
+            ConnectionCooldown = DateTime.Now.AddSeconds(10);
+
+            //TODO: testar esse if
+            if (WifiManager.IsWifiEnabled == false)
                 WifiManager.SetWifiEnabled(true);
 
             while (WifiManager.PingSupplicant() == false)
             {
             }
 
-            //usar o codigo antigo, agora que corrigi o ssid
-
-            ssid = "test";
-            password = "987654321";
-
-            //WifiConfiguration wifiConfig = new WifiConfiguration();
-            //wifiConfig.Ssid = string.Format("\"{0}\"", ssid);
-            //wifiConfig.PreSharedKey = string.Format("\"{0}\"", password);
-            //wifiConfig.HiddenSSID = false;
-            //WifiManager wifiManager = (WifiManager)Application.Context.GetSystemService(Context.WifiService);
-
-            //// Use ID
-            //int netId = wifiManager.AddNetwork(wifiConfig);
-            //wifiManager.Disconnect();
-            //wifiManager.EnableNetwork(netId, true);
-            //wifiManager.Reconnect();
-
-   
-
-
-            WifiConfiguration wfc = new WifiConfiguration();
-
-            wfc.Ssid = ssid;
-            wfc.StatusField = Android.Net.Wifi.WifiStatus.Disabled;
-            
-
-            wfc.AllowedProtocols.Set((int)Android.Net.Wifi.ProtocolType.Rsn);
-            wfc.AllowedProtocols.Set((int)Android.Net.Wifi.ProtocolType.Wpa);
-            wfc.AllowedKeyManagement.Set((int)Android.Net.Wifi.KeyManagementType.WpaPsk);
-            wfc.AllowedPairwiseCiphers.Set((int)Android.Net.Wifi.PairwiseCipherType.Ccmp);
-            wfc.AllowedPairwiseCiphers.Set((int)Android.Net.Wifi.PairwiseCipherType.Tkip);
-            wfc.AllowedGroupCiphers.Set((int)Android.Net.Wifi.GroupCipherType.Wep40);
-            wfc.AllowedGroupCiphers.Set((int)Android.Net.Wifi.GroupCipherType.Wep104);
-            wfc.AllowedGroupCiphers.Set((int)Android.Net.Wifi.GroupCipherType.Ccmp);
-            wfc.AllowedGroupCiphers.Set((int)Android.Net.Wifi.GroupCipherType.Tkip);
-
-            wfc.PreSharedKey = password;
-
-
-
-            wfc.Priority = 10000;
-            WifiManager.Disconnect();
-            
-            int networkId = WifiManager.AddNetwork(wfc);
-
-            var id = WifiManager.UpdateNetwork(wfc);
-            WifiManager.SaveConfiguration();
-            WifiManager.EnableNetwork(id, false);
-            WifiManager.Reconnect();
-
-            
-            
-            var aa = WifiManager.ConfiguredNetworks.Select(f => f.Ssid);
-            if (networkId != -1)
+            WifiInfo wifiInfo = WifiManager.ConnectionInfo;
+            if (wifiInfo.SupplicantState == SupplicantState.Completed)
             {
-                //WifiManager.Disconnect();
-                //// success, can call wfMgr.enableNetwork(networkId, true) to connect
-                //WifiManager.EnableNetwork(networkId, true);
-
-                //WifiManager.Reconnect();
-
+                if (wifiInfo.SSID == quoted(ssid))
+                {
+                    return;
+                }
             }
+
+            int highestPriorityNumber = 0;
+            WifiConfiguration selectedConfig = null;
+            /* Check if not connected but has connected to that wifi in the past */
+            foreach (WifiConfiguration config in WifiManager.ConfiguredNetworks)
+            {
+                if (config.Priority > highestPriorityNumber)
+                    highestPriorityNumber = config.Priority;
+                if (config.Ssid == quoted(ssid))
+                {
+                    selectedConfig = config;
+                }
+            }
+
+            if (selectedConfig != null)
+            {
+                selectedConfig.Priority = highestPriorityNumber + 1;
+                WifiManager.UpdateNetwork(selectedConfig);
+                WifiManager.Disconnect(); /* disconnect from whichever wifi you're connected to */
+                WifiManager.EnableNetwork(selectedConfig.NetworkId, true);
+                WifiManager.Reconnect();
+
+                return;
+            }
+
+            selectedConfig = new WifiConfiguration();
+            selectedConfig.Ssid = quoted(ssid);
+            selectedConfig.Priority = highestPriorityNumber + 1;
+            selectedConfig.StatusField = Android.Net.Wifi.WifiStatus.Enabled;
+
+            selectedConfig.PreSharedKey = quoted(key);
+            selectedConfig.AllowedKeyManagement.Set((int)Android.Net.Wifi.KeyManagementType.WpaPsk);
+            selectedConfig.AllowedGroupCiphers.Set((int)Android.Net.Wifi.GroupCipherType.Tkip);
+            selectedConfig.AllowedGroupCiphers.Set((int)Android.Net.Wifi.GroupCipherType.Ccmp);
+            selectedConfig.AllowedPairwiseCiphers.Set((int)Android.Net.Wifi.PairwiseCipherType.Tkip);
+            selectedConfig.AllowedPairwiseCiphers.Set((int)Android.Net.Wifi.PairwiseCipherType.Ccmp);
+            selectedConfig.AllowedProtocols.Set((int)Android.Net.Wifi.ProtocolType.Rsn);
+            selectedConfig.AllowedProtocols.Set((int)Android.Net.Wifi.ProtocolType.Wpa);
+
+
+            int netId = WifiManager.AddNetwork(selectedConfig);
+            WifiManager.Disconnect(); /* disconnect from whichever wifi you're connected to */
+            WifiManager.EnableNetwork(netId, true);
+            WifiManager.Reconnect(); // todo?
+
+
+            //WifiConfiguration conf = new WifiConfiguration();
+            //conf.Ssid = "\"" + networkSSID + "\"";
+            //conf.PreSharedKey = "\"" + networkPass + "\"";
+
+            //WifiManager.Disconnect();
+            //var id = WifiManager.AddNetwork(conf);
+            //WifiManager.EnableNetwork(id, true);
+            //WifiManager.Reconnect();
+
+
+            //var aa = WifiManager.ConfiguredNetworks.Select(f => f.Ssid);
+
+            //IEnumerable<WifiConfiguration> list = WifiManager.ConfiguredNetworks;
+            //foreach (WifiConfiguration i in list)
+            //{
+            //    if (i.Ssid != null && i.Ssid.Equals("\"" + networkSSID + "\""))
+            //    {
+            //        WifiManager.Disconnect();
+            //        WifiManager.EnableNetwork(i.NetworkId, true);
+            //        WifiManager.Reconnect();
+
+            //        break;
+            //    }
+            //}
+
+
+            //WifiConfiguration wfc = new WifiConfiguration();
+
+            //wfc.Ssid = ssid;
+            //wfc.StatusField = Android.Net.Wifi.WifiStatus.Disabled;
+
+
+            //wfc.AllowedProtocols.Set((int)Android.Net.Wifi.ProtocolType.Rsn);
+            //wfc.AllowedProtocols.Set((int)Android.Net.Wifi.ProtocolType.Wpa);
+            //wfc.AllowedKeyManagement.Set((int)Android.Net.Wifi.KeyManagementType.WpaPsk);
+            //wfc.AllowedPairwiseCiphers.Set((int)Android.Net.Wifi.PairwiseCipherType.Ccmp);
+            //wfc.AllowedPairwiseCiphers.Set((int)Android.Net.Wifi.PairwiseCipherType.Tkip);
+            //wfc.AllowedGroupCiphers.Set((int)Android.Net.Wifi.GroupCipherType.Wep40);
+            //wfc.AllowedGroupCiphers.Set((int)Android.Net.Wifi.GroupCipherType.Wep104);
+            //wfc.AllowedGroupCiphers.Set((int)Android.Net.Wifi.GroupCipherType.Ccmp);
+            //wfc.AllowedGroupCiphers.Set((int)Android.Net.Wifi.GroupCipherType.Tkip);
+
+            //wfc.PreSharedKey = password;
+
+
+
+            //wfc.Priority = 10000;
+            //WifiManager.Disconnect();
+
+            //int networkId = WifiManager.AddNetwork(wfc);
+
+            //var id = WifiManager.UpdateNetwork(wfc);
+            //WifiManager.SaveConfiguration();
+            //WifiManager.EnableNetwork(id, false);
+            //WifiManager.Reconnect();
+
+
+
+            //var aa = WifiManager.ConfiguredNetworks.Select(f => f.Ssid);
+            //if (networkId != -1)
+            //{
+            //    //WifiManager.Disconnect();
+            //    //// success, can call wfMgr.enableNetwork(networkId, true) to connect
+            //    //WifiManager.EnableNetwork(networkId, true);
+
+            //    //WifiManager.Reconnect();
+
+            //}
 
         }
     }
