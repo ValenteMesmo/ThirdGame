@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Input.Touch;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text.RegularExpressions;
 
 namespace ThirdGame
@@ -23,9 +24,13 @@ namespace ThirdGame
         }
 
         SpriteFont SpriteFont;
-
+        string message2 = "esperando...";
         public Game1(WifiAndroidWrapper wifiConnector, HotSpotStarter hotSpotStarter)
         {
+            this.UdpWrapper = new UdpWrapper(message =>
+            {
+                message2 = message;
+            });
             this.wifiConnector = wifiConnector;
             this.hotSpotStarter = hotSpotStarter;
 
@@ -60,6 +65,8 @@ namespace ThirdGame
 
         string senha = "umasenhaqualquer";
         bool? hosting;
+        private readonly UdpWrapper UdpWrapper;
+
         protected override void Update(GameTime gameTime)
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
@@ -98,6 +105,10 @@ namespace ThirdGame
                     }
                 }
 
+            //TODO: understand touch pressure
+            if(touchCollection.Any())
+            UdpWrapper.Send($"({touchCollection[0].Position.X}, {touchCollection[0].Position.Y})");
+
             base.Update(gameTime);
         }
 
@@ -112,19 +123,28 @@ namespace ThirdGame
             spriteBatch.Draw(Btn_texture, btn_Rect2, Color.Blue);
 
 
-            lock (locker)
-                for (int i = 0; i < addressList.Count; i++)
-                {
-                    spriteBatch.DrawString(SpriteFont
-                        , RemoveSpecialCharacters(addressList[i])
-                        , new Vector2(0, 80 * i)
+            //lock (locker)
+            //    for (int i = 0; i < addressList.Count; i++)
+            //    {
+            //        spriteBatch.DrawString(SpriteFont
+            //            , RemoveSpecialCharacters(addressList[i])
+            //            , new Vector2(0, 80 * i)
+            //            , Color.Black
+            //            , 0, Vector2.Zero
+            //            , 3
+            //            , SpriteEffects.None
+            //            , 0);
+
+            //    }
+            spriteBatch.DrawString(SpriteFont
+                        , message2
+                        , new Vector2(0, 80 )
                         , Color.Black
                         , 0, Vector2.Zero
                         , 3
                         , SpriteEffects.None
                         , 0);
 
-                }
             spriteBatch.End();
             base.Draw(gameTime);
         }
