@@ -14,7 +14,7 @@ namespace ThirdGame
         static List<string> addressList = new List<string>();
         Rectangle btn_Rect = new Rectangle(200, 200, 200, 200);
         Rectangle btn_Rect2 = new Rectangle(300, 900, 200, 200);
-        private WifiConnector wifiConnector;
+        private WifiAndroidWrapper wifiConnector;
         private HotSpotStarter hotSpotStarter;
 
         internal static void LOG(string name)
@@ -24,7 +24,7 @@ namespace ThirdGame
 
         SpriteFont SpriteFont;
 
-        public Game1(WifiConnector wifiConnector, HotSpotStarter hotSpotStarter)
+        public Game1(WifiAndroidWrapper wifiConnector, HotSpotStarter hotSpotStarter)
         {
             this.wifiConnector = wifiConnector;
             this.hotSpotStarter = hotSpotStarter;
