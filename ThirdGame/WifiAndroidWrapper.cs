@@ -5,14 +5,13 @@ using System.Linq;
 
 namespace ThirdGame
 {
-    public interface WifiService
-    {
-        //TODO: forget ssids on disconnect
-        void ConnectTo(string ssid, string key);
-        IEnumerable<string> GetSsids();
+    public enum ConnectionState {
+        disconnected,
+        connecting,
+        connected
     }
 
-    public class WifiAndroidWrapper : WifiService
+    public class WifiAndroidWrapper 
     {
         private readonly WifiManager WifiManager;
 
@@ -46,10 +45,11 @@ namespace ThirdGame
         }
 
         private DateTime ConnectionCooldown;
-        public void ConnectTo(string ssid, string key)
+        ConnectionState State;
+        public ConnectionState ConnectTo(string ssid, string key)
         {
             if (ConnectionCooldown > DateTime.Now)
-                return;
+                return State;
             ConnectionCooldown = DateTime.Now.AddSeconds(10);
 
             //TODO: testar esse if
@@ -65,7 +65,8 @@ namespace ThirdGame
             {
                 if (wifiInfo.SSID == quoted(ssid))
                 {
-                    return;
+                    State = ConnectionState.connected;
+                    return State;
                 }
             }
 
@@ -82,6 +83,8 @@ namespace ThirdGame
                 }
             }
 
+            State = ConnectionState.connecting;
+
             if (selectedConfig != null)
             {
                 selectedConfig.Priority = highestPriorityNumber + 1;
@@ -89,8 +92,8 @@ namespace ThirdGame
                 WifiManager.Disconnect(); /* disconnect from whichever wifi you're connected to */
                 WifiManager.EnableNetwork(selectedConfig.NetworkId, true);
                 WifiManager.Reconnect();
-
-                return;
+                
+                return State;
             }
 
             selectedConfig = new WifiConfiguration();
@@ -113,7 +116,7 @@ namespace ThirdGame
             WifiManager.EnableNetwork(netId, true);
             WifiManager.Reconnect(); // todo?
 
-
+            return State;
             //WifiConfiguration conf = new WifiConfiguration();
             //conf.Ssid = "\"" + networkSSID + "\"";
             //conf.PreSharedKey = "\"" + networkPass + "\"";

@@ -18,6 +18,10 @@ namespace ThirdGame
         private WifiAndroidWrapper wifiConnector;
         private HotSpotStarter hotSpotStarter;
 
+        string senha = "umasenhaqualquer";
+        bool? hosting;
+        private UdpWrapper UdpWrapper;
+
         internal static void LOG(string name)
         {
             addressList[0] = name;
@@ -27,10 +31,6 @@ namespace ThirdGame
         string message2 = "esperando...";
         public Game1(WifiAndroidWrapper wifiConnector, HotSpotStarter hotSpotStarter)
         {
-            this.UdpWrapper = new UdpWrapper(message =>
-            {
-                message2 = message;
-            });
             this.wifiConnector = wifiConnector;
             this.hotSpotStarter = hotSpotStarter;
 
@@ -41,6 +41,7 @@ namespace ThirdGame
             graphics.PreferredBackBufferWidth = 800;
             graphics.PreferredBackBufferHeight = 480;
             graphics.SupportedOrientations = DisplayOrientation.LandscapeLeft | DisplayOrientation.LandscapeRight;
+            createUdpSocket();
         }
 
         private static object locker = new object();
@@ -63,10 +64,6 @@ namespace ThirdGame
         {
         }
 
-        string senha = "umasenhaqualquer";
-        bool? hosting;
-        private readonly UdpWrapper UdpWrapper;
-
         protected override void Update(GameTime gameTime)
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
@@ -86,32 +83,50 @@ namespace ThirdGame
                 }
             }
 
-            if (hosting.HasValue)
-                if (hosting.Value)
-                {
-                    hotSpotStarter.Start();
-                }
-                else
-                {
-                    addressList.Clear();
-                    foreach (var ssid in wifiConnector.GetSsids())
-                    {
-                        if (ssid.Contains("c0de") || ssid.Contains("aaaaaaa"))
-                        {
-                            addressList.Add(ssid);
-                            //todo: remove
-                            wifiConnector.ConnectTo(ssid, "987654321");
-                        }
-                    }
-                }
+
+            //if (hosting.HasValue)
+            //{
+            //    if (hosting.Value)
+            //    {
+            //        if (hotSpotStarter.Start() == ConnectionState.connected)
+            //        {
+            //            createUdpSocket();
+            //        }
+            //    }
+            //    else
+            //    {
+            //        addressList.Clear();
+            //        foreach (var ssid in wifiConnector.GetSsids())
+            //        {
+            //            if (ssid.Contains("c0de") || ssid.Contains("aaaaaaa"))
+            //            {
+            //                addressList.Add(ssid);
+            //                //todo: remove
+            //                if (wifiConnector.ConnectTo(ssid, WifiAndroidWrapper.networkPass) == ConnectionState.connected)
+            //                {
+            //                    createUdpSocket();
+            //                }
+            //            }
+            //        }
+            //    }
+            //}
 
             //TODO: understand touch pressure
-            if(touchCollection.Any())
-            UdpWrapper.Send($"({touchCollection[0].Position.X}, {touchCollection[0].Position.Y})");
+            if (touchCollection.Any() && UdpWrapper != null)
+                UdpWrapper.Send($"({touchCollection[0].Position.X}, {touchCollection[0].Position.Y})");
 
             base.Update(gameTime);
         }
 
+        private void createUdpSocket()
+        {
+            if (UdpWrapper == null)
+                this.UdpWrapper = new UdpWrapper(message =>
+                {
+                    //lock(locker)
+                    message2 = message;
+                });
+        }
 
 
         protected override void Draw(GameTime gameTime)
@@ -136,9 +151,10 @@ namespace ThirdGame
             //            , 0);
 
             //    }
+
             spriteBatch.DrawString(SpriteFont
                         , message2
-                        , new Vector2(0, 80 )
+                        , new Vector2(0, 80)
                         , Color.Black
                         , 0, Vector2.Zero
                         , 3
