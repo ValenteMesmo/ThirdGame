@@ -13,7 +13,7 @@ namespace ThirdGame
 
     public class WifiAndroidWrapper 
     {
-        private readonly WifiManager WifiManager;
+        public readonly WifiManager WifiManager;
 
         public WifiAndroidWrapper(WifiManager WifiManager)
         {

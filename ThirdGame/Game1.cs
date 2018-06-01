@@ -8,6 +8,7 @@ using System.Text.RegularExpressions;
 
 namespace ThirdGame
 {
+
     public class Game1 : Game
     {
         private GraphicsDeviceManager graphics;
@@ -18,9 +19,9 @@ namespace ThirdGame
         private WifiAndroidWrapper wifiConnector;
         private HotSpotStarter hotSpotStarter;
 
-        string senha = "umasenhaqualquer";
-        bool? hosting;
-        private UdpWrapper UdpWrapper;
+        //string senha = "umasenhaqualquer";
+        //bool? hosting;
+        private UdpAndroidWrapper UdpWrapper;
 
         internal static void LOG(string name)
         {
@@ -74,12 +75,12 @@ namespace ThirdGame
             {
                 if (btn_Rect.Contains(touch.Position))
                 {
-                    hosting = false;
+                    //hosting = false;
                     break;
                 }
                 if (btn_Rect2.Contains(touch.Position))
                 {
-                    hosting = true;
+                    //hosting = true;
                 }
             }
 
@@ -114,17 +115,19 @@ namespace ThirdGame
             //TODO: understand touch pressure
             if (touchCollection.Any() && UdpWrapper != null)
                 UdpWrapper.Send($"({touchCollection[0].Position.X}, {touchCollection[0].Position.Y})");
-
+            //else
+            //    UdpWrapper.Send("____");
             base.Update(gameTime);
         }
 
         private void createUdpSocket()
         {
             if (UdpWrapper == null)
-                this.UdpWrapper = new UdpWrapper(message =>
+                this.UdpWrapper = new UdpAndroidWrapper(message =>
                 {
                     //lock(locker)
-                    message2 = message;
+                    if (!message.Contains("__"))
+                        message2 = RemoveSpecialCharacters(message);
                 });
         }
 
@@ -169,5 +172,7 @@ namespace ThirdGame
         {
             return Regex.Replace(str, "[^a-zA-Z0-9_.]+", "", RegexOptions.Compiled);
         }
+
+
     }
 }

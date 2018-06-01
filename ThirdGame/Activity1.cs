@@ -1,5 +1,4 @@
 using Android.App;
-using Android.Content;
 using Android.Content.PM;
 using Android.Net;
 using Android.Net.Wifi;
@@ -23,11 +22,24 @@ namespace ThirdGame
         {
             base.OnCreate(bundle);
             var WifiManager = (WifiManager)GetSystemService(WifiService);
-            var MulticastLock = WifiManager.CreateMulticastLock("MulticastLock");
-            MulticastLock.Acquire();
+            //if (Build.VERSION.SdkInt >= Android.OS.BuildVersionCodes.Kitkat)
+            //{
+            //    WifiManager.MulticastLock @lock = null;
+            //    if (@lock == null)
+            //            @lock = WifiManager.CreateMulticastLock("WiFi_Lock");
+            //    @lock.SetReferenceCounted(true);
+            //    @lock.Acquire();
+            //}
 
-            var WifiLock = WifiManager.CreateWifiLock(WifiMode.FullHighPerf, "WifiLock");
-            WifiLock.Acquire();
+
+
+
+
+            //var MulticastLock = WifiManager.CreateMulticastLock("MulticastLock");
+            //MulticastLock.Acquire();
+
+            //var WifiLock = WifiManager.CreateWifiLock(WifiMode.FullHighPerf, "WifiLock");
+            //WifiLock.Acquire();
             var g = new Game1(
                 new WifiAndroidWrapper(WifiManager)
                 , new HotSpotStarter(WifiManager)
