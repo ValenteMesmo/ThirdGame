@@ -1,7 +1,5 @@
-﻿using Android.Net;
-using Android.Net.Wifi;
+﻿using Android.Net.Wifi;
 using Java.Lang.Reflect;
-using Java.Net;
 using System;
 
 namespace ThirdGame
@@ -76,20 +74,7 @@ namespace ThirdGame
             catch (Exception)
             {
             }
-
-
-            //void getBroadcastAddress()
-            {
-                DhcpInfo dhcp = WifiManager.DhcpInfo;
-                // handle null somehow
-
-                int broadcast = (dhcp.IpAddress & dhcp.Netmask) | ~dhcp.Netmask;
-                byte[] quads = new byte[4];
-                for (int k = 0; k < 4; k++)
-                    quads[k] = (byte)((broadcast >> k * 8) & 0xFF);
-                var xxx = InetAddress.GetByAddress(quads);
-            }
-
+            
             return ConnectionState.connecting;
         }
     }
