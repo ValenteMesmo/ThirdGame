@@ -4,7 +4,8 @@ using System;
 
 namespace ThirdGame
 {
-    interface HotSpotService {
+    interface HotSpotService
+    {
         void Start(string ssid, string password);
         void Stop();
     }
@@ -74,9 +75,8 @@ namespace ThirdGame
             catch (Exception)
             {
             }
-            
+
             return ConnectionState.connecting;
         }
     }
 }
-

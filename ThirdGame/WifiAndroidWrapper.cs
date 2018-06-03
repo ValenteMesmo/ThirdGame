@@ -5,13 +5,14 @@ using System.Linq;
 
 namespace ThirdGame
 {
-    public enum ConnectionState {
+    public enum ConnectionState
+    {
         disconnected,
         connecting,
         connected
     }
 
-    public class WifiAndroidWrapper 
+    public class WifiAndroidWrapper
     {
         public readonly WifiManager WifiManager;
 
@@ -92,7 +93,7 @@ namespace ThirdGame
                 WifiManager.Disconnect(); /* disconnect from whichever wifi you're connected to */
                 WifiManager.EnableNetwork(selectedConfig.NetworkId, true);
                 WifiManager.Reconnect();
-                
+
                 return State;
             }
 
@@ -189,4 +190,3 @@ namespace ThirdGame
         }
     }
 }
-

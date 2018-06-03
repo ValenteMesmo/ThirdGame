@@ -8,7 +8,6 @@ using System.Text.RegularExpressions;
 
 namespace ThirdGame
 {
-
     public class Game1 : Game
     {
         private GraphicsDeviceManager graphics;
@@ -118,7 +117,5 @@ namespace ThirdGame
         {
             return Regex.Replace(str, "[^a-zA-Z0-9_.]+", "", RegexOptions.Compiled);
         }
-
-
     }
 }

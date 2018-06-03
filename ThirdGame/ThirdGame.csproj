@@ -62,6 +62,7 @@
     <Compile Include="Activity1.cs" />
     <Compile Include="Game1.cs" />
     <Compile Include="HotSpotStarter.cs" />
+    <Compile Include="MyMessageEncoder.cs" />
     <Compile Include="Resources\Resource.Designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UdpAndroidWrapper.cs" />
@@ -91,6 +92,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Properties\AndroidManifest.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Common\Common.csproj">
+      <Project>{4936e3db-2fd8-4721-bb58-4cf82ca26c59}</Project>
+      <Name>Common</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Novell\Novell.MonoDroid.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\MonoGame\v3.0\MonoGame.Content.Builder.targets" />
