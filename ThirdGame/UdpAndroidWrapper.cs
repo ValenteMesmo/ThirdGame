@@ -17,22 +17,30 @@ namespace ThirdGame
         //TODO: This NEEDs to change when network change
         public string myIp { get; set; }
 
+        private string output = "";
+
         public UdpAndroidWrapper()
         {
             myIp = "/" + GetLocalIPAddress();
+            Task.Factory.StartNew(async () =>
+            {
+                while (NotDisposed)
+                {
+                    if (output != "")
+                    {
+                        var msg = System.Text.Encoding.ASCII.GetBytes(output);
+                        output = "";
+                        using (DatagramSocket socket = new DatagramSocket())
+                        using (DatagramPacket packet = new DatagramPacket(msg, msg.Length, ip, PORT))
+                            await socket.SendAsync(packet);
+                    }
+                }
+            });
         }
 
         public void Send(string message)
         {
-            int port = PORT;
-            var msg = System.Text.Encoding.ASCII.GetBytes(message);
-            //TODO: remove this startnew!!!!!
-            Task.Factory.StartNew(() =>
-            {
-                DatagramSocket socket = new DatagramSocket();
-                DatagramPacket packet = new DatagramPacket(msg, msg.Length, ip, port);
-                socket.Send(packet);
-            });
+            output = message;
         }
 
         private string GetLocalIPAddress()
@@ -52,6 +60,7 @@ namespace ThirdGame
         {
             NotDisposed = false;
         }
+
         bool runnning = false;
         public void Listen(Action<string> messageReceivedHandler)
         {
@@ -60,20 +69,30 @@ namespace ThirdGame
                 return;
             runnning = true;
 
-            MulticastSocket socket = new MulticastSocket(PORT);
-            socket.JoinGroup(ip);
-            byte[] data = new byte[4096];
-            
-            Task.Factory.StartNew(() =>
+            Task.Factory.StartNew(async () =>
             {
-                while (NotDisposed)
+                using (MulticastSocket socket = new MulticastSocket(PORT))
                 {
-                    DatagramPacket packet = new DatagramPacket(data, data.Length);
-                    socket.Receive(packet);
-                    if (myIp == packet.Address.ToString())
-                        continue;
-                    var message = System.Text.Encoding.ASCII.GetString(packet.GetData());
-                    MessageReceived(message);
+                    socket.JoinGroup(ip);
+                    byte[] data = new byte[4096];
+
+                    while (NotDisposed)
+                    {
+                        try
+                        {
+                            using (DatagramPacket packet = new DatagramPacket(data, data.Length))
+                            {
+                                await socket.ReceiveAsync(packet);
+
+                                if (myIp == packet.Address.ToString())
+                                    continue;
+
+                                var message = System.Text.Encoding.ASCII.GetString(packet.GetData());
+                                MessageReceived(message);
+                            }
+                        }
+                        catch { }
+                    }
                 }
             });
         }

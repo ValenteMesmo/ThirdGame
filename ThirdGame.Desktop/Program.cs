@@ -1,9 +1,8 @@
 ﻿using System;
-using ThirdGame;
+using WindowsDesktop;
 
-namespace WindowsDesktop
+namespace ThirdGame.Desktop
 {
-#if WINDOWS || LINUX
     /// <summary>
     /// The main class.
     /// </summary>
@@ -19,5 +18,4 @@ namespace WindowsDesktop
                 game.Run();
         }
     }
-#endif
 }
