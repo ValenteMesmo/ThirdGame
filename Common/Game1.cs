@@ -1,3 +1,4 @@
+using Common.Interfaces;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -13,11 +14,9 @@ namespace ThirdGame
         private GraphicsDeviceManager graphics;
         private SpriteBatch spriteBatch;
         static List<string> addressList = new List<string>();
-        private WifiAndroidWrapper wifiConnector;
-        private HotSpotStarter hotSpotStarter;
         private Texture2D Btn_texture;
         private Vector2 otherPlayer;
-        private UdpAndroidWrapper UdpWrapper;
+        private readonly UdpService UdpWrapper;
 
         internal static void LOG(string name)
         {
@@ -26,11 +25,9 @@ namespace ThirdGame
 
         SpriteFont SpriteFont;
         string message2 = "esperando...";
-        public Game1(WifiAndroidWrapper wifiConnector, HotSpotStarter hotSpotStarter)
+        public Game1(UdpService UdpWrapper)
         {
-            this.wifiConnector = wifiConnector;
-            this.hotSpotStarter = hotSpotStarter;
-
+            this.UdpWrapper = UdpWrapper;
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
 
@@ -38,7 +35,16 @@ namespace ThirdGame
             graphics.PreferredBackBufferWidth = 800;
             graphics.PreferredBackBufferHeight = 480;
             graphics.SupportedOrientations = DisplayOrientation.LandscapeLeft | DisplayOrientation.LandscapeRight;
-            createUdpSocket();
+
+
+            this.UdpWrapper.Listen(message =>
+            {
+                var infos = MyMessageEncoder.Decode(message);
+                foreach (var info in infos)
+                {
+                    otherPlayer = info.Value;
+                }
+            });
         }
 
         protected override void Initialize()
@@ -77,19 +83,6 @@ namespace ThirdGame
                 );
 
             base.Update(gameTime);
-        }
-
-        private void createUdpSocket()
-        {
-            if (UdpWrapper == null)
-                this.UdpWrapper = new UdpAndroidWrapper(message =>
-                {
-                    var infos = MyMessageEncoder.Decode(message);
-                    foreach (var info in infos)
-                    {
-                        otherPlayer = info.Value;
-                    }
-                });
         }
 
         protected override void Draw(GameTime gameTime)

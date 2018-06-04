@@ -1,4 +1,5 @@
-﻿using Java.Net;
+﻿using Common.Interfaces;
+using Java.Net;
 using System;
 using System.Net;
 using System.Net.Sockets;
@@ -6,45 +7,26 @@ using System.Threading.Tasks;
 
 namespace ThirdGame
 {
-    public class UdpAndroidWrapper : IDisposable
+    public class UdpAndroidWrapper : IDisposable, UdpService
     {
-        private readonly Action<string> MessageReceived;
+        private Action<string> MessageReceived;
         private int PORT = 17111;
         private bool NotDisposed = true;
         private InetAddress ip = InetAddress.GetByName("224.0.0.0");
+
         //TODO: This NEEDs to change when network change
-        public readonly string myIp;
+        public string myIp { get; set; }
 
-        public UdpAndroidWrapper(Action<string> messageReceived)
+        public UdpAndroidWrapper()
         {
-            this.MessageReceived = messageReceived;
             myIp = "/" + GetLocalIPAddress();
-            Listen();
-        }
-
-        public void Listen()
-        {
-            MulticastSocket socket = new MulticastSocket(PORT);
-            socket.JoinGroup(ip);
-            byte[] data = new byte[4096];
-            Task.Factory.StartNew(() =>
-            {
-                while (NotDisposed)
-                {
-                    DatagramPacket packet = new DatagramPacket(data, data.Length);
-                    socket.Receive(packet);
-                    if (myIp == packet.Address.ToString())
-                        continue;
-                    var message = System.Text.Encoding.ASCII.GetString(packet.GetData());
-                    MessageReceived(message);
-                }
-            });
         }
 
         public void Send(string message)
         {
             int port = PORT;
             var msg = System.Text.Encoding.ASCII.GetBytes(message);
+            //TODO: remove this startnew!!!!!
             Task.Factory.StartNew(() =>
             {
                 DatagramSocket socket = new DatagramSocket();
@@ -69,6 +51,31 @@ namespace ThirdGame
         public void Dispose()
         {
             NotDisposed = false;
+        }
+        bool runnning = false;
+        public void Listen(Action<string> messageReceivedHandler)
+        {
+            this.MessageReceived = messageReceivedHandler;
+            if (runnning)
+                return;
+            runnning = true;
+
+            MulticastSocket socket = new MulticastSocket(PORT);
+            socket.JoinGroup(ip);
+            byte[] data = new byte[4096];
+            
+            Task.Factory.StartNew(() =>
+            {
+                while (NotDisposed)
+                {
+                    DatagramPacket packet = new DatagramPacket(data, data.Length);
+                    socket.Receive(packet);
+                    if (myIp == packet.Address.ToString())
+                        continue;
+                    var message = System.Text.Encoding.ASCII.GetString(packet.GetData());
+                    MessageReceived(message);
+                }
+            });
         }
     }
 }

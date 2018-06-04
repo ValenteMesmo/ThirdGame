@@ -20,10 +20,7 @@ namespace ThirdGame
         {
             base.OnCreate(bundle);
             var WifiManager = (WifiManager)GetSystemService(WifiService);
-            var g = new Game1(
-                new WifiAndroidWrapper(WifiManager)
-                , new HotSpotStarter(WifiManager)
-            );
+            var g = new Game1(new UdpAndroidWrapper());
 
             SetContentView((View)g.Services.GetService(typeof(View)));
 

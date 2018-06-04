@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System;
 
 namespace ThirdGame
 {
@@ -28,7 +29,9 @@ namespace ThirdGame
             ).Yield();
         }
 
-
-
+        internal string Encode(Vector2 vector2, object myIp)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
