@@ -12,30 +12,49 @@ namespace ThirdGame
         , Theme = "@style/Theme.Splash"
         , AlwaysRetainTaskState = true
         , LaunchMode = Android.Content.PM.LaunchMode.SingleInstance
-        , ScreenOrientation = ScreenOrientation.FullUser
+        , ScreenOrientation = ScreenOrientation.Landscape
         , ConfigurationChanges = ConfigChanges.Orientation | ConfigChanges.Keyboard | ConfigChanges.KeyboardHidden | ConfigChanges.ScreenSize)]
     public class Activity1 : Microsoft.Xna.Framework.AndroidGameActivity
     {
+        private Game1 game;
+
         protected override void OnCreate(Bundle bundle)
         {
             base.OnCreate(bundle);
             var WifiManager = (WifiManager)GetSystemService(WifiService);
-            var g = new Game1(new UdpAndroidWrapper());
+            game = new Game1(new UdpAndroidWrapper(),true);
+            SetViewFullScreen();
 
-            SetContentView((View)g.Services.GetService(typeof(View)));
+            SetContentView((View)game.Services.GetService(typeof(View)));
 
-            g.Run();
+            game.Run();
+        }
+
+        private void SetViewFullScreen()
+        {
+            var view = (View)game.Services.GetService(typeof(View));
+            view.SystemUiVisibility = (StatusBarVisibility)
+                (SystemUiFlags.LayoutStable
+                | SystemUiFlags.LayoutHideNavigation
+                | SystemUiFlags.LayoutFullscreen
+                | SystemUiFlags.HideNavigation
+                | SystemUiFlags.Fullscreen
+                | SystemUiFlags.ImmersiveSticky
+                );
+
+            SetContentView(view);
         }
 
         protected override void OnResume()
         {
             base.OnResume();
-
+            SetViewFullScreen();
         }
 
         protected override void OnPause()
         {
             base.OnPause();
+            SetViewFullScreen();
         }
     }
 }

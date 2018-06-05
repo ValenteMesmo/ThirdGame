@@ -10,10 +10,10 @@ namespace ThirdGame
     {
         public string Encode(Vector2 position, string ip)
         {
-            return $"{ip};{position.X.ToString("0.00")};{position.Y.ToString("0.00")}";
+            return $"{ip.Replace("/", "")};{position.X.ToString("0")};{position.Y.ToString("0")}";
         }
-
-        private const string pattern = @"(?<ip>\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b);(?<x>\d{1,}.\d{2});(?<y>\d{1,}.\d{2})";
+        //TODO: work with int!
+        private const string pattern = @"(?<ip>\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b);(?<x>-?\d{1,});(?<y>-?\d{1,})";
         public IEnumerable<KeyValuePair<string, Vector2>> Decode(string message)
         {
             var match = Regex.Match(message, pattern);
@@ -27,11 +27,6 @@ namespace ThirdGame
                     , float.Parse(match.Groups["y"].Value)
                     )
             ).Yield();
-        }
-
-        internal string Encode(Vector2 vector2, object myIp)
-        {
-            throw new NotImplementedException();
         }
     }
 }

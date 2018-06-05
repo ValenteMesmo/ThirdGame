@@ -1,3 +1,4 @@
+using Common;
 using Common.Interfaces;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -17,6 +18,9 @@ namespace ThirdGame
         private Texture2D Btn_texture;
         private Vector2 otherPlayer;
         private readonly UdpService UdpWrapper;
+        MyMessageEncoder MyMessageEncoder = new MyMessageEncoder();
+        private Camera2d Camera;
+        public readonly bool RuningOnAndroid;
 
         internal static void LOG(string name)
         {
@@ -25,16 +29,16 @@ namespace ThirdGame
 
         SpriteFont SpriteFont;
         string message2 = "esperando...";
-        public Game1(UdpService UdpWrapper)
+        public Game1(UdpService UdpWrapper, bool RuningOnAndroid = false)
         {
+            this.RuningOnAndroid = RuningOnAndroid;
             this.UdpWrapper = UdpWrapper;
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
 
-            graphics.IsFullScreen = true;
-            graphics.PreferredBackBufferWidth = 800;
-            graphics.PreferredBackBufferHeight = 480;
-            graphics.SupportedOrientations = DisplayOrientation.LandscapeLeft | DisplayOrientation.LandscapeRight;
+           
+            Camera = new Camera2d();
+            Camera.Zoom = 0.15f;
 
 
             this.UdpWrapper.Listen(message =>
@@ -50,6 +54,20 @@ namespace ThirdGame
         protected override void Initialize()
         {
             base.Initialize();
+
+            graphics.IsFullScreen = false;
+            graphics.PreferredBackBufferWidth = 1366;
+            graphics.PreferredBackBufferHeight = 768;
+            graphics.SynchronizeWithVerticalRetrace = true;
+            if (RuningOnAndroid)
+            {
+                graphics.IsFullScreen = true;
+                graphics.PreferredBackBufferWidth = GraphicsDevice.DisplayMode.Width;
+                graphics.PreferredBackBufferHeight = GraphicsDevice.DisplayMode.Height;
+            }
+            IsFixedTimeStep = true;
+
+            graphics.ApplyChanges();
         }
 
         protected override void LoadContent()
@@ -63,9 +81,10 @@ namespace ThirdGame
         {
         }
 
-        MyMessageEncoder MyMessageEncoder = new MyMessageEncoder();
         protected override void Update(GameTime gameTime)
         {
+            Camera.Update();
+
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
                 Exit();
 
@@ -74,10 +93,7 @@ namespace ThirdGame
             if (touchCollection.Any() && UdpWrapper != null)
                 UdpWrapper.Send(
                     MyMessageEncoder.Encode(
-                        new Vector2(
-                            touchCollection[0].Position.X
-                            , touchCollection[0].Position.Y
-                        )
+                        Camera.ToWorldLocation(touchCollection[0].Position)
                         , UdpWrapper.myIp
                     )
                 );
@@ -88,9 +104,15 @@ namespace ThirdGame
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
-            spriteBatch.Begin();
+            spriteBatch.Begin(SpriteSortMode.BackToFront,
+                 BlendState.AlphaBlend,
+                 null,
+                 null,
+                 null,
+                 null,
+                 Camera.GetTransformation(GraphicsDevice));
 
-            spriteBatch.Draw(Btn_texture, new Rectangle(otherPlayer.ToPoint(), new Point(200, 200)), Color.White);
+            spriteBatch.Draw(Btn_texture, new Rectangle(otherPlayer.ToPoint(), new Point(800, 800)), Color.White);
 
 
             spriteBatch.DrawString(SpriteFont

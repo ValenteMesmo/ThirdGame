@@ -45,6 +45,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Camera2d.cs" />
     <Compile Include="Game1.cs" />
     <Compile Include="GenericExtensions.cs" />
     <Compile Include="Interfaces\IUdpService.cs" />
