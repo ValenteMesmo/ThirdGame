@@ -17,6 +17,7 @@ namespace ThirdGame
         //TODO: This NEEDs to change when network change
         public string myIp { get; set; }
 
+        //TODO: queue
         private string output = "";
 
         public UdpAndroidWrapper()

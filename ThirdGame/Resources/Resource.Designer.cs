@@ -9,9 +9,9 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-[assembly: global::Android.Runtime.ResourceDesignerAttribute("ThirdGame.Resource", IsApplication=true)]
+[assembly: global::Android.Runtime.ResourceDesignerAttribute("ThirdGame.AndroidVersion.Resource", IsApplication=true)]
 
-namespace ThirdGame
+namespace ThirdGame.AndroidVersion
 {
 	
 	

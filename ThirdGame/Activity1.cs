@@ -1,5 +1,6 @@
 using Android.App;
 using Android.Content.PM;
+using Android.Net;
 using Android.Net.Wifi;
 using Android.OS;
 using Android.Views;
@@ -11,7 +12,7 @@ namespace ThirdGame
         , Icon = "@drawable/icon"
         , Theme = "@style/Theme.Splash"
         , AlwaysRetainTaskState = true
-        , LaunchMode = Android.Content.PM.LaunchMode.SingleInstance
+        , LaunchMode = LaunchMode.SingleInstance
         , ScreenOrientation = ScreenOrientation.Landscape
         , ConfigurationChanges = ConfigChanges.Orientation | ConfigChanges.Keyboard | ConfigChanges.KeyboardHidden | ConfigChanges.ScreenSize)]
     public class Activity1 : Microsoft.Xna.Framework.AndroidGameActivity
@@ -22,10 +23,14 @@ namespace ThirdGame
         {
             base.OnCreate(bundle);
             var WifiManager = (WifiManager)GetSystemService(WifiService);
-            game = new Game1(new UdpAndroidWrapper(),true);
-            SetViewFullScreen();
 
-            SetContentView((View)game.Services.GetService(typeof(View)));
+            //var WifiLock = WifiManager.CreateWifiLock(WifiMode.FullHighPerf, "WifiLock");
+            //WifiLock.Acquire();
+
+            game = new Game1(new UdpAndroidWrapper(), true);
+
+            SetViewFullScreen();
+            //SetContentView((View)game.Services.GetService(typeof(View)));
 
             game.Run();
         }
@@ -54,6 +59,11 @@ namespace ThirdGame
         protected override void OnPause()
         {
             base.OnPause();
+        }
+
+        protected override void OnRestart()
+        {
+            base.OnRestart();
             SetViewFullScreen();
         }
     }

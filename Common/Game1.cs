@@ -90,7 +90,7 @@ namespace ThirdGame
 
             var touchCollection = TouchPanel.GetState();
 
-            if (touchCollection.Any() && UdpWrapper != null)
+            if (touchCollection.Any())
                 UdpWrapper.Send(
                     MyMessageEncoder.Encode(
                         Camera.ToWorldLocation(touchCollection[0].Position)

@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.26430.14
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ThirdGame", "ThirdGame\ThirdGame.csproj", "{5E172DE2-91D2-42F4-90EF-F553D9B3D21F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ThirdGame.Android", "ThirdGame\ThirdGame.Android.csproj", "{5E172DE2-91D2-42F4-90EF-F553D9B3D21F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTestProject", "UnitTestProject\UnitTestProject.csproj", "{2E22B5C7-6295-46A5-B14A-65B915C840E0}"
 	ProjectSection(ProjectDependencies) = postProject
