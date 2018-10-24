@@ -57,7 +57,7 @@ namespace ThirdGame
             if (WifiManager.IsWifiEnabled == false)
                 WifiManager.SetWifiEnabled(true);
 
-            while (WifiManager.PingSupplicant() == false)
+            while (WifiManager.IsWifiEnabled == false)
             {
             }
 

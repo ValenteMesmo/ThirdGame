@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Common.Interfaces
+namespace Common
 {
     public interface UdpService
     {

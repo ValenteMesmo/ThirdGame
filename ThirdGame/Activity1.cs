@@ -7,7 +7,7 @@ using Android.Views;
 
 namespace ThirdGame
 {
-    [Activity(Label = "ThirdGame"
+    [Activity(Label = "ó"
         , MainLauncher = true
         , Icon = "@drawable/icon"
         , Theme = "@style/Theme.Splash"

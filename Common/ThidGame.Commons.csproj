@@ -47,8 +47,9 @@
   <ItemGroup>
     <Compile Include="Camera2d.cs" />
     <Compile Include="Game1.cs" />
+    <Compile Include="GameLoop.cs" />
     <Compile Include="GenericExtensions.cs" />
-    <Compile Include="Interfaces\IUdpService.cs" />
+    <Compile Include="IUdpService.cs" />
     <Compile Include="MyMessageEncoder.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

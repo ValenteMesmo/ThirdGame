@@ -12,7 +12,7 @@ namespace ThirdGame
         {
             return $"{ip.Replace("/", "")};{position.X.ToString("0")};{position.Y.ToString("0")}";
         }
-        //TODO: work with int!
+
         private const string pattern = @"(?<ip>\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b);(?<x>-?\d{1,});(?<y>-?\d{1,})";
         public IEnumerable<KeyValuePair<string, Vector2>> Decode(string message)
         {
