@@ -32,16 +32,20 @@ namespace ThirdGame
         {
             base.Initialize();
 
-            graphics.IsFullScreen = false;
-            graphics.PreferredBackBufferWidth = 1366;
-            graphics.PreferredBackBufferHeight = 768;
-            graphics.SynchronizeWithVerticalRetrace = true;
             if (RuningOnAndroid)
             {
                 graphics.IsFullScreen = true;
                 graphics.PreferredBackBufferWidth = GraphicsDevice.DisplayMode.Width;
                 graphics.PreferredBackBufferHeight = GraphicsDevice.DisplayMode.Height;
             }
+            else
+            {
+                graphics.IsFullScreen = false;
+                graphics.PreferredBackBufferWidth = 1366 / 2;
+                graphics.PreferredBackBufferHeight = 768 / 2;
+                graphics.SynchronizeWithVerticalRetrace = true;
+            }
+
             IsFixedTimeStep = true;
 
             graphics.ApplyChanges();
@@ -101,7 +105,7 @@ namespace ThirdGame
 
             {
                 var rect = new Rectangle(
-                        GameLoop.playerPosition.ToPoint()
+                        GameLoop.Player.Position.ToPoint()
                         , new Point(800, 800)
                     );
 

@@ -15,12 +15,19 @@ namespace ThirdGame
         private MyMessageEncoder MyMessageEncoder = new MyMessageEncoder();
         private Camera2d Camera;
         private static object locker = new object();
-        public Vector2 playerPosition;
+        private KeyboardInputs KeyboardInputs;
+        public GameObject Player;
 
         public GameLoop(UdpService UdpWrapper, Camera2d Camera)
         {
             this.Camera = Camera;
             this.UdpWrapper = UdpWrapper;
+
+            KeyboardInputs = new KeyboardInputs();
+            Player = new GameObject(
+                new MovesPlayerUsingKeyboard(KeyboardInputs),
+                new BroadCastState(Camera, UdpWrapper, MyMessageEncoder)
+            );
 
             this.UdpWrapper.Listen(message =>
             {
@@ -43,6 +50,8 @@ namespace ThirdGame
 
         public void Update()
         {
+            KeyboardInputs.Update();
+            Player.Update();
             var touchCollection = TouchPanel.GetState();
 
             if (touchCollection.Any())
@@ -60,11 +69,11 @@ namespace ThirdGame
 
         private void NewMethod(Vector2 position)
         {
-            playerPosition = Camera.ToWorldLocation(position);
+            Player.Position = Camera.ToWorldLocation(position);
 
             UdpWrapper.Send(
                 MyMessageEncoder.Encode(
-                   playerPosition
+                   Player.Position
                     , UdpWrapper.myIp
                 )
             );

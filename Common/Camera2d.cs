@@ -25,6 +25,13 @@ namespace Common
         private const float VIRTUAL_WIDTH = 1366;
         private const float VIRTUAL_HEIGHT = 768;
 
+        public Camera2d()
+        {
+            _zoom = 1.0f;
+            Rotation = 0.0f;
+            Pos = Vector2.Zero;
+        }
+
         public void Clear()
         {
             shakeUpDuration = 0;
@@ -43,13 +50,6 @@ namespace Common
                         "Cameras Zoom must be greater than zero! Negative zoom will flip image"
                     );
             }
-        }
-
-        public Camera2d()
-        {
-            _zoom = 1.0f;
-            Rotation = 0.0f;
-            Pos = Vector2.Zero;
         }
 
         public Matrix GetTransformation(GraphicsDevice graphicsDevice)
