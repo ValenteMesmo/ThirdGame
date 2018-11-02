@@ -8,6 +8,24 @@ using System.Linq;
 
 namespace ThirdGame
 {
+    public class UpdateAggregation : IHandleUpdates
+    {
+        private readonly IHandleUpdates[] updates;
+
+        public UpdateAggregation(params IHandleUpdates[] updates)
+        {
+            this.updates = updates;
+        }
+
+        public void Update()
+        {
+            foreach (var handler in updates)
+            {
+                handler.Update();
+            }
+        }
+    }
+
     public class GameLoop
     {
         private readonly UdpService UdpWrapper;
@@ -24,9 +42,11 @@ namespace ThirdGame
             this.UdpWrapper = UdpWrapper;
 
             KeyboardInputs = new KeyboardInputs();
-            Player = new GameObject(
-                new MovesPlayerUsingKeyboard(KeyboardInputs),
-                new BroadCastState(Camera, UdpWrapper, MyMessageEncoder)
+            Player = new GameObject();
+
+            new UpdateAggregation(
+                new MovesPlayerUsingKeyboard(KeyboardInputs)
+                , new BroadCastState(Camera, UdpWrapper, MyMessageEncoder)
             );
 
             this.UdpWrapper.Listen(message =>

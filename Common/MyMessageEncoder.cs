@@ -17,16 +17,15 @@ namespace ThirdGame
         public IEnumerable<KeyValuePair<string, Vector2>> Decode(string message)
         {
             var match = Regex.Match(message, pattern);
-            if (match.Success == false)
-                return Enumerable.Empty<KeyValuePair<string, Vector2>>();
 
-            return new KeyValuePair<string, Vector2>(
-                match.Groups["ip"].Value
-                , new Vector2(
-                    float.Parse(match.Groups["x"].Value)
-                    , float.Parse(match.Groups["y"].Value)
-                    )
-            ).Yield();
+            if (match.Success)
+                yield return new KeyValuePair<string, Vector2>(
+                    match.Groups["ip"].Value
+                    , new Vector2(
+                        float.Parse(match.Groups["x"].Value)
+                        , float.Parse(match.Groups["y"].Value)
+                        )
+                );
         }
     }
 }
