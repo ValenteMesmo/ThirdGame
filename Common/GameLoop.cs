@@ -8,24 +8,6 @@ using System.Linq;
 
 namespace ThirdGame
 {
-    public class UpdateAggregation : IHandleUpdates
-    {
-        private readonly IHandleUpdates[] updates;
-
-        public UpdateAggregation(params IHandleUpdates[] updates)
-        {
-            this.updates = updates;
-        }
-
-        public void Update()
-        {
-            foreach (var handler in updates)
-            {
-                handler.Update();
-            }
-        }
-    }
-
     public class GameLoop
     {
         private readonly UdpService UdpWrapper;
@@ -42,12 +24,14 @@ namespace ThirdGame
             this.UdpWrapper = UdpWrapper;
 
             KeyboardInputs = new KeyboardInputs();
-            Player = new GameObject();
 
-            new UpdateAggregation(
-                new MovesPlayerUsingKeyboard(KeyboardInputs)
-                , new BroadCastState(Camera, UdpWrapper, MyMessageEncoder)
-            );
+            var playerPosition = new PositionComponent();
+            var playerUpdateHandler = new UpdateAggregation(
+                 new MovesPlayerUsingKeyboard(playerPosition, KeyboardInputs)
+                 , new BroadCastState(Camera, playerPosition, UdpWrapper, MyMessageEncoder)
+             );
+
+            Player = new GameObject(playerUpdateHandler, playerPosition);
 
             this.UdpWrapper.Listen(message =>
             {
@@ -72,6 +56,7 @@ namespace ThirdGame
         {
             KeyboardInputs.Update();
             Player.Update();
+            Player.AfterUpdate();
             var touchCollection = TouchPanel.GetState();
 
             if (touchCollection.Any())
@@ -89,11 +74,11 @@ namespace ThirdGame
 
         private void NewMethod(Vector2 position)
         {
-            Player.Position = Camera.ToWorldLocation(position);
+            Player.Position.Current = Camera.ToWorldLocation(position);
 
             UdpWrapper.Send(
                 MyMessageEncoder.Encode(
-                   Player.Position
+                   Player.Position.Current
                     , UdpWrapper.myIp
                 )
             );

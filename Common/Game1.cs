@@ -5,13 +5,6 @@ using Microsoft.Xna.Framework.Input;
 
 namespace ThirdGame
 {
-    public struct DrawingModel
-    {
-        public Texture2D Texture { get; set; }
-        public Rectangle DestinationRectangle { get; set; }
-        public Vector2 CenterOfRotation { get; set; }
-    }
-
     public class Game1 : Game
     {
         private GraphicsDeviceManager graphics;
@@ -112,7 +105,7 @@ namespace ThirdGame
 
             {
                 var rect = new Rectangle(
-                        GameLoop.Player.Position.ToPoint()
+                        GameLoop.Player.Position.Current.ToPoint()
                         , new Point(800, 800)
                     );
 
