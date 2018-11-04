@@ -14,7 +14,7 @@ namespace ThirdGame
         public List<GameObject> GameObjects = new List<GameObject>();
         private MyMessageEncoder MyMessageEncoder = new MyMessageEncoder();
         private Camera2d Camera;
-        public static object locker = new object();
+        //public static object locker = new object();
         private KeyboardInputs KeyboardInputs;
         private GameObject Player;
 
