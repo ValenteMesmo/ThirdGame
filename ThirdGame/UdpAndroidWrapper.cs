@@ -47,14 +47,16 @@ namespace ThirdGame
         private string GetLocalIPAddress()
         {
             var host = Dns.GetHostEntry(Dns.GetHostName());
+            var myIp = "";
             foreach (var ip in host.AddressList)
             {
                 if (ip.AddressFamily == AddressFamily.InterNetwork)
                 {
-                    return ip.ToString();
+                    myIp = ip.ToString();
                 }
             }
-            throw new Exception("No network adapters with an IPv4 address in the system!");
+
+            return myIp;
         }
 
         public void Dispose()

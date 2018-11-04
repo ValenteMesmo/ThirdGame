@@ -49,16 +49,15 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="UnitTest1.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ThirdGame\ThirdGame.Android.csproj">
-      <Project>{5e172de2-91d2-42f4-90ef-f553d9b3d21f}</Project>
-      <Name>ThirdGame.Android</Name>
+    <ProjectReference Include="..\Common\ThidGame.Commons.csproj">
+      <Project>{4936e3db-2fd8-4721-bb58-4cf82ca26c59}</Project>
+      <Name>ThidGame.Commons</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />

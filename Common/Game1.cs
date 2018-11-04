@@ -82,46 +82,29 @@ namespace ThirdGame
                 Camera.GetTransformation(GraphicsDevice)
             );
 
-            GameLoop.ForeachOtherPlayer((otherIp, otherPosition) =>
-            {
-                var rect = new Rectangle(
-                   otherPosition.ToPoint()
-                   , new Point(800, 800)
-               );
+           
+            lock (GameLoop.locker)
+                for (int i = 0; i < GameLoop.GameObjects.Count; i++)
+                {
+                    var obj = GameLoop.GameObjects[i];
+                    var rect = new Rectangle(
+                            obj.Position.Current.ToPoint()
+                            , new Point(800, 800)
+                        );
 
-                var origin = new Vector2(50, 50);
+                    var origin = new Vector2(50, 50);
 
-                spriteBatch.Draw(
-                    Btn_texture
-                    , rect
-                    , null
-                    , Color.White
-                    , 0
-                    , origin
-                    , SpriteEffects.None
-                    , 0
-                );
-            });
-
-            {
-                var rect = new Rectangle(
-                        GameLoop.Player.Position.Current.ToPoint()
-                        , new Point(800, 800)
+                    spriteBatch.Draw(
+                        Btn_texture
+                        , rect
+                        , null
+                        , Color.White
+                        , 0
+                        , origin
+                        , SpriteEffects.None
+                        , 0
                     );
-
-                var origin = new Vector2(50, 50);
-
-                spriteBatch.Draw(
-                    Btn_texture
-                    , rect
-                    , null
-                    , Color.White
-                    , 0
-                    , origin
-                    , SpriteEffects.None
-                    , 0
-                );
-            }
+                }
             spriteBatch.End();
             base.Draw(gameTime);
         }

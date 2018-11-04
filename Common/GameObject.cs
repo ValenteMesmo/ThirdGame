@@ -5,38 +5,43 @@ namespace Common
 {
     public class GameObject
     {
-        private readonly IHandleUpdates updateHandler;
-        private readonly IGetDrawingModels drawingModelsGetter;
+        public string Id { get; }
         public readonly PositionComponent Position;
-        internal bool destroyed;
+        private readonly IHandleUpdates UpdateHandler;
+        private readonly IGetDrawingModels DrawingModelsGetter;
+        internal bool Destroyed;
 
-        public GameObject(IHandleUpdates updateHandler) : this(
-            updateHandler
+        public GameObject(string Id, IHandleUpdates UpdateHandler) : this(
+            Id
+            , UpdateHandler
             , PositionComponent.NoPosition
             , NoAnimation.Instance)
         { }
 
-        public GameObject(IHandleUpdates updateHandler, PositionComponent Position) : this(
-            updateHandler
+        public GameObject(string Id, IHandleUpdates UpdateHandler, PositionComponent Position) : this(
+            Id
+            , UpdateHandler
             , Position
             , NoAnimation.Instance)
         { }
 
         public GameObject(
-            IHandleUpdates updateHandler
+            string Id
+            , IHandleUpdates UpdateHandler
             , PositionComponent Position
-            , IGetDrawingModels drawingModelsGetter
+            , IGetDrawingModels DrawingModelsGetter
         )
         {
-            this.updateHandler = updateHandler;
-            this.drawingModelsGetter = drawingModelsGetter;
+            this.Id = Id;
+            this.UpdateHandler = UpdateHandler;
+            this.DrawingModelsGetter = DrawingModelsGetter;
             this.Position = Position;
         }
 
-        internal void Update() => updateHandler.Update();
+        internal void Update() => UpdateHandler.Update();
         internal void AfterUpdate() => Position.Previous = Position.Current;
-        public void Destroy() => destroyed = true;
+        public void Destroy() => Destroyed = true;
 
-        public IEnumerable<DrawingModel> Draw() => drawingModelsGetter.GetDrawingModels();
+        public IEnumerable<DrawingModel> Draw() => DrawingModelsGetter.GetDrawingModels();
     }
 }

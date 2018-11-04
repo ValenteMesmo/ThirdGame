@@ -7,16 +7,16 @@ using System.Collections.Generic;
 using System.Linq;
 
 namespace ThirdGame
-{
+{   
     public class GameLoop
     {
         private readonly UdpService UdpWrapper;
-        private Dictionary<string, Vector2> otherPlayers = new Dictionary<string, Vector2>();
+        public List<GameObject> GameObjects = new List<GameObject>();
         private MyMessageEncoder MyMessageEncoder = new MyMessageEncoder();
         private Camera2d Camera;
-        private static object locker = new object();
+        public static object locker = new object();
         private KeyboardInputs KeyboardInputs;
-        public GameObject Player;
+        private GameObject Player;
 
         public GameLoop(UdpService UdpWrapper, Camera2d Camera)
         {
@@ -31,32 +31,42 @@ namespace ThirdGame
                  , new BroadCastState(Camera, playerPosition, UdpWrapper, MyMessageEncoder)
              );
 
-            Player = new GameObject(playerUpdateHandler, playerPosition);
+            Player = new GameObject("player", playerUpdateHandler, playerPosition);
+            GameObjects.Add(Player);
 
             this.UdpWrapper.Listen(message =>
             {
                 var infos = MyMessageEncoder.Decode(message);
-
-                lock (locker)
-                    foreach (var info in infos)
+                for (int i = 0; i < infos.Length; i++)
+                {
+                    var info = infos[i];
+                    var obj = GameObjects.FirstOrDefault(f => f.Id == info.Key);
+                    if (obj == null)
                     {
-                        otherPlayers[info.Key] = info.Value;
+                        obj = new GameObject(info.Key, new UpdateAggregation());
+                        GameObjects.Add(obj);
                     }
+                    obj.Position.Current = info.Value;
+                }
+                
             });
-        }
-
-        public void ForeachOtherPlayer(Action<string, Vector2> callback)
-        {
-            lock (locker)
-                foreach (var key in otherPlayers.Keys)
-                    callback(key, otherPlayers[key]);
         }
 
         public void Update()
         {
             KeyboardInputs.Update();
-            Player.Update();
-            Player.AfterUpdate();
+
+            for (int i = 0; i < GameObjects.Count; i++)
+            {
+                var obj = GameObjects[0];
+                obj.Update();
+            }
+            for (int i = 0; i < GameObjects.Count; i++)
+            {
+                var obj = GameObjects[0];
+                obj.AfterUpdate();
+            }
+
             var touchCollection = TouchPanel.GetState();
 
             if (touchCollection.Any())
