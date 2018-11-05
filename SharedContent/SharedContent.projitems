@@ -10,6 +10,7 @@
   </PropertyGroup>
   <ItemGroup>
     <None Include="$(MSBuildThisFileDirectory)Content\AndroidContent.mgcb" />
+    <None Include="$(MSBuildThisFileDirectory)Content\OpenGL.Desktop.Content.mgcb" />
     <None Include="$(MSBuildThisFileDirectory)Content\DesktopContent.mgcb" />
     <None Include="$(MSBuildThisFileDirectory)Content\WindowsDesktopContent.mgcb" />
   </ItemGroup>

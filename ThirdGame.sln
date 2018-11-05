@@ -14,9 +14,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ThidGame.Commons", "Common\
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "SharedContent", "SharedContent\SharedContent.shproj", "{36AAF4D7-AC81-4ABA-B7F8-1E164BE4317C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ThirdGame.Desktop", "ThirdGame.Desktop\ThirdGame.Desktop.csproj", "{0ADF91B7-6C8A-4DB8-8AE7-DA274B4BEB4A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ThirdGame.OpenGL.Desktop", "ThirdGame.OpenGL.Desktop\ThirdGame.OpenGL.Desktop.csproj", "{84F5608A-3E44-4FBC-A674-7F3568EF69C9}"
 EndProject
 Global
+	GlobalSection(Performance) = preSolution
+		HasPerformanceSessions = true
+	EndGlobalSection
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		SharedContent\SharedContent.projitems*{36aaf4d7-ac81-4aba-b7f8-1e164be4317c}*SharedItemsImports = 13
 	EndGlobalSection
@@ -55,16 +58,19 @@ Global
 		{4936E3DB-2FD8-4721-BB58-4CF82CA26C59}.Release|Any CPU.Build.0 = Release|Any CPU
 		{4936E3DB-2FD8-4721-BB58-4CF82CA26C59}.Release|x86.ActiveCfg = Release|Any CPU
 		{4936E3DB-2FD8-4721-BB58-4CF82CA26C59}.Release|x86.Build.0 = Release|Any CPU
-		{0ADF91B7-6C8A-4DB8-8AE7-DA274B4BEB4A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0ADF91B7-6C8A-4DB8-8AE7-DA274B4BEB4A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{0ADF91B7-6C8A-4DB8-8AE7-DA274B4BEB4A}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{0ADF91B7-6C8A-4DB8-8AE7-DA274B4BEB4A}.Debug|x86.Build.0 = Debug|Any CPU
-		{0ADF91B7-6C8A-4DB8-8AE7-DA274B4BEB4A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{0ADF91B7-6C8A-4DB8-8AE7-DA274B4BEB4A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{0ADF91B7-6C8A-4DB8-8AE7-DA274B4BEB4A}.Release|x86.ActiveCfg = Release|Any CPU
-		{0ADF91B7-6C8A-4DB8-8AE7-DA274B4BEB4A}.Release|x86.Build.0 = Release|Any CPU
+		{84F5608A-3E44-4FBC-A674-7F3568EF69C9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{84F5608A-3E44-4FBC-A674-7F3568EF69C9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{84F5608A-3E44-4FBC-A674-7F3568EF69C9}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{84F5608A-3E44-4FBC-A674-7F3568EF69C9}.Debug|x86.Build.0 = Debug|Any CPU
+		{84F5608A-3E44-4FBC-A674-7F3568EF69C9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{84F5608A-3E44-4FBC-A674-7F3568EF69C9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{84F5608A-3E44-4FBC-A674-7F3568EF69C9}.Release|x86.ActiveCfg = Release|Any CPU
+		{84F5608A-3E44-4FBC-A674-7F3568EF69C9}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {1DA35036-9FC4-4CDC-B94B-FD00C1F07FB4}
 	EndGlobalSection
 EndGlobal

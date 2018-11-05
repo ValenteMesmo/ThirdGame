@@ -7,9 +7,11 @@ namespace Common
     internal class NoAnimation : IGetDrawingModels
     {
         public static NoAnimation Instance { get; } = new NoAnimation();
-
+        private static DrawingModel[] Empty = new DrawingModel[0];
         private NoAnimation() { }
 
-        public IEnumerable<DrawingModel> GetDrawingModels() => Enumerable.Empty<DrawingModel>();
+        public DrawingModel[] GetDrawingModels() => Empty;
+
+        public void Update() { }
     }
 }

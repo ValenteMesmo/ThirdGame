@@ -45,7 +45,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="SmartFramerate.cs" />
+    <Compile Include="FramerateCounter.cs" />
     <Compile Include="Updates\BroadCastState.cs" />
     <Compile Include="Camera2d.cs" />
     <Compile Include="Drawing\DrawingModel.cs" />

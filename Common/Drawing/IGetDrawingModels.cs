@@ -5,6 +5,7 @@ namespace Common
 {
     public interface IGetDrawingModels
     {
-        IEnumerable<DrawingModel> GetDrawingModels();
+        DrawingModel[] GetDrawingModels();
+        void Update();
     }
 }

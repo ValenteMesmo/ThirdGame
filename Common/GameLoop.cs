@@ -1,5 +1,6 @@
 ﻿using Common;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Input.Touch;
 using System;
@@ -7,7 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 namespace ThirdGame
-{   
+{
     public class GameLoop
     {
         private readonly UdpService UdpWrapper;
@@ -18,7 +19,7 @@ namespace ThirdGame
         private KeyboardInputs KeyboardInputs;
         private GameObject Player;
 
-        public GameLoop(UdpService UdpWrapper, Camera2d Camera)
+        public GameLoop(UdpService UdpWrapper, Camera2d Camera, Texture2D texture)
         {
             this.Camera = Camera;
             this.UdpWrapper = UdpWrapper;
@@ -31,7 +32,7 @@ namespace ThirdGame
                  , new BroadCastState(Camera, playerPosition, UdpWrapper, MyMessageEncoder)
              );
 
-            Player = new GameObject("player", playerUpdateHandler, playerPosition);
+            Player = new GameObject("player", playerUpdateHandler, playerPosition, new PlayerAnimation(playerPosition, texture));
             GameObjects.Add(Player);
 
             this.UdpWrapper.Listen(message =>
@@ -43,12 +44,18 @@ namespace ThirdGame
                     var obj = GameObjects.FirstOrDefault(f => f.Id == info.Key);
                     if (obj == null)
                     {
-                        obj = new GameObject(info.Key, new UpdateAggregation());
+                        var position = new PositionComponent();
+                        obj = new GameObject(
+                            info.Key
+                            , new UpdateAggregation()
+                            , position
+                            , new PlayerAnimation(position, texture)
+                        );
                         GameObjects.Add(obj);
                     }
                     obj.Position.Current = info.Value;
                 }
-                
+
             });
         }
 
@@ -58,13 +65,14 @@ namespace ThirdGame
 
             for (int i = 0; i < GameObjects.Count; i++)
             {
-                var obj = GameObjects[0];
+                var obj = GameObjects[i];
                 obj.Update();
             }
             for (int i = 0; i < GameObjects.Count; i++)
             {
-                var obj = GameObjects[0];
+                var obj = GameObjects[i];
                 obj.AfterUpdate();
+                obj.UpdateAnimations();
             }
 
             var touchCollection = TouchPanel.GetState();

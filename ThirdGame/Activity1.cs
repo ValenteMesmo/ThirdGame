@@ -18,6 +18,7 @@ namespace ThirdGame
     public class Activity1 : Microsoft.Xna.Framework.AndroidGameActivity
     {
         private Game1 game;
+        private PowerManager.WakeLock mWakeLock;
 
         protected override void OnCreate(Bundle bundle)
         {
@@ -31,7 +32,9 @@ namespace ThirdGame
 
             SetViewFullScreen();
             //SetContentView((View)game.Services.GetService(typeof(View)));
-
+            PowerManager pm = (PowerManager)GetSystemService(PowerService);
+            this.mWakeLock = pm.NewWakeLock(WakeLockFlags.ScreenDim, "My Tag");
+            this.mWakeLock.Acquire();
             game.Run();
         }
 
@@ -65,6 +68,12 @@ namespace ThirdGame
         {
             base.OnRestart();
             SetViewFullScreen();
+        }
+
+        protected override void OnDestroy()
+        {
+            this.mWakeLock.Release();
+            base.OnDestroy();
         }
     }
 }

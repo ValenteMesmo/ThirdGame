@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using ThirdGame;
+﻿using ThirdGame;
 
 namespace Common
 {
@@ -42,6 +41,11 @@ namespace Common
         internal void AfterUpdate() => Position.Previous = Position.Current;
         public void Destroy() => Destroyed = true;
 
-        public IEnumerable<DrawingModel> Draw() => DrawingModelsGetter.GetDrawingModels();
+        public DrawingModel[] Draw() => DrawingModelsGetter.GetDrawingModels();
+
+        internal void UpdateAnimations()
+        {
+            DrawingModelsGetter.Update();
+        }
     }
 }

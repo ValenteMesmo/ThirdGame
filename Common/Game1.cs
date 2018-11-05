@@ -10,12 +10,12 @@ namespace ThirdGame
         private GraphicsDeviceManager graphics;
         private SpriteBatch spriteBatch;
         public readonly bool RuningOnAndroid;
-
-        private readonly GameLoop GameLoop;
+        private readonly UdpService UdpWrapper;
+        private GameLoop GameLoop;
         private Camera2d Camera;
         private Texture2D Btn_texture;
         private SpriteFont SpriteFont;
-        SmartFramerate smartFPS = new SmartFramerate(5);
+        FramerateCounter smartFPS = new FramerateCounter();
 
         public Game1(UdpService UdpWrapper, bool RuningOnAndroid = false)
         {
@@ -25,9 +25,8 @@ namespace ThirdGame
             Content.RootDirectory = "Content";
 
             Camera = new Camera2d();
-            Camera.Zoom = 0.15f;
-
-            GameLoop = new GameLoop(UdpWrapper, Camera);
+            Camera.Zoom = 0.05f;
+            this.UdpWrapper = UdpWrapper;
         }
 
         protected override void Initialize()
@@ -42,14 +41,17 @@ namespace ThirdGame
             }
             else
             {
-                graphics.IsFullScreen = false;
+                //TODO: alt enter toggle fullscreen
+                graphics.IsFullScreen = true;
                 graphics.PreferredBackBufferWidth = 1366;
                 graphics.PreferredBackBufferHeight = 768;
                 graphics.SynchronizeWithVerticalRetrace = true;
             }
 
             IsFixedTimeStep = true;
+            //TargetElapsedTime = TimeSpan.FromTicks(333333);
 
+            //graphics.PreparingDeviceSettings += (s, e) => e.GraphicsDeviceInformation.PresentationParameters.PresentationInterval = PresentInterval.Two;
             graphics.ApplyChanges();
         }
 
@@ -58,11 +60,13 @@ namespace ThirdGame
             spriteBatch = new SpriteBatch(GraphicsDevice);
             Btn_texture = Content.Load<Texture2D>("btn");
             SpriteFont = Content.Load<SpriteFont>("SpriteFont");
+
+
+            GameLoop = new GameLoop(UdpWrapper, Camera, Btn_texture);
         }
 
         protected override void Update(GameTime gameTime)
-        {
-            smartFPS.Update(gameTime.ElapsedGameTime.TotalSeconds);
+        {            
             Camera.Update();
 
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
@@ -75,6 +79,7 @@ namespace ThirdGame
 
         protected override void Draw(GameTime gameTime)
         {
+            smartFPS.Update((float)gameTime.ElapsedGameTime.TotalSeconds);
             GraphicsDevice.Clear(Color.CornflowerBlue);
             spriteBatch.Begin(
                 SpriteSortMode.BackToFront,
@@ -88,7 +93,7 @@ namespace ThirdGame
 
             spriteBatch.DrawString(
                 SpriteFont
-                , smartFPS.framerate.ToString("0000")
+                , string.Format("FPS: {0}", smartFPS.AverageFramesPerSecond)
                 , new Vector2(500, 2000)
                 , Color.Black
                 , 0
@@ -100,23 +105,23 @@ namespace ThirdGame
             for (int i = 0; i < GameLoop.GameObjects.Count; i++)
             {
                 var obj = GameLoop.GameObjects[i];
-                var rect = new Rectangle(
-                        obj.Position.Current.ToPoint()
-                        , new Point(800, 800)
-                    );
+               
 
-                var origin = new Vector2(50, 50);
-
-                spriteBatch.Draw(
-                    Btn_texture
-                    , rect
+                var draws = obj.Draw();
+                for (int j = 0; j < draws.Length; j++)
+                {
+                    spriteBatch.Draw(
+                    draws[j].Texture
+                    , draws[j].DestinationRectangle
                     , null
                     , Color.White
                     , 0
-                    , origin
+                    , draws[j].CenterOfRotation
                     , SpriteEffects.None
                     , 0
                 );
+                }
+
             }
             spriteBatch.End();
             base.Draw(gameTime);
