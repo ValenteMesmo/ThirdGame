@@ -58,7 +58,7 @@ namespace ThirdGame
         protected override void LoadContent()
         {
             spriteBatch = new SpriteBatch(GraphicsDevice);
-            Btn_texture = Content.Load<Texture2D>("btn");
+            Btn_texture = Content.Load<Texture2D>("char");
             SpriteFont = Content.Load<SpriteFont>("SpriteFont");
 
 

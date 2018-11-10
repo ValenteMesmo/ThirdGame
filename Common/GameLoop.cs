@@ -1,9 +1,5 @@
 ﻿using Common;
-using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
-using Microsoft.Xna.Framework.Input.Touch;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -15,9 +11,7 @@ namespace ThirdGame
         public List<GameObject> GameObjects = new List<GameObject>();
         private MyMessageEncoder MyMessageEncoder = new MyMessageEncoder();
         private Camera2d Camera;
-        //public static object locker = new object();
         private KeyboardInputs KeyboardInputs;
-        private GameObject Player;
 
         public GameLoop(UdpService UdpWrapper, Camera2d Camera, Texture2D texture)
         {
@@ -29,10 +23,11 @@ namespace ThirdGame
             var playerPosition = new PositionComponent();
             var playerUpdateHandler = new UpdateAggregation(
                  new MovesPlayerUsingKeyboard(playerPosition, KeyboardInputs)
+                 , new MovesPlayerUsingMouse(playerPosition, Camera)
                  , new BroadCastState(Camera, playerPosition, UdpWrapper, MyMessageEncoder)
              );
 
-            Player = new GameObject("player", playerUpdateHandler, playerPosition, new PlayerAnimation(playerPosition, texture));
+            var Player = new GameObject("player", playerUpdateHandler, playerPosition, new PlayerAnimation(playerPosition, texture));
             GameObjects.Add(Player);
 
             this.UdpWrapper.Listen(message =>
@@ -75,31 +70,7 @@ namespace ThirdGame
                 obj.UpdateAnimations();
             }
 
-            var touchCollection = TouchPanel.GetState();
-
-            if (touchCollection.Any())
-            {
-                NewMethod(touchCollection[0].Position);
-            }
-            else
-            {
-                var mouse = Mouse.GetState();
-
-                if (mouse.LeftButton == ButtonState.Pressed)
-                    NewMethod(mouse.Position.ToVector2());
-            }
         }
 
-        private void NewMethod(Vector2 position)
-        {
-            Player.Position.Current = Camera.ToWorldLocation(position);
-
-            UdpWrapper.Send(
-                MyMessageEncoder.Encode(
-                   Player.Position.Current
-                    , UdpWrapper.myIp
-                )
-            );
-        }
     }
 }
