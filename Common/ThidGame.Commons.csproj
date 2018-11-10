@@ -46,6 +46,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="FramerateCounter.cs" />
+    <Compile Include="Physics\AABB.cs" />
     <Compile Include="Updates\BroadCastState.cs" />
     <Compile Include="Camera2d.cs" />
     <Compile Include="Drawing\DrawingModel.cs" />
