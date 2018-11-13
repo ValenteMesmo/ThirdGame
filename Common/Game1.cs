@@ -107,7 +107,7 @@ namespace ThirdGame
                 var obj = GameLoop.GameObjects[i];
                
 
-                var draws = obj.Draw();
+                var draws = obj.Animation.GetFrame();
                 for (int j = 0; j < draws.Length; j++)
                 {
                     spriteBatch.Draw(

@@ -5,11 +5,11 @@ using ThirdGame;
 
 namespace Common
 {
-    public class PlayerAnimation : IGetDrawingModels
+    public class PlayerAnimation : AnimationHandler
     {
         private readonly PositionComponent playerPosition;
         private readonly Texture2D texture;
-        DrawingModel[] Models;
+        AnimationFrame[] Models;
         private const int SIZE = 800;
         private const int CENTER = 50;
 
@@ -17,8 +17,8 @@ namespace Common
         {
             this.playerPosition = playerPosition;
             this.texture = texture;
-            Models = new DrawingModel[] {
-                 new DrawingModel
+            Models = new AnimationFrame[] {
+                 new AnimationFrame
                 {
                     Texture = texture,
                     CenterOfRotation = new Vector2(CENTER, CENTER),
@@ -38,7 +38,7 @@ namespace Common
                     );
         }
 
-        public DrawingModel[] GetDrawingModels()
+        public AnimationFrame[] GetFrame()
         {
             return Models;
         }

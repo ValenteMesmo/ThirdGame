@@ -4,13 +4,13 @@ using ThirdGame;
 
 namespace Common
 {
-    internal class NoAnimation : IGetDrawingModels
+    internal class NoAnimation : AnimationHandler
     {
         public static NoAnimation Instance { get; } = new NoAnimation();
-        private static DrawingModel[] Empty = new DrawingModel[0];
+        private static AnimationFrame[] Empty = new AnimationFrame[0];
         private NoAnimation() { }
 
-        public DrawingModel[] GetDrawingModels() => Empty;
+        public AnimationFrame[] GetFrame() => Empty;
 
         public void Update() { }
     }

@@ -20,14 +20,15 @@ namespace ThirdGame
 
             KeyboardInputs = new KeyboardInputs();
 
-            var playerPosition = new PositionComponent();
+            var Player = new GameObject("player");
             var playerUpdateHandler = new UpdateAggregation(
-                 new MovesPlayerUsingKeyboard(playerPosition, KeyboardInputs)
-                 , new MovesPlayerUsingMouse(playerPosition, Camera)
-                 , new BroadCastState(Camera, playerPosition, UdpWrapper, MyMessageEncoder)
+                 new MovesPlayerUsingKeyboard(Player.Position, KeyboardInputs)
+                 , new MovesPlayerUsingMouse(Player.Position, Camera)
+                 , new BroadCastState(Camera, Player.Position, UdpWrapper, MyMessageEncoder)
              );
 
-            var Player = new GameObject("player", playerUpdateHandler, playerPosition, new PlayerAnimation(playerPosition, texture));
+            Player.Animation = new PlayerAnimation(Player.Position, texture);
+            Player.Update = playerUpdateHandler;
             GameObjects.Add(Player);
 
             this.UdpWrapper.Listen(message =>
@@ -42,10 +43,8 @@ namespace ThirdGame
                         var position = new PositionComponent();
                         obj = new GameObject(
                             info.Key
-                            , new UpdateAggregation()
-                            , position
-                            , new PlayerAnimation(position, texture)
                         );
+                        obj.Animation = new PlayerAnimation(position, texture);
                         GameObjects.Add(obj);
                     }
                     obj.Position.Current = info.Value;
@@ -61,7 +60,7 @@ namespace ThirdGame
             for (int i = 0; i < GameObjects.Count; i++)
             {
                 var obj = GameObjects[i];
-                obj.Update();
+                obj.Update.Update();
             }
             for (int i = 0; i < GameObjects.Count; i++)
             {

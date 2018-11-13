@@ -3,7 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace ThirdGame
 {
-    public struct DrawingModel
+    public struct AnimationFrame
     {
         public Texture2D Texture { get; set; }
         public Rectangle DestinationRectangle { get; set; }

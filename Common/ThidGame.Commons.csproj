@@ -45,15 +45,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Drawing\AnimationFrame.cs" />
+    <Compile Include="Drawing\AnimationHandler.cs" />
     <Compile Include="FramerateCounter.cs" />
-    <Compile Include="Physics\AABB.cs" />
     <Compile Include="Updates\BroadCastState.cs" />
     <Compile Include="Camera2d.cs" />
-    <Compile Include="Drawing\DrawingModel.cs" />
     <Compile Include="Game1.cs" />
     <Compile Include="GameLoop.cs" />
     <Compile Include="GameObject.cs" />
-    <Compile Include="Drawing\IGetDrawingModels.cs" />
     <Compile Include="Updates\IHandleUpdates.cs" />
     <Compile Include="Network\IUdpService.cs" />
     <Compile Include="Inputs\KeyboardInputs.cs" />
