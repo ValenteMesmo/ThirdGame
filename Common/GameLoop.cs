@@ -5,6 +5,12 @@ using System.Linq;
 
 namespace ThirdGame
 {
+    public class Speedometer
+    {
+        public float X;
+        public float Y;
+    }
+
     public class GameLoop
     {
         private readonly UdpService UdpWrapper;
@@ -21,11 +27,13 @@ namespace ThirdGame
             KeyboardInputs = new KeyboardInputs();
 
             var Player = new GameObject("player");
+            var speed = new Speedometer();
             var playerUpdateHandler = new UpdateAggregation(
-                 new MovesPlayerUsingKeyboard(Player.Position, KeyboardInputs)
+                 new ChangeSpeedUsingKeyboard(KeyboardInputs, speed)
+                 , new MovesWithSpeed(Player.Position, speed)
                  , new MovesPlayerUsingMouse(Player.Position, Camera)
                  , new BroadCastState(Camera, Player.Position, UdpWrapper, MyMessageEncoder)
-             );
+            );
 
             Player.Animation = new PlayerAnimation(Player.Position, texture);
             Player.Update = playerUpdateHandler;
@@ -40,11 +48,10 @@ namespace ThirdGame
                     var obj = GameObjects.FirstOrDefault(f => f.Id == info.Key);
                     if (obj == null)
                     {
-                        var position = new PositionComponent();
                         obj = new GameObject(
                             info.Key
                         );
-                        obj.Animation = new PlayerAnimation(position, texture);
+                        obj.Animation = new PlayerAnimation(obj.Position, texture);
                         GameObjects.Add(obj);
                     }
                     obj.Position.Current = info.Value;
@@ -59,14 +66,12 @@ namespace ThirdGame
 
             for (int i = 0; i < GameObjects.Count; i++)
             {
-                var obj = GameObjects[i];
-                obj.Update.Update();
+                GameObjects[i].Update.Update();
             }
             for (int i = 0; i < GameObjects.Count; i++)
             {
-                var obj = GameObjects[i];
-                obj.AfterUpdate();
-                obj.UpdateAnimations();
+                GameObjects[i].AfterUpdate();
+                GameObjects[i].UpdateAnimations();
             }
 
         }
