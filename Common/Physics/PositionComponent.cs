@@ -4,7 +4,7 @@ namespace Common
 {
     public class PositionComponent
     {
-        public Vector2 Current { get; set; }
-        public Vector2 Previous { get; internal set; }
+        public Point Current { get; set; }
+        public Point Previous { get; internal set; }
     }
 }

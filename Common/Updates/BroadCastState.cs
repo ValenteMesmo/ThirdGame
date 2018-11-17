@@ -25,9 +25,13 @@ namespace Common
         public void Update()
         {
             UdpWrapper.Send(
+                //TODO: order
                 MyMessageEncoder.Encode(
-                   Position.Current
-                    , UdpWrapper.myIp
+                    new Message(
+                        0
+                        , Position.Current.X
+                        , Position.Current.Y
+                    )
                 )
             );
         }

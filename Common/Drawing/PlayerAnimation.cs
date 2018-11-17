@@ -23,7 +23,7 @@ namespace Common
                     Texture = texture,
                     CenterOfRotation = new Vector2(CENTER, CENTER),
                     DestinationRectangle = new Rectangle(
-                        playerPosition.Current.ToPoint()
+                        playerPosition.Current
                         , new Point(SIZE, SIZE)
                     )
                 }
@@ -33,7 +33,7 @@ namespace Common
         public void Update()
         {
             Models[0].DestinationRectangle = new Rectangle(
-                        playerPosition.Current.ToPoint()
+                        playerPosition.Current
                         , new Point(SIZE, SIZE)
                     );
         }

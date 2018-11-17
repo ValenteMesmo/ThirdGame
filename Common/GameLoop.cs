@@ -1,4 +1,5 @@
 ﻿using Common;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,8 +8,8 @@ namespace ThirdGame
 {
     public class Speedometer
     {
-        public float X;
-        public float Y;
+        public int X;
+        public int Y;
     }
 
     public class GameLoop
@@ -39,24 +40,23 @@ namespace ThirdGame
             Player.Update = playerUpdateHandler;
             GameObjects.Add(Player);
 
-            this.UdpWrapper.Listen(message =>
+            //TOODO: handler message order
+            this.UdpWrapper.Listen((ip, message) =>
             {
                 var infos = MyMessageEncoder.Decode(message);
-                for (int i = 0; i < infos.Length; i++)
+                foreach (var info in infos)
                 {
-                    var info = infos[i];
-                    var obj = GameObjects.FirstOrDefault(f => f.Id == info.Key);
+                    var obj = GameObjects.FirstOrDefault(f => f.Id == ip);
                     if (obj == null)
                     {
                         obj = new GameObject(
-                            info.Key
+                            ip
                         );
                         obj.Animation = new PlayerAnimation(obj.Position, texture);
                         GameObjects.Add(obj);
                     }
-                    obj.Position.Current = info.Value;
+                    obj.Position.Current = new Point(info.X, info.Y);
                 }
-
             });
         }
 

@@ -1,35 +1,42 @@
 ﻿using Microsoft.Xna.Framework;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text.RegularExpressions;
-using System;
 
 namespace ThirdGame
 {
-    public class MyMessageEncoder
+    public struct Message
     {
-        public string Encode(Vector2 position, string ip)
+        public Message(int Order, int X, int Y)
         {
-            return $"{ip.Replace("/", "")};{position.X.ToString("0")};{position.Y.ToString("0")}";
+            this.Order = Order;
+            this.X = X;
+            this.Y = Y;
         }
 
-        private KeyValuePair<string, Vector2>[] empty = new KeyValuePair<string, Vector2>[0];
+        public int Order { get; }
+        public int X { get; }
+        public int Y { get; }
+    }
 
-        private const string pattern = @"(?<ip>\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b);(?<x>-?\d{1,});(?<y>-?\d{1,})";
-        public KeyValuePair<string, Vector2>[] Decode(string message)
+    public class MyMessageEncoder
+    {
+        private const string pattern = @"(?<order>\d{1,2});(?<x>-?\d{1,});(?<y>-?\d{1,})";
+
+        public string Encode(Message Message)
+        {
+            return $"{Message.Order};{Message.X};{Message.Y}";
+        }
+
+        public IEnumerable<Message> Decode(string message)
         {
             var match = Regex.Match(message, pattern);
 
             if (match.Success)
-                return new[]{ new KeyValuePair<string, Vector2>(
-                    match.Groups["ip"].Value
-                    , new Vector2(
-                        float.Parse(match.Groups["x"].Value)
-                        , float.Parse(match.Groups["y"].Value)
-                        )
-                )};
-
-            return empty;
+                yield return new Message(
+                     int.Parse(match.Groups["order"].Value)
+                    , int.Parse(match.Groups["x"].Value)
+                    , int.Parse(match.Groups["y"].Value)
+                    );
         }
     }
 }

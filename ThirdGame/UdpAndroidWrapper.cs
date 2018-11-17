@@ -9,7 +9,7 @@ namespace ThirdGame
 {
     public class UdpAndroidWrapper : IDisposable, UdpService
     {
-        private Action<string> MessageReceived;
+        private Action<string,string> MessageReceived;
         private int PORT = 17111;
         private bool NotDisposed = true;
         private InetAddress ip = InetAddress.GetByName("224.0.0.0");
@@ -65,7 +65,7 @@ namespace ThirdGame
         }
 
         bool runnning = false;
-        public void Listen(Action<string> messageReceivedHandler)
+        public void Listen(Action<string, string> messageReceivedHandler)
         {
             this.MessageReceived = messageReceivedHandler;
             if (runnning)
@@ -87,11 +87,12 @@ namespace ThirdGame
                             {
                                 await socket.ReceiveAsync(packet);
 
-                                if (myIp == packet.Address.ToString())
+                                var ip = packet.Address.ToString();
+                                if (myIp == ip)
                                     continue;
 
                                 var message = System.Text.Encoding.ASCII.GetString(packet.GetData());
-                                MessageReceived(message);
+                                MessageReceived(ip,message);
                             }
                         }
                         catch { }

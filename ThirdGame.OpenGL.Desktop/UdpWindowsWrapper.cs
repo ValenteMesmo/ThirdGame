@@ -10,7 +10,7 @@ namespace WindowsDesktop
     {
         private const int PORT = 17111;
         private readonly UdpClient udpClient;
-        private Action<string> MessageReceived;
+        private Action<string, string> MessageReceived;
         private IPEndPoint send_endpoint;
         private bool NotDisposed = true;
         public string myIp { get; set; }
@@ -64,7 +64,7 @@ namespace WindowsDesktop
         }
 
         bool runnning;
-        public void Listen(Action<string> messageReceivedHandler)
+        public void Listen(Action<string,string> messageReceivedHandler)
         {
             this.MessageReceived = messageReceivedHandler;
             if (runnning)
@@ -82,7 +82,7 @@ namespace WindowsDesktop
                         var ip = result.RemoteEndPoint.Address.ToString();
 
                         if (ip != myIp)
-                            MessageReceived(message);
+                            MessageReceived(ip, message);
                     }
                     catch { }
                 }
