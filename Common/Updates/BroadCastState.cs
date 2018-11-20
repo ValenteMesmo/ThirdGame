@@ -5,35 +5,23 @@ namespace Common
     public class BroadCastState : IHandleUpdates
     {
         private readonly Camera2d Camera;
-        private readonly UdpService UdpWrapper;
-        private readonly MyMessageEncoder MyMessageEncoder;
         private readonly PositionComponent Position;
+        private readonly NetworkHandler NetworkHandler;
 
         public BroadCastState(
             Camera2d Camera
             , PositionComponent Position
-            , UdpService UdpWrapper
-            , MyMessageEncoder MyMessageEncoder
+            , NetworkHandler NetworkHandler
         )
         {
             this.Camera = Camera;
-            this.UdpWrapper = UdpWrapper;
-            this.MyMessageEncoder = MyMessageEncoder;
             this.Position = Position;
+            this.NetworkHandler = NetworkHandler;
         }
 
         public void Update()
         {
-            UdpWrapper.Send(
-                //TODO: order
-                MyMessageEncoder.Encode(
-                    new Message(
-                        0
-                        , Position.Current.X
-                        , Position.Current.Y
-                    )
-                )
-            );
+            NetworkHandler.Send(Position.Current);
         }
     }
 }

@@ -1,30 +1,31 @@
-﻿using Microsoft.Xna.Framework;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
 namespace ThirdGame
 {
     public struct Message
     {
-        public Message(int Order, int X, int Y)
+        public Message(int X, int Y, int Time)
         {
-            this.Order = Order;
             this.X = X;
             this.Y = Y;
+
+            this.Time = Time;
         }
 
-        public int Order { get; }
+        public int Time { get; }
+
         public int X { get; }
         public int Y { get; }
     }
 
     public class MyMessageEncoder
     {
-        private const string pattern = @"(?<order>\d{1,2});(?<x>-?\d{1,});(?<y>-?\d{1,})";
+        private const string pattern = @"(?<time>\d{3});(?<x>-?\d{1,});(?<y>-?\d{1,})";
 
         public string Encode(Message Message)
         {
-            return $"{Message.Order};{Message.X};{Message.Y}";
+            return $"{Message.Time.ToString("000")};{Message.X};{Message.Y}";
         }
 
         public IEnumerable<Message> Decode(string message)
@@ -33,10 +34,10 @@ namespace ThirdGame
 
             if (match.Success)
                 yield return new Message(
-                     int.Parse(match.Groups["order"].Value)
-                    , int.Parse(match.Groups["x"].Value)
+                     int.Parse(match.Groups["x"].Value)
                     , int.Parse(match.Groups["y"].Value)
-                    );
+                    , int.Parse(match.Groups["time"].Value)
+                );
         }
     }
 }
