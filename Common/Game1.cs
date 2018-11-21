@@ -42,7 +42,7 @@ namespace ThirdGame
             else
             {
                 //TODO: alt enter toggle fullscreen
-                graphics.IsFullScreen = true;
+                graphics.IsFullScreen = false;
                 graphics.PreferredBackBufferWidth = 1366;
                 graphics.PreferredBackBufferHeight = 768;
                 graphics.SynchronizeWithVerticalRetrace = true;

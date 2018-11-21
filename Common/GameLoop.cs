@@ -7,6 +7,20 @@ using System.Collections.Generic;
 
 namespace ThirdGame
 {
+    public class NetworkUpdateTracker
+    {
+        public string IP { get; set; }
+        public int CurrentUpdate { get; set; }
+        public int CountSinceLastUpdate { get; set; }
+
+        public NetworkUpdateTracker(string IP, int CurrentUpdate, int CountSinceLastUpdate)
+        {
+            this.IP = IP;
+            this.CurrentUpdate = CurrentUpdate;
+            this.CountSinceLastUpdate = CountSinceLastUpdate;
+        }
+    }
+
     public class Speedometer
     {
         public int X;
@@ -31,7 +45,7 @@ namespace ThirdGame
     {
         private MyMessageEncoder MyMessageEncoder = new MyMessageEncoder();
         private readonly UdpService UdpWrapper;
-        private readonly Dictionary<string, int> Times = new Dictionary<string, int>();
+        private readonly List<NetworkUpdateTracker> Times = new List<NetworkUpdateTracker>();
         private int time;
 
         public Action<string, Message> MessageReceived = (ip, message) => { };
@@ -47,22 +61,41 @@ namespace ThirdGame
                 var infos = MyMessageEncoder.Decode(message);
                 foreach (var info in infos)
                 {
-                    int lastTime;
-                    if (Times.ContainsKey(ip))
+                    NetworkUpdateTracker tracker = null;
+                    for (int i = 0; i < Times.Count; i++)
                     {
-                        lastTime = Times[ip];
-                    }
-                    else
-                    {
-                        Times.Add(ip, info.Time);
-                        PlayerConnected(ip);
-                        lastTime = info.Time;
+                        if (Times[i].IP == ip)
+                        {
+                            tracker = Times[i];
+                            break;
+                        }
                     }
 
-                    if (lastTime <= info.Time || (lastTime > 990 && info.Time < 10))
+                    if (tracker == null)
+                    {
+                        tracker = new NetworkUpdateTracker(ip, info.Time, 0);
+                        Times.Add(tracker);
+                        PlayerConnected(ip);
+                    }
+
+                    tracker.CountSinceLastUpdate = 0;
+
+                    if (tracker.CurrentUpdate <= info.Time || (tracker.CurrentUpdate > 990 && info.Time < 10))
                         MessageReceived(ip, info);
                 }
             });
+        }
+
+        public void Update()
+        {
+            for (int i = 0; i < Times.Count; i++)
+            {
+                if (Times[i].CountSinceLastUpdate++ > 66)
+                {
+                    PlayerDisconnected(Times[i].IP);
+                    Times.Remove(Times[i]);
+                }
+            }
         }
 
         public void Send(Point position)
@@ -80,13 +113,14 @@ namespace ThirdGame
         public List<GameObject> GameObjects = new List<GameObject>();
         private Camera2d Camera;
         private KeyboardInputs KeyboardInputs;
+        private readonly NetworkHandler network;
 
         public GameLoop(UdpService UdpWrapper, Camera2d Camera, Texture2D texture)
         {
             this.Camera = Camera;
 
             KeyboardInputs = new KeyboardInputs();
-            var network = new NetworkHandler(UdpWrapper);
+            network = new NetworkHandler(UdpWrapper);
             network.MessageReceived += (ip, message) =>
             {
                 var p = GameObjects.FirstOrDefault(f => f.Id == ip);
@@ -105,7 +139,9 @@ namespace ThirdGame
 
             network.PlayerDisconnected += (ip) =>
             {
-
+                var obj = GameObjects.FirstOrDefault(f => f.Id == ip);
+                if (obj != null)
+                    GameObjects.Remove(obj);
             };
 
             var Player = new Player("player");
@@ -125,6 +161,7 @@ namespace ThirdGame
         public void Update()
         {
             KeyboardInputs.Update();
+            network.Update();
 
             for (int i = 0; i < GameObjects.Count; i++)
             {
