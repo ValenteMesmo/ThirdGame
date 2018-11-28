@@ -77,7 +77,7 @@ namespace ThirdGame
                 using (MulticastSocket socket = new MulticastSocket(PORT))
                 {
                     socket.JoinGroup(ip);
-                    byte[] data = new byte[4096];
+                    byte[] data = new byte[19];
 
                     while (NotDisposed)
                     {

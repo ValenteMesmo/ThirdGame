@@ -34,10 +34,10 @@ namespace Common
 
     public class ChangeSpeedUsingKeyboard : IHandleUpdates
     {
-        private readonly KeyboardInputs Inputs;
+        private readonly Inputs Inputs;
         private readonly Speedometer Speed;
 
-        public ChangeSpeedUsingKeyboard(KeyboardInputs Inputs, Speedometer Speed)
+        public ChangeSpeedUsingKeyboard(Inputs Inputs, Speedometer Speed)
         {
             this.Inputs = Inputs;
             this.Speed = Speed;

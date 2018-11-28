@@ -29,15 +29,32 @@ namespace ThirdGame
 
     public class NetworkPlayer : GameObject
     {
-        public NetworkPlayer(string Id) : base(Id)
+        public NetworkInputs NetworkInputs { get; set; } = new NetworkInputs();
+
+        public NetworkPlayer(string Id, Texture2D texture) : base(Id)
         {
+            var speed = new Speedometer();
+            Animation = new PlayerAnimation(Position, texture);
+            Update = new UpdateAggregation(
+                 new ChangeSpeedUsingKeyboard(NetworkInputs, speed)
+                 , new MovesWithSpeed(Position, speed));
         }
     }
 
     public class Player : GameObject
     {
-        public Player(string Id) : base(Id)
+        public Player(string Id, KeyboardInputs Inputs, Camera2d Camera, NetworkHandler network, Texture2D texture) : base(Id)
         {
+            var speed = new Speedometer();
+            var playerUpdateHandler = new UpdateAggregation(
+                 new ChangeSpeedUsingKeyboard(Inputs, speed)
+                 , new MovesWithSpeed(Position, speed)
+                 , new MovesPlayerUsingMouse(Position, Camera)
+                 , new BroadCastState(Camera, Position, network)
+            );
+
+            Animation = new PlayerAnimation(Position, texture);
+            Update = playerUpdateHandler;
         }
     }
 
@@ -45,6 +62,7 @@ namespace ThirdGame
     {
         private MyMessageEncoder MyMessageEncoder = new MyMessageEncoder();
         private readonly UdpService UdpWrapper;
+        private readonly KeyboardInputs Inputs;
         private readonly List<NetworkUpdateTracker> Times = new List<NetworkUpdateTracker>();
         private int time;
 
@@ -52,9 +70,10 @@ namespace ThirdGame
         public Action<string> PlayerConnected = (ip) => { };
         public Action<string> PlayerDisconnected = (ip) => { };
 
-        public NetworkHandler(UdpService UdpWrapper)
+        public NetworkHandler(UdpService UdpWrapper, KeyboardInputs Inputs)
         {
             this.UdpWrapper = UdpWrapper;
+            this.Inputs = Inputs;
 
             this.UdpWrapper.Listen((ip, message) =>
             {
@@ -80,8 +99,18 @@ namespace ThirdGame
 
                     tracker.CountSinceLastUpdate = 0;
 
-                    if (tracker.CurrentUpdate <= info.Time || (tracker.CurrentUpdate > 990 && info.Time < 10))
+                    if (
+                        tracker.CurrentUpdate <= info.Time
+                        ||
+                        (
+                            tracker.CurrentUpdate > 990
+                            && info.Time < 10
+                        )
+                    )
+                    {
+                        tracker.CurrentUpdate = info.Time;
                         MessageReceived(ip, info);
+                    }
                 }
             });
         }
@@ -90,11 +119,13 @@ namespace ThirdGame
         {
             for (int i = 0; i < Times.Count; i++)
             {
-                if (Times[i].CountSinceLastUpdate++ > 66)
+                if (Times[i].CountSinceLastUpdate++ > 999)
                 {
                     PlayerDisconnected(Times[i].IP);
                     Times.Remove(Times[i]);
                 }
+                //TODO:
+                //else lower count... latency event
             }
         }
 
@@ -103,7 +134,23 @@ namespace ThirdGame
             if (time == 999)
                 time = 0;
 
-            UdpWrapper.Send(MyMessageEncoder.Encode(new Message(position.X, position.Y, ++time)));
+            UdpWrapper.Send(
+                MyMessageEncoder.Encode(
+                    new Message(
+                        position.X
+                        , position.Y
+                        , ++time
+                        , Up: false
+                        , Down: false
+                        , Left: Inputs.IsPressingLeft
+                        , Right: Inputs.IsPressingRight
+                        , A: Inputs.IsPressingJump
+                        , B: false
+                        , C: false
+                        , D: false
+                    )
+                )
+            );
         }
     }
 
@@ -118,13 +165,27 @@ namespace ThirdGame
         public GameLoop(UdpService UdpWrapper, Camera2d Camera, Texture2D texture)
         {
             this.Camera = Camera;
-
             KeyboardInputs = new KeyboardInputs();
-            network = new NetworkHandler(UdpWrapper);
+            network = new NetworkHandler(UdpWrapper, KeyboardInputs);
+
+
+            var Player = new Player("player", KeyboardInputs, Camera, network, texture);
+
+            GameObjects.Add(Player);
+
             network.MessageReceived += (ip, message) =>
             {
-                var p = GameObjects.FirstOrDefault(f => f.Id == ip);
-                p.Position.Current = new Point(message.X, message.Y);
+                var p = GameObjects.FirstOrDefault(f => f.Id == ip) as NetworkPlayer;
+                //p.Position.Current = new Point(message.X, message.Y);
+                p.NetworkInputs.IsPressingLeft = message.Left;
+                p.NetworkInputs.IsPressingRight = message.Right;
+                p.NetworkInputs.IsPressingJump = message.A;
+
+
+                //TODO: add ínput handlers on networkplayer
+                //em vez de settar de cara essa posicao, guardar para que o jogador
+                // leia os inputs vindo na mensagem faça todos os updates e no posUpdate faz um lerp
+
             };
 
             network.PlayerConnected += (ip) =>
@@ -132,8 +193,8 @@ namespace ThirdGame
                 if (GameObjects.Any(f => f.Id == ip))
                     return;
 
-                var netPlayer = new NetworkPlayer(ip);
-                netPlayer.Animation = new PlayerAnimation(netPlayer.Position, texture);
+                var netPlayer = new NetworkPlayer(ip, texture);
+                netPlayer.Position.Current = Player.Position.Current;
                 GameObjects.Add(netPlayer);
             };
 
@@ -143,19 +204,6 @@ namespace ThirdGame
                 if (obj != null)
                     GameObjects.Remove(obj);
             };
-
-            var Player = new Player("player");
-            var speed = new Speedometer();
-            var playerUpdateHandler = new UpdateAggregation(
-                 new ChangeSpeedUsingKeyboard(KeyboardInputs, speed)
-                 , new MovesWithSpeed(Player.Position, speed)
-                 , new MovesPlayerUsingMouse(Player.Position, Camera)
-                 , new BroadCastState(Camera, Player.Position, network)
-            );
-
-            Player.Animation = new PlayerAnimation(Player.Position, texture);
-            Player.Update = playerUpdateHandler;
-            GameObjects.Add(Player);
         }
 
         public void Update()
