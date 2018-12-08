@@ -1,7 +1,6 @@
 using Common;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
 
 namespace ThirdGame
 {
@@ -38,6 +37,7 @@ namespace ThirdGame
                 graphics.IsFullScreen = true;
                 graphics.PreferredBackBufferWidth = GraphicsDevice.DisplayMode.Width;
                 graphics.PreferredBackBufferHeight = GraphicsDevice.DisplayMode.Height;
+                //graphics.SynchronizeWithVerticalRetrace = false;
             }
             else
             {
@@ -49,9 +49,8 @@ namespace ThirdGame
             }
 
             IsFixedTimeStep = true;
-            //TargetElapsedTime = TimeSpan.FromTicks(333333);
-
-            //graphics.PreparingDeviceSettings += (s, e) => e.GraphicsDeviceInformation.PresentationParameters.PresentationInterval = PresentInterval.Two;
+            //IsFixedTimeStep = false;
+            //graphics.SynchronizeWithVerticalRetrace = false;
             graphics.ApplyChanges();
         }
 
@@ -65,14 +64,20 @@ namespace ThirdGame
             GameLoop = new GameLoop(UdpWrapper, Camera, Btn_texture);
         }
 
+        //double timer;
         protected override void Update(GameTime gameTime)
-        {            
+        {
+            //timer += gameTime.ElapsedGameTime.TotalSeconds;
+            //float updateTime = 1f / 60;
+
+            //while (timer >= updateTime)
+            //{
+            
             Camera.Update();
-
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
-                Exit();
-
             GameLoop.Update();
+
+            // timer -= updateTime;
+            //}
 
             base.Update(gameTime);
         }
@@ -105,7 +110,7 @@ namespace ThirdGame
             for (int i = 0; i < GameLoop.GameObjects.Count; i++)
             {
                 var obj = GameLoop.GameObjects[i];
-               
+
 
                 var draws = obj.Animation.GetFrame();
                 for (int j = 0; j < draws.Length; j++)

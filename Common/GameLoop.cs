@@ -10,14 +10,14 @@ namespace ThirdGame
     public class NetworkUpdateTracker
     {
         public string IP { get; set; }
-        public int CurrentUpdate { get; set; }
-        public int CountSinceLastUpdate { get; set; }
+        public int LastMessageTime { get; set; }
+        public int UpdatesSinceLastMessage { get; set; }
 
-        public NetworkUpdateTracker(string IP, int CurrentUpdate, int CountSinceLastUpdate)
+        public NetworkUpdateTracker(string IP, int LastMessageTime, int UpdatesSinceLastMessage)
         {
             this.IP = IP;
-            this.CurrentUpdate = CurrentUpdate;
-            this.CountSinceLastUpdate = CountSinceLastUpdate;
+            this.LastMessageTime = LastMessageTime;
+            this.UpdatesSinceLastMessage = UpdatesSinceLastMessage;
         }
     }
 
@@ -63,7 +63,7 @@ namespace ThirdGame
         private MyMessageEncoder MyMessageEncoder = new MyMessageEncoder();
         private readonly UdpService UdpWrapper;
         private readonly KeyboardInputs Inputs;
-        private readonly List<NetworkUpdateTracker> Times = new List<NetworkUpdateTracker>();
+        private readonly List<NetworkUpdateTracker> Sockets = new List<NetworkUpdateTracker>();
         private int time;
 
         public Action<string, Message> MessageReceived = (ip, message) => { };
@@ -80,35 +80,40 @@ namespace ThirdGame
                 var infos = MyMessageEncoder.Decode(message);
                 foreach (var info in infos)
                 {
-                    NetworkUpdateTracker tracker = null;
-                    for (int i = 0; i < Times.Count; i++)
+                    NetworkUpdateTracker socket = null;
+                    for (int i = 0; i < Sockets.Count; i++)
                     {
-                        if (Times[i].IP == ip)
+                        if (Sockets[i].IP == ip)
                         {
-                            tracker = Times[i];
+                            socket = Sockets[i];
                             break;
                         }
                     }
 
-                    if (tracker == null)
+                    if (socket == null)
                     {
-                        tracker = new NetworkUpdateTracker(ip, info.Time, 0);
-                        Times.Add(tracker);
+                        socket = new NetworkUpdateTracker(ip, info.Time, 0);
+                        var lowestIp = Sockets.Select(f => f.IP).OrderBy(f => f).FirstOrDefault();
+                        if (lowestIp != null && lowestIp.CompareTo(socket.IP) < 0)
+                        {
+                            //TODO: settar como host
+                        }
+                        Sockets.Add(socket);
                         PlayerConnected(ip);
                     }
 
-                    tracker.CountSinceLastUpdate = 0;
+                    socket.UpdatesSinceLastMessage = 0;
 
                     if (
-                        tracker.CurrentUpdate <= info.Time
+                        socket.LastMessageTime <= info.Time
                         ||
                         (
-                            tracker.CurrentUpdate > 990
+                            socket.LastMessageTime > 990
                             && info.Time < 10
                         )
                     )
                     {
-                        tracker.CurrentUpdate = info.Time;
+                        socket.LastMessageTime = info.Time;
                         MessageReceived(ip, info);
                     }
                 }
@@ -117,12 +122,12 @@ namespace ThirdGame
 
         public void Update()
         {
-            for (int i = 0; i < Times.Count; i++)
+            for (int i = 0; i < Sockets.Count; i++)
             {
-                if (Times[i].CountSinceLastUpdate++ > 999)
+                if (Sockets[i].UpdatesSinceLastMessage++ > 999)
                 {
-                    PlayerDisconnected(Times[i].IP);
-                    Times.Remove(Times[i]);
+                    PlayerDisconnected(Sockets[i].IP);
+                    Sockets.Remove(Sockets[i]);
                 }
                 //TODO:
                 //else lower count... latency event
