@@ -51,6 +51,7 @@
   <ItemGroup>
     <Compile Include="MessageEnconderTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ServerIpFinderTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

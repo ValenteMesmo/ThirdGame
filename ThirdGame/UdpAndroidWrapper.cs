@@ -29,11 +29,17 @@ namespace ThirdGame
                 {
                     if (output != "")
                     {
-                        var msg = System.Text.Encoding.ASCII.GetBytes(output);
-                        output = "";
-                        using (DatagramSocket socket = new DatagramSocket())
-                        using (DatagramPacket packet = new DatagramPacket(msg, msg.Length, ip, PORT))
-                            await socket.SendAsync(packet);
+                        try
+                        {
+                            var msg = System.Text.Encoding.ASCII.GetBytes(output);
+                            output = "";
+                            using (DatagramSocket socket = new DatagramSocket())
+                            using (DatagramPacket packet = new DatagramPacket(msg, msg.Length, ip, PORT))
+                                await socket.SendAsync(packet);
+                        }
+                        catch 
+                        {
+                        }
                     }
                 }
             });

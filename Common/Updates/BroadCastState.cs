@@ -21,7 +21,7 @@ namespace Common
 
         public void Update()
         {
-            NetworkHandler.Send(Position.Current);
+            NetworkHandler.Send(Position.Current.ToPoint());
         }
     }
 }

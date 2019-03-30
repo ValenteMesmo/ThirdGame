@@ -28,7 +28,7 @@ namespace Common
                 y = 800;
             }
 
-            PlayerPosition.Current = new Point(x, y);
+            PlayerPosition.Current = new Vector2(x, y);
         }
     }
 
