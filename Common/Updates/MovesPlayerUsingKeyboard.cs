@@ -54,21 +54,21 @@ namespace Common
             else if (Speed.X < 0)
                 Speed.X += 10;
 
-            if (Inputs.IsPressingJump)
-                Speed.Y = -200;
-            else
-                Speed.Y += 20;
-
             if (Speed.X > 100)
                 Speed.X = 100;
 
             if (Speed.X < -100)
                 Speed.X = -100;
-            
-            if (Speed.Y > 200)
-                Speed.Y = 200;
-            if (Speed.Y < -200)
-                Speed.Y = -200;
+
+            //if (Inputs.IsPressingJump)
+            //    Speed.Y = -200;
+            //else
+            //    Speed.Y += 20;
+
+            //if (Speed.Y > 200)
+            //    Speed.Y = 200;
+            //if (Speed.Y < -200)
+            //    Speed.Y = -200;
         }
     }
 }

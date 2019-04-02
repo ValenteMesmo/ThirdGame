@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace ThirdGame
 {
@@ -52,15 +53,15 @@ namespace ThirdGame
         public string Encode(Message Message)
         {
             //3+4+4+4+4
-            return $"{Message.Time.ToString("000")}{(Message.Up ? "1" : "0")}{(Message.Down ? "1" : "0")}{(Message.Left ? "1" : "0")}{(Message.Right ? "1" : "0")}{(Message.A ? "1" : "0")}{(Message.B ? "1" : "0")}{(Message.C ? "1" : "0")}{(Message.D ? "1" : "0")}{Message.X.ToString("0000")}{Message.Y.ToString("0000")}";
+            return $"{Message.Time.ToString("000")}{(Message.Up ? "1" : "0")}{(Message.Down ? "1" : "0")}{(Message.Left ? "1" : "0")}{(Message.Right ? "1" : "0")}{(Message.A ? "1" : "0")}{(Message.B ? "1" : "0")}{(Message.C ? "1" : "0")}{(Message.D ? "1" : "0")}{(Message.X >=0 ? "+" : "-")}{Math.Abs(Message.X).ToString("00000")}{(Message.Y >= 0 ? "+" : "-")}{Math.Abs(Message.Y).ToString("00000")}";
         }
 
         public IEnumerable<Message> Decode(string message)
         {
-            if (message.Length == 19)
+            if (message.Length == 23)
                 yield return new Message(
-                     int.Parse(message.Substring(11, 4))
-                    , int.Parse(message.Substring(15, 4))
+                     int.Parse(message.Substring(12, 5)) * (message[11] == '-' ? -1 : 1)
+                    , int.Parse(message.Substring(18, 5)) * (message[17] == '-' ? -1 : 1)
                     , int.Parse(message.Substring(0, 3))
                     , message[3] == '1'
                     , message[4] == '1'

@@ -6,6 +6,7 @@ namespace ThirdGame
 {
     public class Game1 : Game
     {
+        public static string LOG;
         private GraphicsDeviceManager graphics;
         private SpriteBatch spriteBatch;
         public readonly bool RuningOnAndroid;
@@ -98,7 +99,8 @@ namespace ThirdGame
 
             spriteBatch.DrawString(
                 SpriteFont
-                , string.Format("FPS: {0}", smartFPS.AverageFramesPerSecond)
+                , $@"FPS: {smartFPS.AverageFramesPerSecond}
+LOG: {LOG}"
                 , new Vector2(500, 2000)
                 , Color.Black
                 , 0
