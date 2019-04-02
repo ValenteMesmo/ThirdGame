@@ -8,14 +8,8 @@ namespace ThirdGame
 {
     public class GameLoop
     {
-        //FOI aqui que eu parei...
-        //as mensagens do android estavam chegando, mas eram ignorava as posicoes...
-        //pegava só os inputs....
-        // bora fazer uma entrega simples!
-        //      cada um garante sua posicao... e só interpola a dos outros, pra nao ficar feio
-
         public List<GameObject> GameObjects = new List<GameObject>();
-        private Camera2d Camera;
+        private readonly Camera2d Camera;
         private KeyboardInputs KeyboardInputs;
         private readonly NetworkHandler network;
 

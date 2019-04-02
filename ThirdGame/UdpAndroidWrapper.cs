@@ -9,7 +9,7 @@ namespace ThirdGame
 {
     public class UdpAndroidWrapper : IDisposable, UdpService
     {
-        private Action<string,string> MessageReceived;
+        private Action<string, string> MessageReceived;
         private int PORT = 17111;
         private bool NotDisposed = true;
         private InetAddress ip = InetAddress.GetByName("224.0.0.0");
@@ -37,7 +37,7 @@ namespace ThirdGame
                             using (DatagramPacket packet = new DatagramPacket(msg, msg.Length, ip, PORT))
                                 await socket.SendAsync(packet);
                         }
-                        catch 
+                        catch
                         {
                         }
                     }
@@ -80,30 +80,41 @@ namespace ThirdGame
 
             Task.Factory.StartNew(async () =>
             {
-                using (MulticastSocket socket = new MulticastSocket(PORT))
-                {
-                    socket.JoinGroup(ip);
-                    byte[] data = new byte[19];
-
-                    while (NotDisposed)
+                while (NotDisposed)
+                    try
                     {
-                        try
+                        using (MulticastSocket socket = new MulticastSocket(PORT))
                         {
-                            using (DatagramPacket packet = new DatagramPacket(data, data.Length))
+                            socket.JoinGroup(ip);
+                            byte[] data = new byte[MyMessageEncoder.PACKAGE_SIZE];
+
+                            while (NotDisposed)
                             {
-                                await socket.ReceiveAsync(packet);
+                                try
+                                {
+                                    using (DatagramPacket packet = new DatagramPacket(data, data.Length))
+                                    {
+                                        await socket.ReceiveAsync(packet);
 
-                                var ip = packet.Address.ToString();
-                                if (myIp == ip)
-                                    continue;
+                                        var ip = packet.Address.ToString();
+                                        if (myIp == ip)
+                                            continue;
 
-                                var message = System.Text.Encoding.ASCII.GetString(packet.GetData());
-                                MessageReceived(ip,message);
+                                        var message = System.Text.Encoding.ASCII.GetString(packet.GetData());
+                                        MessageReceived(ip, message);
+                                    }
+                                }
+                                //TODO: verifcar ocorrencia de exceptions aqui...
+                                //tenho impressao que esse task delay travou a renderizacao do jogo
+                                catch {
+                                //    await Task.Delay(100);
+                                }
                             }
                         }
-                        catch { }
                     }
-                }
+                    catch {
+                    //    await Task.Delay(1000);
+                    }
             });
         }
     }

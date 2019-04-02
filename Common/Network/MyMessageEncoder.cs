@@ -50,6 +50,8 @@ namespace ThirdGame
 
     public class MyMessageEncoder
     {
+        public const int PACKAGE_SIZE = 23;
+
         public string Encode(Message Message)
         {
             //3+4+4+4+4
@@ -58,7 +60,7 @@ namespace ThirdGame
 
         public IEnumerable<Message> Decode(string message)
         {
-            if (message.Length == 23)
+            if (message.Length == PACKAGE_SIZE)
                 yield return new Message(
                      int.Parse(message.Substring(12, 5)) * (message[11] == '-' ? -1 : 1)
                     , int.Parse(message.Substring(18, 5)) * (message[17] == '-' ? -1 : 1)
