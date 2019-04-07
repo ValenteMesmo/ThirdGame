@@ -1,6 +1,7 @@
 using Common;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System.Collections.Generic;
 
 namespace ThirdGame
 {
@@ -9,11 +10,13 @@ namespace ThirdGame
         public static string LOG;
         private GraphicsDeviceManager graphics;
         private SpriteBatch spriteBatch;
+        private SpriteBatch spriteBatchUi;
         public readonly bool RuningOnAndroid;
         private readonly UdpService UdpWrapper;
         private GameLoop GameLoop;
         private Camera2d Camera;
-        private Texture2D Btn_texture;
+        private Camera2d CameraUI;
+        private Dictionary<string, Texture2D> Sprites = new Dictionary<string, Texture2D>();
         private SpriteFont SpriteFont;
         FramerateCounter smartFPS = new FramerateCounter();
 
@@ -25,7 +28,9 @@ namespace ThirdGame
             Content.RootDirectory = "Content";
 
             Camera = new Camera2d();
+            CameraUI = new Camera2d();
             Camera.Zoom = 0.05f;
+            CameraUI.Zoom = 1f;
             this.UdpWrapper = UdpWrapper;
         }
 
@@ -44,8 +49,12 @@ namespace ThirdGame
             {
                 //TODO: alt enter toggle fullscreen
                 graphics.IsFullScreen = false;
-                graphics.PreferredBackBufferWidth = 1366;
-                graphics.PreferredBackBufferHeight = 768;
+                graphics.PreferredBackBufferWidth = 
+                    1176;
+                    //1366;
+                graphics.PreferredBackBufferHeight = 
+                    664;
+                    //768;
                 graphics.SynchronizeWithVerticalRetrace = true;
             }
 
@@ -58,11 +67,16 @@ namespace ThirdGame
         protected override void LoadContent()
         {
             spriteBatch = new SpriteBatch(GraphicsDevice);
-            Btn_texture = Content.Load<Texture2D>("char");
+            spriteBatchUi = new SpriteBatch(GraphicsDevice);
+            Sprites.Add("char", Content.Load<Texture2D>("char"));
+            Sprites.Add("btn", Content.Load<Texture2D>("btn"));
+            Sprites.Add("btn_up", Content.Load<Texture2D>(   "btn_up"));
+            Sprites.Add("btn_down", Content.Load<Texture2D>( "btn_down"));
+            Sprites.Add("btn_left", Content.Load<Texture2D>( "btn_left"));
+            Sprites.Add("btn_right", Content.Load<Texture2D>("btn_right"));
             SpriteFont = Content.Load<SpriteFont>("SpriteFont");
 
-
-            GameLoop = new GameLoop(UdpWrapper, Camera, Btn_texture);
+            GameLoop = new GameLoop(UdpWrapper, Camera);
         }
 
         //double timer;
@@ -73,7 +87,7 @@ namespace ThirdGame
 
             //while (timer >= updateTime)
             //{
-            
+
             Camera.Update();
             GameLoop.Update();
 
@@ -96,6 +110,15 @@ namespace ThirdGame
                 null,
                 Camera.GetTransformation(GraphicsDevice)
             );
+            spriteBatchUi.Begin(
+                SpriteSortMode.BackToFront,
+                BlendState.AlphaBlend,
+                null,
+                null,
+                null,
+                null,
+                CameraUI.GetTransformation(GraphicsDevice)
+            );
 
             spriteBatch.DrawString(
                 SpriteFont
@@ -113,23 +136,27 @@ LOG: {LOG}"
             {
                 var obj = GameLoop.GameObjects[i];
 
-
                 var draws = obj.Animation.GetFrame();
                 for (int j = 0; j < draws.Length; j++)
                 {
-                    spriteBatch.Draw(
-                    draws[j].Texture
-                    , draws[j].DestinationRectangle
+
+                    (obj.Animation.ActAsUI() ? spriteBatchUi : spriteBatch).Draw(
+                    Sprites[draws[j].Texture]
+                    , new Rectangle(
+                        (draws[j].Anchor.Current + draws[j].Offset).ToPoint()
+                        , new Point(draws[j].Width, draws[j].Height)
+                    )
                     , null
                     , Color.White
                     , 0
-                    , draws[j].CenterOfRotation
+                    , Vector2.Zero//draws[j].CenterOfRotation.Current
                     , SpriteEffects.None
                     , 0
                 );
                 }
 
             }
+            spriteBatchUi.End();
             spriteBatch.End();
             base.Draw(gameTime);
         }

@@ -8,10 +8,10 @@ namespace ThirdGame
         public NetworkInputs NetworkInputs { get; set; } = new NetworkInputs();
         public PositionComponent NetworkPosition { get; } = new PositionComponent();
 
-        public NetworkPlayer(string Id, Texture2D texture) : base(Id)
+        public NetworkPlayer(string Id) : base(Id)
         {
             var speed = new Speedometer();
-            Animation = new PlayerAnimation(Position, texture);
+            Animation = new PlayerAnimation(Position);
             Update = new UpdateAggregation(
                  new ChangeSpeedUsingKeyboard(NetworkInputs, speed)
                  , new MovesWithSpeed(Position, speed)

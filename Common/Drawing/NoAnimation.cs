@@ -13,5 +13,7 @@ namespace Common
         public AnimationFrame[] GetFrame() => Empty;
 
         public void Update() { }
+
+        public bool ActAsUI() => false;
     }
 }

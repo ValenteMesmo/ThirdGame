@@ -1,11 +1,89 @@
 ﻿using Common;
-using Microsoft.Xna.Framework.Graphics;
-using System.Linq;
-using System.Collections.Generic;
 using Microsoft.Xna.Framework;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace ThirdGame
 {
+    public class TouchController : GameObject
+    {
+        public TouchController(Camera2d camera) : base("Touch Controller")
+        {
+
+            Animation = new Animation(
+                new AnimationFrame
+                {
+                    Offset = new Vector2(-580, -20),
+                    Anchor = camera.Pos,
+                    Height = 200,
+                    Width = 200,
+                    Texture = "btn_up"
+                },
+                new AnimationFrame
+                {
+                    Offset = new Vector2(-580, 180),
+                    Anchor = camera.Pos,
+                    Height = 200,
+                    Width = 200,
+                    Texture = "btn_down"
+                },
+                new AnimationFrame
+                {
+                    Offset = new Vector2(-680, 80),
+                    Anchor = camera.Pos,
+                    Height = 200,
+                    Width = 200,
+                    Texture = "btn_left"
+                },
+                new AnimationFrame
+                {
+                    Offset = new Vector2(-480, 80),
+                    Anchor = camera.Pos,
+                    Height = 200,
+                    Width = 200,
+                    Texture = "btn_right"
+                },
+
+
+                new AnimationFrame
+                {
+                    Offset = new Vector2(380, -20),
+                    Anchor = camera.Pos,
+                    Height = 200,
+                    Width = 200,
+                    Texture = "btn_up"
+                },
+                new AnimationFrame
+                {
+                    Offset = new Vector2(380, 180),
+                    Anchor = camera.Pos,
+                    Height = 200,
+                    Width = 200,
+                    Texture = "btn_down"
+                },
+                new AnimationFrame
+                {
+                    Offset = new Vector2(280, 80),
+                    Anchor = camera.Pos,
+                    Height = 200,
+                    Width = 200,
+                    Texture = "btn_left"
+                },
+                new AnimationFrame
+                {
+                    Offset = new Vector2(480, 80),
+                    Anchor = camera.Pos,
+                    Height = 200,
+                    Width = 200,
+                    Texture = "btn_right"
+                }
+                );
+
+        }
+
+
+    }
+
     public class GameLoop
     {
         public List<GameObject> GameObjects = new List<GameObject>();
@@ -13,15 +91,20 @@ namespace ThirdGame
         private KeyboardInputs KeyboardInputs;
         private readonly NetworkHandler network;
 
-        public GameLoop(UdpService UdpWrapper, Camera2d Camera, Texture2D texture)
+        public GameLoop(UdpService UdpWrapper, Camera2d Camera)
         {
             this.Camera = Camera;
             KeyboardInputs = new KeyboardInputs();
             network = new NetworkHandler(UdpWrapper, KeyboardInputs);
 
-            var Player = new Player("player", KeyboardInputs, Camera, network, texture);
+            var Player = new Player("player", KeyboardInputs, Camera, network);
 
             GameObjects.Add(Player);
+
+            var controller = new GameObject("Controller");
+
+            GameObjects.Add(controller);
+            GameObjects.Add(new TouchController(Camera));
 
             network.MessageReceivedFromOtherClients += (ip, message) =>
             {
@@ -47,7 +130,7 @@ namespace ThirdGame
                 if (GameObjects.Any(f => f.Id == ip))
                     return;
 
-                var netPlayer = new NetworkPlayer(ip, texture);
+                var netPlayer = new NetworkPlayer(ip);
                 netPlayer.Position.Current = Player.Position.Current;
                 GameObjects.Add(netPlayer);
             };

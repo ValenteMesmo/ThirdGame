@@ -6,14 +6,9 @@ namespace Common
 {
     public class Camera2d
     {
+        public PositionComponent Pos = new PositionComponent();
+        private PositionComponent OriginalPosition = new PositionComponent();
         public Matrix Transform;
-        private Vector2 _pos;
-        public Vector2 OriginalPosition;
-        public Vector2 Pos
-        {
-            get { return _pos; }
-            set { OriginalPosition = _pos = value; }
-        }
         protected float Rotation;
         private float _zoom;
 
@@ -29,7 +24,6 @@ namespace Common
         {
             _zoom = 1.0f;
             Rotation = 0.0f;
-            Pos = Vector2.Zero;
         }
 
         public void Clear()
@@ -59,7 +53,7 @@ namespace Common
 
             Transform =
               Matrix.CreateTranslation(
-                  new Vector3(-_pos.X, -_pos.Y, 0))
+                  new Vector3(-Pos.Current.X, -Pos.Current.Y, 0))
                     * Matrix.CreateRotationZ(Rotation)
                     * Matrix.CreateScale(new Vector3(Zoom * widthDiff, Zoom * HeightDiff, 1))
                     * Matrix.CreateTranslation(new Vector3(
@@ -93,9 +87,11 @@ namespace Common
 
         internal void Update()
         {
+            OriginalPosition.Current = Pos.Current;
+
             if (shakeUpDuration > 0)
             {
-                _pos.Y = OriginalPosition.Y + shakeUpDuration * shakeUpPower;
+                Pos.Current = new Vector2(Pos.Current.X, OriginalPosition.Current.Y + shakeUpDuration * shakeUpPower);
 
                 shakeUpDuration--;
             }
@@ -103,7 +99,7 @@ namespace Common
             {
                 shakeUpDuration = 0;
                 shakeUpPower = 0;
-                _pos.Y = OriginalPosition.Y;
+                Pos.Current = new Vector2(Pos.Current.X, OriginalPosition.Current.Y);
             }
         }
     }

@@ -1,12 +1,16 @@
-﻿using Microsoft.Xna.Framework;
+﻿using Common;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace ThirdGame
 {
     public struct AnimationFrame
     {
-        public Texture2D Texture { get; set; }
-        public Rectangle DestinationRectangle { get; set; }
-        public Vector2 CenterOfRotation { get; set; }
+        public string Texture { get; set; }
+        //public Rectangle DestinationRectangle { get; set; }
+        public PositionComponent Anchor { get; set; }
+        public Vector2 Offset { get; set; }
+        public int Width { get; set; }
+        public int Height { get; set; }
     }
 }

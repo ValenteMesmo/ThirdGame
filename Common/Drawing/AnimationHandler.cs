@@ -6,5 +6,6 @@ namespace Common
     {
         AnimationFrame[] GetFrame();
         void Update();
+        bool ActAsUI();
     }
 }
