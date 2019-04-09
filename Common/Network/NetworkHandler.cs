@@ -10,7 +10,7 @@ namespace ThirdGame
     {
         private MyMessageEncoder MyMessageEncoder = new MyMessageEncoder();
         private readonly UdpService UdpWrapper;
-        private readonly KeyboardInputs Inputs;
+        private readonly Inputs Inputs;
         private readonly ServerIpFinder ServerIpFinder;
         private readonly List<NetworkUpdateTracker> Sockets = new List<NetworkUpdateTracker>();
         private int time;
@@ -21,7 +21,7 @@ namespace ThirdGame
         public Action<string> PlayerConnected = (ip) => { };
         public Action<string> PlayerDisconnected = (ip) => { };
 
-        public NetworkHandler(UdpService UdpWrapper, KeyboardInputs Inputs)
+        public NetworkHandler(UdpService UdpWrapper, Inputs Inputs)
         {
             this.UdpWrapper = UdpWrapper;
             this.Inputs = Inputs;

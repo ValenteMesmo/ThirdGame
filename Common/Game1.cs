@@ -58,6 +58,8 @@ namespace ThirdGame
                 graphics.SynchronizeWithVerticalRetrace = true;
             }
 
+            IsMouseVisible = true;
+
             IsFixedTimeStep = true;
             //IsFixedTimeStep = false;
             //graphics.SynchronizeWithVerticalRetrace = false;
@@ -76,7 +78,7 @@ namespace ThirdGame
             Sprites.Add("btn_right", Content.Load<Texture2D>("btn_right"));
             SpriteFont = Content.Load<SpriteFont>("SpriteFont");
 
-            GameLoop = new GameLoop(UdpWrapper, Camera);
+            GameLoop = new GameLoop(UdpWrapper, Camera, CameraUI);
         }
 
         //double timer;

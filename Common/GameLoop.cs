@@ -1,5 +1,6 @@
 ﻿using Common;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Input;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -7,7 +8,7 @@ namespace ThirdGame
 {
     public class TouchController : GameObject
     {
-        public TouchController(Camera2d camera) : base("Touch Controller")
+        public TouchController(Camera2d camera, Inputs inputs) : base("Touch Controller")
         {
 
             Animation = new Animation(
@@ -78,23 +79,21 @@ namespace ThirdGame
                     Texture = "btn_right"
                 }
                 );
-
+            //Update = new TouchControlsUpdate(camera, inputs);
         }
-
-
     }
 
     public class GameLoop
     {
         public List<GameObject> GameObjects = new List<GameObject>();
         private readonly Camera2d Camera;
-        private KeyboardInputs KeyboardInputs;
+        private Inputs KeyboardInputs;
         private readonly NetworkHandler network;
 
-        public GameLoop(UdpService UdpWrapper, Camera2d Camera)
+        public GameLoop(UdpService UdpWrapper, Camera2d Camera, Camera2d CameraUI)
         {
             this.Camera = Camera;
-            KeyboardInputs = new KeyboardInputs();
+            KeyboardInputs = new MultipleInputSource(new KeyboardInputs(),new TouchControlInputs(CameraUI));
             network = new NetworkHandler(UdpWrapper, KeyboardInputs);
 
             var Player = new Player("player", KeyboardInputs, Camera, network);
@@ -104,7 +103,7 @@ namespace ThirdGame
             var controller = new GameObject("Controller");
 
             GameObjects.Add(controller);
-            GameObjects.Add(new TouchController(Camera));
+            GameObjects.Add(new TouchController(CameraUI, KeyboardInputs));
 
             network.MessageReceivedFromOtherClients += (ip, message) =>
             {
