@@ -89,9 +89,16 @@ namespace ThirdGame
 
             //while (timer >= updateTime)
             //{
+            try
+            {
 
-            Camera.Update();
-            GameLoop.Update();
+                Camera.Update();
+                GameLoop.Update();
+            }
+            catch (System.Exception ex)
+            {
+
+            }
 
             // timer -= updateTime;
             //}
@@ -101,65 +108,72 @@ namespace ThirdGame
 
         protected override void Draw(GameTime gameTime)
         {
-            smartFPS.Update((float)gameTime.ElapsedGameTime.TotalSeconds);
-            GraphicsDevice.Clear(Color.CornflowerBlue);
-            spriteBatch.Begin(
-                SpriteSortMode.BackToFront,
-                BlendState.AlphaBlend,
-                null,
-                null,
-                null,
-                null,
-                Camera.GetTransformation(GraphicsDevice)
-            );
-            spriteBatchUi.Begin(
-                SpriteSortMode.BackToFront,
-                BlendState.AlphaBlend,
-                null,
-                null,
-                null,
-                null,
-                CameraUI.GetTransformation(GraphicsDevice)
-            );
-
-            spriteBatch.DrawString(
-                SpriteFont
-                , $@"FPS: {smartFPS.AverageFramesPerSecond}
-LOG: {LOG}"
-                , new Vector2(500, 2000)
-                , Color.Black
-                , 0
-                , Vector2.Zero
-                , 25
-                , SpriteEffects.None
-                , 0);
-
-            for (int i = 0; i < GameLoop.GameObjects.Count; i++)
+            try
             {
-                var obj = GameLoop.GameObjects[i];
-
-                var draws = obj.Animation.GetFrame();
-                for (int j = 0; j < draws.Length; j++)
-                {
-
-                    (obj.Animation.ActAsUI() ? spriteBatchUi : spriteBatch).Draw(
-                    Sprites[draws[j].Texture]
-                    , new Rectangle(
-                        (draws[j].Anchor.Current + draws[j].Offset).ToPoint()
-                        , new Point(draws[j].Width, draws[j].Height)
-                    )
-                    , null
-                    , Color.White
-                    , 0
-                    , Vector2.Zero//draws[j].CenterOfRotation.Current
-                    , SpriteEffects.None
-                    , 0
+                smartFPS.Update((float)gameTime.ElapsedGameTime.TotalSeconds);
+                GraphicsDevice.Clear(Color.CornflowerBlue);
+                spriteBatch.Begin(
+                    SpriteSortMode.BackToFront,
+                    BlendState.AlphaBlend,
+                    null,
+                    null,
+                    null,
+                    null,
+                    Camera.GetTransformation(GraphicsDevice)
                 );
+                spriteBatchUi.Begin(
+                    SpriteSortMode.BackToFront,
+                    BlendState.AlphaBlend,
+                    null,
+                    null,
+                    null,
+                    null,
+                    CameraUI.GetTransformation(GraphicsDevice)
+                );
+
+                spriteBatch.DrawString(
+                    SpriteFont
+                    , $@"FPS: {smartFPS.AverageFramesPerSecond}
+LOG: {LOG}"
+                    , new Vector2(500, 2000)
+                    , Color.Black
+                    , 0
+                    , Vector2.Zero
+                    , 25
+                    , SpriteEffects.None
+                    , 0);
+
+                for (int i = 0; i < GameLoop.GameObjects.Count; i++)
+                {
+                    var obj = GameLoop.GameObjects[i];
+
+                    var draws = obj.Animation.GetFrame();
+                    for (int j = 0; j < draws.Length; j++)
+                    {
+
+                        (obj.Animation.ActAsUI() ? spriteBatchUi : spriteBatch).Draw(
+                        Sprites[draws[j].Texture]
+                        , new Rectangle(
+                            (draws[j].Anchor.Current + draws[j].Offset).ToPoint()
+                            , new Point(draws[j].Width, draws[j].Height)
+                        )
+                        , null
+                        , Color.White
+                        , 0
+                        , Vector2.Zero//draws[j].CenterOfRotation.Current
+                        , SpriteEffects.None
+                        , 0
+                    );
+                    }
+
                 }
+                spriteBatchUi.End();
+                spriteBatch.End();
+            }
+            catch (System.Exception ex)
+            {
 
             }
-            spriteBatchUi.End();
-            spriteBatch.End();
             base.Draw(gameTime);
         }
     }

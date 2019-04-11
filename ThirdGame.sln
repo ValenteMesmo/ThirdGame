@@ -17,9 +17,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ThirdGame.OpenGL.Desktop", "ThirdGame.OpenGL.Desktop\ThirdGame.OpenGL.Desktop.csproj", "{84F5608A-3E44-4FBC-A674-7F3568EF69C9}"
 EndProject
 Global
-	GlobalSection(Performance) = preSolution
-		HasPerformanceSessions = true
-	EndGlobalSection
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		SharedContent\SharedContent.projitems*{36aaf4d7-ac81-4aba-b7f8-1e164be4317c}*SharedItemsImports = 13
 	EndGlobalSection
@@ -72,5 +69,8 @@ Global
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {1DA35036-9FC4-4CDC-B94B-FD00C1F07FB4}
+	EndGlobalSection
+	GlobalSection(Performance) = preSolution
+		HasPerformanceSessions = true
 	EndGlobalSection
 EndGlobal

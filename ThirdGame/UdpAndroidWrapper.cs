@@ -25,21 +25,19 @@ namespace ThirdGame
             myIp = "/" + GetLocalIPAddress();
             Task.Factory.StartNew(async () =>
             {
-                while (NotDisposed)
+                if (output != "")
                 {
-                    if (output != "")
+                    try
                     {
-                        try
-                        {
-                            var msg = System.Text.Encoding.ASCII.GetBytes(output);
-                            output = "";
-                            using (DatagramSocket socket = new DatagramSocket())
-                            using (DatagramPacket packet = new DatagramPacket(msg, msg.Length, ip, PORT))
-                                await socket.SendAsync(packet);
-                        }
-                        catch
-                        {
-                        }
+                        var msg = System.Text.Encoding.ASCII.GetBytes(output);
+                        output = "";
+                        using (DatagramSocket socket = new DatagramSocket())
+                        using (DatagramPacket packet = new DatagramPacket(msg, msg.Length, ip, PORT))
+                            await socket.SendAsync(packet);
+                    }
+                    catch (Exception ex)
+                    {
+                        //o que fazer se nao conseguir cirar????
                     }
                 }
             });
@@ -106,14 +104,16 @@ namespace ThirdGame
                                 }
                                 //TODO: verifcar ocorrencia de exceptions aqui...
                                 //tenho impressao que esse task delay travou a renderizacao do jogo
-                                catch {
-                                //    await Task.Delay(100);
+                                catch (Exception ex)
+                                {
+                                    //    await Task.Delay(100);
                                 }
                             }
                         }
                     }
-                    catch {
-                    //    await Task.Delay(1000);
+                    catch (Exception ex)
+                    {
+                        //    await Task.Delay(1000);
                     }
             });
         }

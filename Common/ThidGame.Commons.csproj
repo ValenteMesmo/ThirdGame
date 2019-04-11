@@ -48,6 +48,11 @@
     <Compile Include="Drawing\AnimationFrame.cs" />
     <Compile Include="Drawing\AnimationHandler.cs" />
     <Compile Include="FramerateCounter.cs" />
+    <Compile Include="Inputs\Inputs.cs" />
+    <Compile Include="Inputs\MultipleInputSource.cs" />
+    <Compile Include="Inputs\NetworkInputs.cs" />
+    <Compile Include="Inputs\TouchControlInputs.cs" />
+    <Compile Include="TouchController.cs" />
     <Compile Include="Updates\LearpToPosition.cs" />
     <Compile Include="Network\NetworkHandler.cs" />
     <Compile Include="NetworkPlayer.cs" />
