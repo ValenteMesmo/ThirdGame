@@ -14,7 +14,6 @@
     <None Include="$(MSBuildThisFileDirectory)Content\SpriteFont.spritefont" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="$(MSBuildThisFileDirectory)Content\btn.bmp" />
     <Content Include="$(MSBuildThisFileDirectory)Content\char.bmp" />
   </ItemGroup>
 </Project>

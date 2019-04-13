@@ -71,11 +71,14 @@ namespace ThirdGame
             spriteBatch = new SpriteBatch(GraphicsDevice);
             spriteBatchUi = new SpriteBatch(GraphicsDevice);
             Sprites.Add("char", Content.Load<Texture2D>("char"));
-            Sprites.Add("btn", Content.Load<Texture2D>("btn"));
             Sprites.Add("btn_up", Content.Load<Texture2D>(   "btn_up"));
             Sprites.Add("btn_down", Content.Load<Texture2D>( "btn_down"));
             Sprites.Add("btn_left", Content.Load<Texture2D>( "btn_left"));
             Sprites.Add("btn_right", Content.Load<Texture2D>("btn_right"));
+            Sprites.Add("dpad_up", Content.Load<Texture2D>("dpad_up"));
+            Sprites.Add("dpad_down", Content.Load<Texture2D>("dpad_down"));
+            Sprites.Add("dpad_left", Content.Load<Texture2D>("dpad_left"));
+            Sprites.Add("dpad_right", Content.Load<Texture2D>("dpad_right"));
             SpriteFont = Content.Load<SpriteFont>("SpriteFont");
 
             GameLoop = new GameLoop(UdpWrapper, Camera, CameraUI);
@@ -167,8 +170,8 @@ LOG: {LOG}"
                     }
 
                 }
-                spriteBatchUi.End();
                 spriteBatch.End();
+                spriteBatchUi.End();
             }
             catch (System.Exception ex)
             {

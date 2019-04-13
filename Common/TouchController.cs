@@ -15,7 +15,7 @@ namespace ThirdGame
                     Anchor = camera.Pos,
                     Height = 200,
                     Width = 200,
-                    Texture = "btn_up"
+                    Texture = "dpad_up"
                 },
                 new AnimationFrame
                 {
@@ -23,7 +23,7 @@ namespace ThirdGame
                     Anchor = camera.Pos,
                     Height = 200,
                     Width = 200,
-                    Texture = "btn_down"
+                    Texture = "dpad_down"
                 },
                 new AnimationFrame
                 {
@@ -31,7 +31,7 @@ namespace ThirdGame
                     Anchor = camera.Pos,
                     Height = 200,
                     Width = 200,
-                    Texture = "btn_left"
+                    Texture = "dpad_left"
                 },
                 new AnimationFrame
                 {
@@ -39,7 +39,7 @@ namespace ThirdGame
                     Anchor = camera.Pos,
                     Height = 200,
                     Width = 200,
-                    Texture = "btn_right"
+                    Texture = "dpad_right"
                 },
 
 
