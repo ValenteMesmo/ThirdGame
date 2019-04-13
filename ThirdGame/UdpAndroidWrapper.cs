@@ -23,24 +23,36 @@ namespace ThirdGame
         public UdpAndroidWrapper()
         {
             myIp = "/" + GetLocalIPAddress();
-            Task.Factory.StartNew(async () =>
+            Task.Factory.StartNew(SendMessages);
+        }
+
+        private async Task SendMessages()
+        {
+
+            try
             {
-                if (output != "")
-                {
-                    try
-                    {
-                        var msg = System.Text.Encoding.ASCII.GetBytes(output);
-                        output = "";
-                        using (DatagramSocket socket = new DatagramSocket())
-                        using (DatagramPacket packet = new DatagramPacket(msg, msg.Length, ip, PORT))
-                            await socket.SendAsync(packet);
-                    }
-                    catch (Exception ex)
-                    {
-                        //o que fazer se nao conseguir cirar????
-                    }
-                }
-            });
+                using (DatagramSocket socket = new DatagramSocket())
+                    while (NotDisposed)
+                        if (output != "")
+                        {
+                            try
+                            {
+                                var msg = System.Text.Encoding.ASCII.GetBytes(output);
+                                output = "";
+
+                                using (DatagramPacket packet = new DatagramPacket(msg, msg.Length, ip, PORT))
+                                    await socket.SendAsync(packet);
+                            }
+                            catch (Exception ex)
+                            {
+                                //o que fazer se nao conseguir enviar?
+                            }
+                        }
+            }
+            catch
+            {
+                await SendMessages();
+            }
         }
 
         public void Send(string message)
