@@ -26,31 +26,49 @@ namespace Common
     public class PlayerAnimation : AnimationHandler
     {
         private readonly PositionComponent playerPosition;
-        private readonly AnimationFrame[] Models;
+        private readonly Inputs Inputs;
+        private readonly AnimationFrame[] IdleAnimation;
+        private readonly AnimationFrame[] WalkAnimation;
+        private AnimationFrame[] CurremtAnimation;
         private const int SIZE = 800;
         private const int CENTER = 50;
 
-        public PlayerAnimation(PositionComponent playerPosition)
+        public PlayerAnimation(PositionComponent playerPosition, Inputs Inputs)
         {
             this.playerPosition = playerPosition;
-            Models = new AnimationFrame[] {
+            this.Inputs = Inputs;
+
+            IdleAnimation = new AnimationFrame[] {
                 new AnimationFrame
                 {
                     Texture = "char",
                     Anchor = playerPosition,
                     Width = SIZE,
                     Height = SIZE
-                    //DestinationRectangle = new Rectangle(
-                    //    playerPosition.Current.ToPoint()
-                    //    , new Point(SIZE, SIZE)
-                    //)
                 }
             };
+
+            WalkAnimation = new AnimationFrame[] {
+                new AnimationFrame
+                {
+                    Texture = "char_walk",
+                    Anchor = playerPosition,
+                    Width = SIZE,
+                    Height = SIZE
+                }
+            };
+
+            CurremtAnimation = IdleAnimation;
         }
 
-        public void Update() { }
+        public void Update() {
+            if ((Inputs.IsPressingLeft || Inputs.IsPressingRight) && CurremtAnimation == IdleAnimation)
+                CurremtAnimation = WalkAnimation;
+            else
+                CurremtAnimation = IdleAnimation;
+        }
 
-        public AnimationFrame[] GetFrame() => Models;
+        public AnimationFrame[] GetFrame() => CurremtAnimation;
 
         public bool ActAsUI() => false;
     }

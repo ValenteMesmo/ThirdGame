@@ -11,7 +11,7 @@ namespace ThirdGame
         public NetworkPlayer(string Id) : base(Id)
         {
             var speed = new Speedometer();
-            Animation = new PlayerAnimation(Position);
+            Animation = new PlayerAnimation(Position, NetworkInputs);
             Update = new UpdateAggregation(
                  new ChangeSpeedUsingKeyboard(NetworkInputs, speed)
                  , new MovesWithSpeed(Position, speed)

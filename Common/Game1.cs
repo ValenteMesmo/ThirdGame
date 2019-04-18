@@ -49,12 +49,12 @@ namespace ThirdGame
             {
                 //TODO: alt enter toggle fullscreen
                 graphics.IsFullScreen = false;
-                graphics.PreferredBackBufferWidth = 
+                graphics.PreferredBackBufferWidth =
                     1176;
-                    //1366;
-                graphics.PreferredBackBufferHeight = 
+                //1366;
+                graphics.PreferredBackBufferHeight =
                     664;
-                    //768;
+                //768;
                 graphics.SynchronizeWithVerticalRetrace = true;
             }
 
@@ -71,9 +71,10 @@ namespace ThirdGame
             spriteBatch = new SpriteBatch(GraphicsDevice);
             spriteBatchUi = new SpriteBatch(GraphicsDevice);
             Sprites.Add("char", Content.Load<Texture2D>("char"));
-            Sprites.Add("btn_up", Content.Load<Texture2D>(   "btn_up"));
-            Sprites.Add("btn_down", Content.Load<Texture2D>( "btn_down"));
-            Sprites.Add("btn_left", Content.Load<Texture2D>( "btn_left"));
+            Sprites.Add("char_walk", Content.Load<Texture2D>("char_walk"));
+            Sprites.Add("btn_up", Content.Load<Texture2D>("btn_up"));
+            Sprites.Add("btn_down", Content.Load<Texture2D>("btn_down"));
+            Sprites.Add("btn_left", Content.Load<Texture2D>("btn_left"));
             Sprites.Add("btn_right", Content.Load<Texture2D>("btn_right"));
             Sprites.Add("dpad_up", Content.Load<Texture2D>("dpad_up"));
             Sprites.Add("dpad_down", Content.Load<Texture2D>("dpad_down"));

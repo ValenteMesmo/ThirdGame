@@ -37,7 +37,7 @@ namespace ThirdGame
                 p.NetworkInputs.IsPressingJump = message.A;
             };
 
-            //TODO: atualmente nenhum player é identificado como server... então foda-se
+            //TODO: atualmente nenhum player é identificado como server... 
             network.MessageReceivedFromServer += (ip, message) =>
             {
                 //var p = GameObjects.FirstOrDefault(f => f.Id == ip) as NetworkPlayer;
