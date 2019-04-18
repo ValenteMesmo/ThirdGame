@@ -147,19 +147,15 @@ LOG: {LOG}"
                     , SpriteEffects.None
                     , 0);
 
-                for (int i = 0; i < GameLoop.GameObjects.Count; i++)
+                foreach(var obj in GameLoop.GameObjects)
                 {
-                    var obj = GameLoop.GameObjects[i];
-
-                    var draws = obj.Animation.GetFrame();
-                    for (int j = 0; j < draws.Length; j++)
+                    foreach (var frame in obj.Animation.GetFrame())
                     {
-
-                        (obj.Animation.ActAsUI() ? spriteBatchUi : spriteBatch).Draw(
-                        Sprites[draws[j].Texture]
+                        (obj.Animation.RenderOnUiLayer ? spriteBatchUi : spriteBatch).Draw(
+                        Sprites[frame.Texture]
                         , new Rectangle(
-                            (draws[j].Anchor.Current + draws[j].Offset).ToPoint()
-                            , new Point(draws[j].Width, draws[j].Height)
+                            (frame.Anchor.Current + frame.Offset).ToPoint()
+                            , new Point(frame.Width, frame.Height)
                         )
                         , null
                         , Color.White

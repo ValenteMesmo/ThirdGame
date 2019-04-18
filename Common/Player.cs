@@ -14,7 +14,7 @@ namespace ThirdGame
                  , new BroadCastState(Camera, Position, network)
             );
 
-            Animation = new PlayerAnimation(Position, Inputs);
+            Animation = new PlayerAnimator(Position, Inputs);
             Update = playerUpdateHandler;
         }
     }

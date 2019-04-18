@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using ThirdGame;
 
 namespace Common
@@ -10,10 +9,10 @@ namespace Common
         private static AnimationFrame[] Empty = new AnimationFrame[0];
         private NoAnimation() { }
 
-        public AnimationFrame[] GetFrame() => Empty;
+        public IEnumerable<AnimationFrame> GetFrame() => Empty;
 
         public void Update() { }
 
-        public bool ActAsUI() => false;
+        public bool RenderOnUiLayer => false;
     }
 }

@@ -26,7 +26,7 @@ namespace ThirdGame
             var controller = new GameObject("Controller");
 
             GameObjects.Add(controller);
-            GameObjects.Add(new TouchController(CameraUI, KeyboardInputs));
+            GameObjects.Add(new TouchControllerRenderer(CameraUI, KeyboardInputs));
 
             network.MessageReceivedFromOtherClients += (ip, message) =>
             {

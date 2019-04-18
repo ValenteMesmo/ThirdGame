@@ -1,11 +1,12 @@
-﻿using ThirdGame;
+﻿using System.Collections.Generic;
+using ThirdGame;
 
 namespace Common
 {
     public interface AnimationHandler
     {
-        AnimationFrame[] GetFrame();
+        IEnumerable<AnimationFrame> GetFrame();
         void Update();
-        bool ActAsUI();
+        bool RenderOnUiLayer { get; }
     }
 }
