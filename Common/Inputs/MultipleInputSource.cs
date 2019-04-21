@@ -13,6 +13,9 @@
         public bool IsPressingJump { get; set; }
         public bool WasPressingJump { get; private set; }
 
+        public bool IsPressingDown { get; set; }
+        public bool WasPressingDown { get; private set; }
+
         public MultipleInputSource(params Inputs[] inputs)
         {
             this.inputs = inputs;
@@ -23,6 +26,7 @@
             IsPressingLeft = false;
             IsPressingRight = false;
             IsPressingJump = false;
+            IsPressingDown = false;
 
             foreach (var item in inputs)
             {
@@ -34,6 +38,8 @@
                     IsPressingRight = true;
                 if (item.IsPressingJump)
                     IsPressingJump = true;
+                if (item.IsPressingDown)
+                    IsPressingDown = true;
             }
         }
     }

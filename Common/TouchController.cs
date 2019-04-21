@@ -31,39 +31,50 @@ namespace ThirdGame
 
     public class TouchControllerRenderer : GameObject
     {
-        public TouchControllerRenderer(Camera2d camera, Inputs inputs) : base("Touch Controller")
+        public const int BUTTON_TOP_X = -580;
+        public const int BUTTON_TOP_Y = -20;
+        public const int BUTTON_BOT_X = -580;
+        public const int BUTTON_BOT_Y = 180;
+        public const int BUTTON_LEFT_X = -680;
+        public const int BUTTON_LEFT_Y = 80;
+        public const int BUTTON_RIGHT_X = -480;
+        public const int BUTTON_RIGHT_Y = 80;
+        public const int BUTTON_WIDTH = 200;
+        public const int BUTTON_HEIGHT = 200;
+
+        public TouchControllerRenderer(Camera2d camera, Inputs inputs) : base("Touch Controller Renderer")
         {
             Animation = new AnimationGroup(
                 new Animation(new AnimationFrame
                 {
-                    Offset = new Vector2(-580, -20),
+                    Offset = new Vector2(BUTTON_TOP_X, BUTTON_TOP_Y),
                     Anchor = camera.Pos,
-                    Height = 200,
-                    Width = 200,
+                    Height = BUTTON_HEIGHT,
+                    Width = BUTTON_WIDTH,
                     Texture = "dpad_up"
                 }),
                 new Animation(new AnimationFrame
                 {
-                    Offset = new Vector2(-580, 180),
+                    Offset = new Vector2(BUTTON_BOT_X, BUTTON_BOT_Y),
                     Anchor = camera.Pos,
-                    Height = 200,
-                    Width = 200,
+                    Height = BUTTON_WIDTH,
+                    Width = BUTTON_HEIGHT,
                     Texture = "dpad_down"
                 }),
                 new Animation(new AnimationFrame
                 {
-                    Offset = new Vector2(-680, 80),
+                    Offset = new Vector2(BUTTON_LEFT_X, BUTTON_LEFT_Y),
                     Anchor = camera.Pos,
-                    Height = 200,
-                    Width = 200,
+                    Height = BUTTON_HEIGHT,
+                    Width = BUTTON_WIDTH,
                     Texture = "dpad_left"
                 }),
                 new Animation(new AnimationFrame
                 {
-                    Offset = new Vector2(-480, 80),
+                    Offset = new Vector2(BUTTON_RIGHT_X, BUTTON_RIGHT_Y),
                     Anchor = camera.Pos,
-                    Height = 200,
-                    Width = 200,
+                    Height = BUTTON_HEIGHT,
+                    Width = BUTTON_WIDTH,
                     Texture = "dpad_right"
                 }),
                 new Animation(new AnimationFrame

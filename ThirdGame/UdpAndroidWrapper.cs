@@ -43,7 +43,7 @@ namespace ThirdGame
                                 using (DatagramPacket packet = new DatagramPacket(msg, msg.Length, ip, PORT))
                                     await socket.SendAsync(packet);
                             }
-                            catch (Exception ex)
+                            catch //(Exception ex)
                             {
                                 //o que fazer se nao conseguir enviar?
                             }
@@ -116,14 +116,14 @@ namespace ThirdGame
                                 }
                                 //TODO: verifcar ocorrencia de exceptions aqui...
                                 //tenho impressao que esse task delay travou a renderizacao do jogo
-                                catch (Exception ex)
+                                catch //(Exception ex)
                                 {
                                     //    await Task.Delay(100);
                                 }
                             }
                         }
                     }
-                    catch (Exception ex)
+                    catch //(Exception ex)
                     {
                         //    await Task.Delay(1000);
                     }

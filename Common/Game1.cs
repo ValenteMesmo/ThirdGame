@@ -18,7 +18,7 @@ namespace ThirdGame
         private Camera2d CameraUI;
         private Dictionary<string, Texture2D> Sprites = new Dictionary<string, Texture2D>();
         private SpriteFont SpriteFont;
-        FramerateCounter smartFPS = new FramerateCounter();
+        private FramerateCounter smartFPS = new FramerateCounter();
 
         public Game1(UdpService UdpWrapper, bool RuningOnAndroid = false)
         {
@@ -72,6 +72,7 @@ namespace ThirdGame
             spriteBatchUi = new SpriteBatch(GraphicsDevice);
             Sprites.Add("char", Content.Load<Texture2D>("char"));
             Sprites.Add("char_walk", Content.Load<Texture2D>("char_walk"));
+            Sprites.Add("char_crouch", Content.Load<Texture2D>("char_crouch"));
             Sprites.Add("btn_up", Content.Load<Texture2D>("btn_up"));
             Sprites.Add("btn_down", Content.Load<Texture2D>("btn_down"));
             Sprites.Add("btn_left", Content.Load<Texture2D>("btn_left"));
@@ -99,7 +100,7 @@ namespace ThirdGame
                 Camera.Update();
                 GameLoop.Update();
             }
-            catch (System.Exception ex)
+            catch //(System.Exception ex)
             {
 
             }
@@ -170,7 +171,7 @@ LOG: {LOG}"
                 spriteBatch.End();
                 spriteBatchUi.End();
             }
-            catch (System.Exception ex)
+            catch //(System.Exception ex)
             {
 
             }

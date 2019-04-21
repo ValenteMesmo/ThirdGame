@@ -10,23 +10,24 @@ namespace ThirdGame
     {
         public List<GameObject> GameObjects = new List<GameObject>();
         private readonly Camera2d Camera;
-        private Inputs KeyboardInputs;
+        private readonly Inputs PlayerInputs;
         private readonly NetworkHandler network;
 
         public GameLoop(UdpService UdpWrapper, Camera2d Camera, Camera2d CameraUI)
         {
             this.Camera = Camera;
-            KeyboardInputs = new MultipleInputSource(new KeyboardInputs(),new TouchControlInputs(CameraUI));
-            network = new NetworkHandler(UdpWrapper, KeyboardInputs);
+            var TouchWrapper = new TouchWrapper(CameraUI);
+            PlayerInputs = new MultipleInputSource(new KeyboardInputs(), new TouchControlInputs(TouchWrapper));
+            network = new NetworkHandler(UdpWrapper, PlayerInputs);
 
-            var Player = new Player("player", KeyboardInputs, Camera, network);
+            var Player = new Player("player", PlayerInputs, Camera, network);
 
             GameObjects.Add(Player);
 
             var controller = new GameObject("Controller");
 
             GameObjects.Add(controller);
-            GameObjects.Add(new TouchControllerRenderer(CameraUI, KeyboardInputs));
+            GameObjects.Add(new TouchControllerRenderer(CameraUI, PlayerInputs));
 
             network.MessageReceivedFromOtherClients += (ip, message) =>
             {
@@ -67,7 +68,7 @@ namespace ThirdGame
 
         public void Update()
         {
-            KeyboardInputs.Update();
+            PlayerInputs.Update();
             network.Update();
 
             for (int i = 0; i < GameObjects.Count; i++)

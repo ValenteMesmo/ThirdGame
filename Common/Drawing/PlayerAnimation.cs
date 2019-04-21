@@ -45,6 +45,7 @@ namespace Common
         private readonly Inputs Inputs;
         private readonly Animation IdleAnimation;
         private readonly Animation WalkAnimation;
+        private readonly Animation CrouchAnimation;        
         private Animation CurremtAnimation;
         private const int SIZE = 800;
         private const int CENTER = 50;
@@ -58,6 +59,16 @@ namespace Common
                 new AnimationFrame
                 {
                     Texture = "char",
+                    Anchor = playerPosition,
+                    Width = SIZE,
+                    Height = SIZE
+                }
+            );
+
+            CrouchAnimation = new Animation(
+                new AnimationFrame
+                {
+                    Texture = "char_crouch",
                     Anchor = playerPosition,
                     Width = SIZE,
                     Height = SIZE
@@ -90,6 +101,8 @@ namespace Common
         {
             if ((Inputs.IsPressingLeft || Inputs.IsPressingRight))
                 CurremtAnimation = WalkAnimation;
+            else if (Inputs.IsPressingDown)
+                CurremtAnimation = CrouchAnimation;
             else
                 CurremtAnimation = IdleAnimation;
 
