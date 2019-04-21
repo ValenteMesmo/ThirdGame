@@ -43,8 +43,7 @@ namespace Common
                     else
                         IsPressingLeft = false;
 
-                    if (IsPressingLeft == false
-                        && position.X >= TouchControllerRenderer.BUTTON_RIGHT_X + 60
+                    if (position.X >= TouchControllerRenderer.BUTTON_RIGHT_X + 60
                         && position.X <= TouchControllerRenderer.BUTTON_RIGHT_X + TouchControllerRenderer.BUTTON_WIDTH
                         && position.Y >= TouchControllerRenderer.BUTTON_RIGHT_Y + 20
                         && position.Y <= TouchControllerRenderer.BUTTON_RIGHT_Y + TouchControllerRenderer.BUTTON_HEIGHT - 20)
