@@ -39,8 +39,8 @@ namespace UnitTestProject
 
             var positon = new Vector2()
             {
-                X = TouchControllerRenderer.BUTTON_RIGHT_X + 160,
-                Y = TouchControllerRenderer.BUTTON_RIGHT_Y + 160
+                X = TouchControllerRenderer.BUTTON_RIGHT_X + 60,
+                Y = TouchControllerRenderer.BUTTON_RIGHT_Y + 60
             };
 
             touchInputs.GetTouchCollection().Returns(positon.Yield());
