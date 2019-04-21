@@ -14,6 +14,9 @@
         bool IsPressingDown { get; set; }
         bool WasPressingDown { get; }
 
+        bool IsPressingUp { get; set; }
+        bool WasPressingUp { get; }
+
         void Update();
     }
 

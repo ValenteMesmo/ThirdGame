@@ -59,6 +59,9 @@ namespace Common
         public bool IsPressingDown { get; set; }
         public bool WasPressingDown { get; private set; }
 
+        public bool IsPressingUp { get; set; }
+        public bool WasPressingUp { get; private set; }
+
         public void Update()
         {
             TouchInputs.Update();
@@ -84,13 +87,21 @@ namespace Common
                     else
                         IsPressingRight = false;
 
-                    if (position.X >= TouchControllerRenderer.BUTTON_BOT_X
-                        && position.X <= TouchControllerRenderer.BUTTON_BOT_X + TouchControllerRenderer.BUTTON_WIDTH
+                    if (position.X >= TouchControllerRenderer.BUTTON_BOT_X + 20
+                        && position.X <= TouchControllerRenderer.BUTTON_BOT_X + TouchControllerRenderer.BUTTON_WIDTH -20
                         && position.Y >= TouchControllerRenderer.BUTTON_BOT_Y
                         && position.Y <= TouchControllerRenderer.BUTTON_BOT_Y + TouchControllerRenderer.BUTTON_HEIGHT)
                         IsPressingDown = true;
                     else
                         IsPressingDown = false;
+
+                    if (position.X >= TouchControllerRenderer.BUTTON_TOP_X + 20
+                        && position.X <= TouchControllerRenderer.BUTTON_TOP_X + TouchControllerRenderer.BUTTON_WIDTH - 20
+                        && position.Y >= TouchControllerRenderer.BUTTON_TOP_Y
+                        && position.Y <= TouchControllerRenderer.BUTTON_TOP_Y + TouchControllerRenderer.BUTTON_HEIGHT)
+                        IsPressingUp = true;
+                    else
+                        IsPressingUp = false;
                 }
             }
             else
@@ -98,6 +109,7 @@ namespace Common
                 IsPressingRight =
                     IsPressingJump =
                     IsPressingDown =
+                    IsPressingUp =
                     IsPressingLeft = false;
             }
 

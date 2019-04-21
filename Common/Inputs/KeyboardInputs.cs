@@ -16,6 +16,9 @@ namespace Common
         public bool IsPressingDown { get; set; }
         public bool WasPressingDown { get; private set; }
 
+        public bool IsPressingUp { get; set; }
+        public bool WasPressingUp { get; private set; }
+
         public void Update()
         {
             var state = Keyboard.GetState();
@@ -23,6 +26,7 @@ namespace Common
             IsPressingRight = state.IsKeyDown(Keys.D) || state.IsKeyDown(Keys.Right);
             IsPressingJump = state.IsKeyDown(Keys.K) || state.IsKeyDown(Keys.Space);
             IsPressingDown = state.IsKeyDown(Keys.S) || state.IsKeyDown(Keys.Down);
+            IsPressingUp = state.IsKeyDown(Keys.W) || state.IsKeyDown(Keys.Up);
         }
 
         //public void AfterUpdate()

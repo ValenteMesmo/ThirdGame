@@ -73,6 +73,7 @@ namespace ThirdGame
             Sprites.Add("char", Content.Load<Texture2D>("char"));
             Sprites.Add("char_walk", Content.Load<Texture2D>("char_walk"));
             Sprites.Add("char_crouch", Content.Load<Texture2D>("char_crouch"));
+            Sprites.Add("char_up", Content.Load<Texture2D>("char_up"));
             Sprites.Add("btn_up", Content.Load<Texture2D>("btn_up"));
             Sprites.Add("btn_down", Content.Load<Texture2D>("btn_down"));
             Sprites.Add("btn_left", Content.Load<Texture2D>("btn_left"));

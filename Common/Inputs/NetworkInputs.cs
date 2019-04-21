@@ -14,12 +14,16 @@
         public bool IsPressingDown { get; set; }
         public bool WasPressingDown { get; private set; }
 
+        public bool IsPressingUp { get; set; }
+        public bool WasPressingUp { get; private set; }
+
         public void AfterUpdate()
         {
             WasPressingLeft = IsPressingLeft;
             WasPressingRight = IsPressingRight;
             WasPressingJump = IsPressingJump;
             WasPressingDown = IsPressingDown;
+            WasPressingUp = IsPressingUp;
         }
 
         public void Update()
