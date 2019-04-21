@@ -53,7 +53,7 @@ namespace Common
 
                     if (position.X >= TouchControllerRenderer.BUTTON_BOT_X + 20
                         && position.X <= TouchControllerRenderer.BUTTON_BOT_X + TouchControllerRenderer.BUTTON_WIDTH -20
-                        && position.Y >= TouchControllerRenderer.BUTTON_BOT_Y
+                        && position.Y >= TouchControllerRenderer.BUTTON_BOT_Y + 60
                         && position.Y <= TouchControllerRenderer.BUTTON_BOT_Y + TouchControllerRenderer.BUTTON_HEIGHT)
                         IsPressingDown = true;
                     else
@@ -62,7 +62,7 @@ namespace Common
                     if (position.X >= TouchControllerRenderer.BUTTON_TOP_X + 20
                         && position.X <= TouchControllerRenderer.BUTTON_TOP_X + TouchControllerRenderer.BUTTON_WIDTH - 20
                         && position.Y >= TouchControllerRenderer.BUTTON_TOP_Y
-                        && position.Y <= TouchControllerRenderer.BUTTON_TOP_Y + TouchControllerRenderer.BUTTON_HEIGHT)
+                        && position.Y <= TouchControllerRenderer.BUTTON_TOP_Y + TouchControllerRenderer.BUTTON_HEIGHT -60)
                         IsPressingUp = true;
                     else
                         IsPressingUp = false;

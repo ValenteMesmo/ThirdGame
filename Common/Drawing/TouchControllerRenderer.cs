@@ -5,16 +5,16 @@ namespace ThirdGame
 {
     public class TouchControllerRenderer : GameObject
     {
-        public const int BUTTON_TOP_X = -580;
-        public const int BUTTON_TOP_Y = -20;
-        public const int BUTTON_BOT_X = -580;
-        public const int BUTTON_BOT_Y = 180;
+        public const int BUTTON_TOP_X = -580 - 25;
+        public const int BUTTON_TOP_Y = -20 + 25 + 50 + 25;
+        public const int BUTTON_BOT_X = -580 - 25;
+        public const int BUTTON_BOT_Y = 180 - 25 +50 + 25;
         public const int BUTTON_LEFT_X = -680;
-        public const int BUTTON_LEFT_Y = 80;
-        public const int BUTTON_RIGHT_X = -480;
-        public const int BUTTON_RIGHT_Y = 80;
-        public const int BUTTON_WIDTH = 200;
-        public const int BUTTON_HEIGHT = 200;
+        public const int BUTTON_LEFT_Y = 80 + 50 + 25;
+        public const int BUTTON_RIGHT_X = -480 - 50;
+        public const int BUTTON_RIGHT_Y = 80 + 50 + 25;
+        public const int BUTTON_WIDTH = 200 - 50;
+        public const int BUTTON_HEIGHT = 200 - 50;
 
         public TouchControllerRenderer(Camera2d camera, Inputs inputs) : base("Touch Controller Renderer")
         {
