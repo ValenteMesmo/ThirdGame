@@ -1,43 +1,8 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Input;
-using Microsoft.Xna.Framework.Input.Touch;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using ThirdGame;
 
 namespace Common
 {
-    public interface TouchInputs
-    {
-        void Update();
-        IEnumerable<Vector2> GetTouchCollection();
-    }
-
-    public class TouchWrapper : TouchInputs
-    {
-        private readonly Camera2d camera;
-        private readonly List<Vector2> touchCollection = new List<Vector2>();
-
-        public TouchWrapper(Camera2d camera) =>
-            this.camera = camera;
-
-        public IEnumerable<Vector2> GetTouchCollection() => touchCollection;
-
-        public void Update()
-        {
-            var mouse = Mouse.GetState();
-            var touch = TouchPanel.GetState();
-
-            touchCollection.Clear();
-
-            if (mouse.LeftButton == ButtonState.Pressed)
-                touchCollection.Add(camera.ToWorldLocation(mouse.Position.ToVector2()));
-
-            foreach (var item in touch)
-                touchCollection.Add(camera.ToWorldLocation(item.Position));
-        }
-    }
-
     public class TouchControlInputs : Inputs
     {
         private readonly TouchInputs TouchInputs;

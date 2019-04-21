@@ -19,6 +19,4 @@
 
         void Update();
     }
-
-
 }

@@ -44,37 +44,46 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Drawing\AnimationGroup.cs" />
+    <Compile Include="Physics\Area.cs" />
+    <Compile Include="Physics\Collider.cs" />
+    <Compile Include="Drawing\Animation.cs" />
     <Compile Include="Drawing\AnimationFrame.cs" />
     <Compile Include="Drawing\AnimationHandler.cs" />
     <Compile Include="Extensions\IEnumerableExtensions.cs" />
     <Compile Include="FramerateCounter.cs" />
+    <Compile Include="Physics\IHandleCollision.cs" />
     <Compile Include="Inputs\Inputs.cs" />
     <Compile Include="Inputs\MultipleInputSource.cs" />
     <Compile Include="Inputs\NetworkInputs.cs" />
     <Compile Include="Inputs\TouchControlInputs.cs" />
-    <Compile Include="TouchController.cs" />
+    <Compile Include="Inputs\TouchInputs.cs" />
+    <Compile Include="Inputs\TouchInputsWrapper.cs" />
+    <Compile Include="NoUpdate.cs" />
+    <Compile Include="Drawing\TouchControllerRenderer.cs" />
+    <Compile Include="Updates\ChangeSpeedUsingKeyboard.cs" />
     <Compile Include="Updates\LearpToPosition.cs" />
     <Compile Include="Network\NetworkHandler.cs" />
-    <Compile Include="NetworkPlayer.cs" />
+    <Compile Include="GameObjects\NetworkPlayer.cs" />
     <Compile Include="Network\NetworkUpdateTracker.cs" />
     <Compile Include="Network\ServerIpFinder.cs" />
-    <Compile Include="Player.cs" />
-    <Compile Include="Speedometer.cs" />
+    <Compile Include="GameObjects\Player.cs" />
+    <Compile Include="Physics\Speedometer.cs" />
     <Compile Include="Updates\BroadCastState.cs" />
     <Compile Include="Camera2d.cs" />
     <Compile Include="Game1.cs" />
     <Compile Include="GameLoop.cs" />
-    <Compile Include="GameObject.cs" />
+    <Compile Include="GameObjects\GameObject.cs" />
     <Compile Include="Updates\IHandleUpdates.cs" />
     <Compile Include="Network\IUdpService.cs" />
     <Compile Include="Inputs\KeyboardInputs.cs" />
-    <Compile Include="Updates\MovesPlayerUsingKeyboard.cs" />
     <Compile Include="Network\MyMessageEncoder.cs" />
     <Compile Include="Drawing\NoAnimation.cs" />
-    <Compile Include="Drawing\PlayerAnimation.cs" />
+    <Compile Include="Drawing\PlayerAnimator.cs" />
     <Compile Include="Physics\PositionComponent.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Updates\MovesPlayerUsingMouse.cs" />
+    <Compile Include="Updates\MovesWithSpeed.cs" />
     <Compile Include="Updates\UpdateAggregation.cs" />
   </ItemGroup>
   <ItemGroup>

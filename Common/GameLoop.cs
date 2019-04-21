@@ -16,7 +16,7 @@ namespace ThirdGame
         public GameLoop(UdpService UdpWrapper, Camera2d Camera, Camera2d CameraUI)
         {
             this.Camera = Camera;
-            var TouchWrapper = new TouchWrapper(CameraUI);
+            var TouchWrapper = new TouchInputsWrapper(CameraUI);
             PlayerInputs = new MultipleInputSource(new KeyboardInputs(), new TouchControlInputs(TouchWrapper));
             network = new NetworkHandler(UdpWrapper, PlayerInputs);
 
