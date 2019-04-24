@@ -13,5 +13,6 @@ namespace ThirdGame
         public int Width { get; set; }
         public int Height { get; set; }
         public int DurationInUpdateCount { get; set; }
+        public Color Color { get; set; }
     }
 }

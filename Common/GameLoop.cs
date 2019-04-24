@@ -33,9 +33,18 @@ namespace ThirdGame
             {
                 var p = GameObjects.FirstOrDefault(f => f.Id == ip) as NetworkPlayer;
                 p.NetworkPosition.Current = new Vector2(message.X, message.Y);
-                p.NetworkInputs.IsPressingLeft = message.Left;
-                p.NetworkInputs.IsPressingRight = message.Right;
-                p.NetworkInputs.IsPressingJump = message.A;
+                if (message.Left)
+                    p.NetworkInputs.Direction = Direction.Left;
+                else if (message.Right)
+                    p.NetworkInputs.Direction = Direction.Right;
+                else if (message.Up)
+                    p.NetworkInputs.Direction = Direction.Up;
+                else if (message.Down)
+                    p.NetworkInputs.Direction = Direction.Down;
+                else
+                    p.NetworkInputs.Direction = Direction.None;
+
+                //p.NetworkInputs.IsPressingJump = message.A;
             };
 
             //TODO: atualmente nenhum player é identificado como server... 

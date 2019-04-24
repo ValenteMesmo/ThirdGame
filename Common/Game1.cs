@@ -160,7 +160,7 @@ LOG: {LOG}"
                             , new Point(frame.Width, frame.Height)
                         )
                         , null
-                        , Color.White
+                        , frame.Color
                         , 0
                         , Vector2.Zero//draws[j].CenterOfRotation.Current
                         , SpriteEffects.None

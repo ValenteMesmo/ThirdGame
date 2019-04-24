@@ -110,11 +110,11 @@ namespace ThirdGame
                         position.X
                         , position.Y
                         , ++time
-                        , Up: false
-                        , Down: false
-                        , Left: Inputs.IsPressingLeft
-                        , Right: Inputs.IsPressingRight
-                        , A: Inputs.IsPressingJump
+                        , Up: Inputs.Direction == Direction.Up
+                        , Down: Inputs.Direction == Direction.Down
+                        , Left: Inputs.Direction == Direction.Left
+                        , Right: Inputs.Direction == Direction.Right
+                        , A: false
                         , B: false
                         , C: false
                         , D: false

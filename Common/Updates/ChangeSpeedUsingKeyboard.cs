@@ -15,9 +15,13 @@ namespace Common
 
         public void Update()
         {
-            if (Inputs.IsPressingLeft)
+            if (Inputs.Direction == Direction.Left 
+                || Inputs.Direction == Direction.DownLeft
+                || Inputs.Direction == Direction.UpLeft)
                 Speed.X -= 10;
-            else if (Inputs.IsPressingRight)
+            else if (Inputs.Direction == Direction.Right
+                || Inputs.Direction == Direction.DownRight
+                || Inputs.Direction == Direction.UpRight)
                 Speed.X += 10;
             else if (Speed.X > 0)
                 Speed.X -= 10;
