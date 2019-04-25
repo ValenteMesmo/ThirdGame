@@ -7,7 +7,8 @@ namespace ThirdGame
 {
     public class Game1 : Game
     {
-        public static string LOG;
+        public static Queue<Rectangle> RectanglesToRender = new Queue<Rectangle>();
+            public static string LOG;
         private GraphicsDeviceManager graphics;
         private SpriteBatch spriteBatch;
         private SpriteBatch spriteBatchUi;
@@ -82,6 +83,11 @@ namespace ThirdGame
             Sprites.Add("dpad_down", Content.Load<Texture2D>("dpad_down"));
             Sprites.Add("dpad_left", Content.Load<Texture2D>("dpad_left"));
             Sprites.Add("dpad_right", Content.Load<Texture2D>("dpad_right"));
+
+            var pixel = new Texture2D(GraphicsDevice, 1, 1, false, SurfaceFormat.Color);
+            pixel.SetData(new[] { Color.White });
+            Sprites.Add("pixel", pixel);
+
             SpriteFont = Content.Load<SpriteFont>("SpriteFont");
 
             GameLoop = new GameLoop(UdpWrapper, Camera, CameraUI);
@@ -137,6 +143,7 @@ namespace ThirdGame
                     CameraUI.GetTransformation(GraphicsDevice)
                 );
 
+
                 spriteBatch.DrawString(
                     SpriteFont
                     , $@"FPS: {smartFPS.AverageFramesPerSecond}
@@ -169,6 +176,13 @@ LOG: {LOG}"
                     }
 
                 }
+
+                while (RectanglesToRender.Count > 0)
+                {
+                    var rectangle = RectanglesToRender.Dequeue();
+                    DrawBorder(rectangle, 2, Color.Red);
+                }
+
                 spriteBatch.End();
                 spriteBatchUi.End();
             }
@@ -177,6 +191,15 @@ LOG: {LOG}"
 
             }
             base.Draw(gameTime);
+        }
+
+        private void DrawBorder(Rectangle rectangleToDraw, int thicknessOfBorder, Color borderColor)
+        {
+            var pixel = Sprites["pixel"];
+            spriteBatchUi.Draw(pixel, new Rectangle(rectangleToDraw.X, rectangleToDraw.Y, rectangleToDraw.Width, thicknessOfBorder), null, borderColor, 0, Vector2.Zero, SpriteEffects.None, 0);
+            spriteBatchUi.Draw(pixel, new Rectangle(rectangleToDraw.X, rectangleToDraw.Y, thicknessOfBorder, rectangleToDraw.Height), null, borderColor, 0, Vector2.Zero, SpriteEffects.None, 0);
+            spriteBatchUi.Draw(pixel, new Rectangle((rectangleToDraw.X + rectangleToDraw.Width - thicknessOfBorder), rectangleToDraw.Y, thicknessOfBorder, rectangleToDraw.Height), null, borderColor, 0, Vector2.Zero, SpriteEffects.None, 0);
+            spriteBatchUi.Draw(pixel, new Rectangle(rectangleToDraw.X, rectangleToDraw.Y + rectangleToDraw.Height - thicknessOfBorder, rectangleToDraw.Width, thicknessOfBorder), null, borderColor, 0, Vector2.Zero, SpriteEffects.None, 0);
         }
     }
 }

@@ -32,9 +32,15 @@ namespace WindowsDesktop
                 {
                     if (output != "")
                     {
-                        var bytes = System.Text.Encoding.ASCII.GetBytes(output);
-                        output = "";
-                        await udpClient.SendAsync(bytes, bytes.Length, send_endpoint);
+                        try
+                        {
+                            var bytes = System.Text.Encoding.ASCII.GetBytes(output);
+                            output = "";
+                            await udpClient.SendAsync(bytes, bytes.Length, send_endpoint);
+                        }
+                        catch 
+                        {
+                        }
                     }
                 }
             });

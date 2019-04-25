@@ -32,6 +32,11 @@ namespace ThirdGame
             network.MessageReceivedFromOtherClients += (ip, message) =>
             {
                 var p = GameObjects.FirstOrDefault(f => f.Id == ip) as NetworkPlayer;
+                if (p == null)
+                {
+                    network.PlayerConnected(ip);
+                    return;
+                }
                 p.NetworkPosition.Current = new Vector2(message.X, message.Y);
                 if (message.Left)
                     p.NetworkInputs.Direction = Direction.Left;
