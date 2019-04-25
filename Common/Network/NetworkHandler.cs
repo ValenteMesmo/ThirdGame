@@ -87,7 +87,7 @@ namespace ThirdGame
         {
             for (int i = 0; i < Sockets.Count; i++)
             {
-                if (Sockets[i].UpdatesSinceLastMessage++ > 999)
+                if (Sockets[i].UpdatesSinceLastMessage++ > 200)
                 {
                     PlayerDisconnected(Sockets[i].IP);
                     Sockets.Remove(Sockets[i]);
