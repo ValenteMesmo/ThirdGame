@@ -22,45 +22,45 @@ namespace Common
 
 
         private readonly Rectangle LEFT_BUTTON = new Rectangle(
-            TouchControllerRenderer.BUTTON_LEFT_X - 60,
-            TouchControllerRenderer.BUTTON_LEFT_Y + 20,
-            TouchControllerRenderer.BUTTON_WIDTH - 45+60,
-            TouchControllerRenderer.BUTTON_HEIGHT - 40
+            TouchControllerRenderer.BUTTON_LEFT_X,
+            TouchControllerRenderer.BUTTON_LEFT_Y,
+            TouchControllerRenderer.BUTTON_WIDTH ,
+            TouchControllerRenderer.BUTTON_HEIGHT
         );
 
         private readonly Rectangle RIGHT_BUTTON = new Rectangle(
-            TouchControllerRenderer.BUTTON_RIGHT_X + 50,
-            TouchControllerRenderer.BUTTON_RIGHT_Y + 20,
+            TouchControllerRenderer.BUTTON_RIGHT_X ,
+            TouchControllerRenderer.BUTTON_RIGHT_Y ,
             TouchControllerRenderer.BUTTON_WIDTH ,
-            TouchControllerRenderer.BUTTON_HEIGHT - 40
+            TouchControllerRenderer.BUTTON_HEIGHT 
         );
 
         private readonly Rectangle BOT_BUTTON = new Rectangle(
-            TouchControllerRenderer.BUTTON_BOT_X + 20,
-            TouchControllerRenderer.BUTTON_BOT_Y + 45 ,
-            TouchControllerRenderer.BUTTON_WIDTH - 40,
+            TouchControllerRenderer.BUTTON_BOT_X ,
+            TouchControllerRenderer.BUTTON_BOT_Y ,
+            TouchControllerRenderer.BUTTON_WIDTH ,
             TouchControllerRenderer.BUTTON_HEIGHT 
         );
 
         private readonly Rectangle TOP_BUTTON = new Rectangle(
-            TouchControllerRenderer.BUTTON_TOP_X + 20,
-            TouchControllerRenderer.BUTTON_TOP_Y -60,
-            TouchControllerRenderer.BUTTON_WIDTH - 40,
-            TouchControllerRenderer.BUTTON_HEIGHT - 45 + 60
+            TouchControllerRenderer.BUTTON_TOP_X ,
+            TouchControllerRenderer.BUTTON_TOP_Y ,
+            TouchControllerRenderer.BUTTON_WIDTH ,
+            TouchControllerRenderer.BUTTON_HEIGHT 
         );
 
         private readonly Rectangle ANY_BUTTON = new Rectangle(
            TouchControllerRenderer.BUTTON_LEFT_X
             , TouchControllerRenderer.BUTTON_TOP_Y
-            , TouchControllerRenderer.BUTTON_WIDTH * 2
-            , TouchControllerRenderer.BUTTON_HEIGHT * 2
+            , TouchControllerRenderer.BUTTON_WIDTH * 3
+            , TouchControllerRenderer.BUTTON_HEIGHT * 3
        );
 
         private readonly Rectangle CENTRAL_BUTTON = new Rectangle(
-          TouchControllerRenderer.BUTTON_LEFT_X + TouchControllerRenderer.BUTTON_WIDTH - 50
-           , TouchControllerRenderer.BUTTON_TOP_Y + (TouchControllerRenderer.BUTTON_HEIGHT / 2) + 25
-           , TouchControllerRenderer.BUTTON_WIDTH - 50
-           , TouchControllerRenderer.BUTTON_HEIGHT - 50
+          TouchControllerRenderer.BUTTON_LEFT_X + TouchControllerRenderer.BUTTON_WIDTH 
+           , TouchControllerRenderer.BUTTON_TOP_Y + (TouchControllerRenderer.BUTTON_HEIGHT ) 
+           , TouchControllerRenderer.BUTTON_WIDTH 
+           , TouchControllerRenderer.BUTTON_HEIGHT
       );
 
         private Vector2 previousPosition;
@@ -74,6 +74,9 @@ namespace Common
             //Game1.RectanglesToRender.Enqueue(RIGHT_BUTTON);
             //Game1.RectanglesToRender.Enqueue(TOP_BUTTON);
             //Game1.RectanglesToRender.Enqueue(BOT_BUTTON);
+            Game1.RectanglesToRender.Enqueue(ANY_BUTTON);
+            Game1.RectanglesToRender.Enqueue(CENTRAL_BUTTON);
+
             TouchInputs.Update();
             var touchCollection = TouchInputs.GetTouchCollection();
             anyDpadPressed = false;

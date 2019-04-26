@@ -74,15 +74,8 @@ namespace ThirdGame
             Sprites.Add("char", Content.Load<Texture2D>("char"));
             Sprites.Add("char_walk", Content.Load<Texture2D>("char_walk"));
             Sprites.Add("char_crouch", Content.Load<Texture2D>("char_crouch"));
-            Sprites.Add("char_up", Content.Load<Texture2D>("char_up"));
-            Sprites.Add("btn_up", Content.Load<Texture2D>("btn_up"));
-            Sprites.Add("btn_down", Content.Load<Texture2D>("btn_down"));
-            Sprites.Add("btn_left", Content.Load<Texture2D>("btn_left"));
-            Sprites.Add("btn_right", Content.Load<Texture2D>("btn_right"));
-            Sprites.Add("dpad_up", Content.Load<Texture2D>("dpad_up"));
-            Sprites.Add("dpad_down", Content.Load<Texture2D>("dpad_down"));
-            Sprites.Add("dpad_left", Content.Load<Texture2D>("dpad_left"));
-            Sprites.Add("dpad_right", Content.Load<Texture2D>("dpad_right"));
+            Sprites.Add("char_up", Content.Load<Texture2D>("char_up"));            
+            Sprites.Add("dpad", Content.Load<Texture2D>("dpad"));
 
             var pixel = new Texture2D(GraphicsDevice, 1, 1, false, SurfaceFormat.Color);
             pixel.SetData(new[] { Color.White });
@@ -161,17 +154,17 @@ LOG: {LOG}"
                     foreach (var frame in obj.Animation.GetFrame())
                     {
                         (obj.Animation.RenderOnUiLayer ? spriteBatchUi : spriteBatch).Draw(
-                        Sprites[frame.Texture]
-                        , new Rectangle(
+                        texture: Sprites[frame.Texture]
+                        ,destinationRectangle: new Rectangle(
                             (frame.Anchor.Current + frame.Offset).ToPoint()
                             , new Point(frame.Width, frame.Height)
                         )
-                        , null
-                        , frame.Color
-                        , 0
-                        , Vector2.Zero//draws[j].CenterOfRotation.Current
-                        , SpriteEffects.None
-                        , 0
+                        , sourceRectangle: null
+                        , color:frame.Color
+                        , rotation: frame.Rotation
+                        , origin: frame.RotationAnchor
+                        , effects: SpriteEffects.None
+                        , layerDepth: 0f
                     );
                     }
 
