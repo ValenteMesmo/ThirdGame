@@ -97,7 +97,7 @@ namespace ThirdGame
                         {
                             socket.JoinGroup(ip);
                             byte[] data = new byte[MyMessageEncoder.PACKAGE_SIZE];
-
+                            var failCount = 0;
                             while (NotDisposed)
                             {
                                 try
@@ -112,20 +112,21 @@ namespace ThirdGame
 
                                         var message = System.Text.Encoding.ASCII.GetString(packet.GetData());
                                         MessageReceived(ip, message);
+                                        failCount = 0;
                                     }
                                 }
-                                //TODO: verifcar ocorrencia de exceptions aqui...
-                                //tenho impressao que esse task delay travou a renderizacao do jogo
-                                catch //(Exception ex)
+                                catch (Exception ex)
                                 {
-                                    //    await Task.Delay(100);
+                                    failCount++;
+                                    if (failCount > 5)
+                                        throw ex;
                                 }
                             }
                         }
                     }
                     catch //(Exception ex)
                     {
-                        //    await Task.Delay(1000);
+                        await Task.Delay(1000);
                     }
             });
         }
