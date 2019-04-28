@@ -1,5 +1,4 @@
 ﻿using Common;
-using Microsoft.Xna.Framework.Graphics;
 
 namespace ThirdGame
 {
@@ -10,13 +9,19 @@ namespace ThirdGame
 
         public NetworkPlayer(string Id) : base(Id)
         {
-            var speed = new Speedometer();
             Animation = new PlayerAnimator(Position, NetworkInputs);
             Update = new UpdateAggregation(
-                 new ChangeSpeedUsingKeyboard(NetworkInputs, speed)
-                 , new MovesWithSpeed(Position, speed)
+                 new ChangeSpeedUsingKeyboard(NetworkInputs, this)
                  , new LearpToPosition(Position, NetworkPosition)
             );
+            Colliders = new Collider[] {
+                new Collider(this) {
+                    X = 0,
+                    Y=0,
+                    Width=PlayerAnimator.SIZE,
+                    Height=PlayerAnimator.SIZE
+                }
+            };
         }
     }
 }

@@ -1,19 +1,24 @@
-﻿namespace Common
+﻿using System;
+using Microsoft.Xna.Framework;
+
+namespace Common
 {
     public class Collider
     {
-        public Area Area { get; set; }
+        private float OffsetX;
+        private float OffsetY;
+        public float X { get => Parent.Position.Current.X + OffsetX; set => OffsetX = value; }
+        public float Y { get => Parent.Position.Current.Y + OffsetY; set => OffsetY = value; }
+        public float Width { get; set; }
+        public float Height { get; set; }
         public bool Disabled { get; set; }
-        public readonly object Parent;
+        public readonly GameObject Parent;
 
-        internal IHandleCollision[] TopCollisionHandlers = new IHandleCollision[0];
-        internal IHandleCollision[] BotCollisionHandlers = new IHandleCollision[0];
-        internal IHandleCollision[] LeftCollisionHandlers = new IHandleCollision[0];
-        internal IHandleCollision[] RightCollisionHandlers = new IHandleCollision[0];
-
-        public Collider(object Parent)
+        public Collider(GameObject Parent)
         {
             this.Parent = Parent;
         }
+
+        public Rectangle AsRectangle() => new Rectangle((int)X, (int)Y, (int)Width, (int)Height);
     }
 }

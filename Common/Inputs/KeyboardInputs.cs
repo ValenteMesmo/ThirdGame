@@ -4,25 +4,18 @@ namespace Common
 {
     public class KeyboardInputs : Inputs
     {
-        public Direction Direction { get; set; }
+        public DpadDirection Direction { get; set; }
 
         public void Update()
         {
             var state = Keyboard.GetState();
 
-            Direction = Direction.None;
+            Direction = DpadDirection.None;
 
-            if (state.IsKeyDown(Keys.A) || state.IsKeyDown(Keys.Left)) Direction = Direction.Left;
-            else if (state.IsKeyDown(Keys.D) || state.IsKeyDown(Keys.Right)) Direction = Direction.Right;
-            else if (state.IsKeyDown(Keys.S) || state.IsKeyDown(Keys.Down)) Direction = Direction.Down;
-            else if (state.IsKeyDown(Keys.W) || state.IsKeyDown(Keys.Up)) Direction = Direction.Up;
+            if (state.IsKeyDown(Keys.A) || state.IsKeyDown(Keys.Left)) Direction = DpadDirection.Left;
+            else if (state.IsKeyDown(Keys.D) || state.IsKeyDown(Keys.Right)) Direction = DpadDirection.Right;
+            else if (state.IsKeyDown(Keys.S) || state.IsKeyDown(Keys.Down)) Direction = DpadDirection.Down;
+            else if (state.IsKeyDown(Keys.W) || state.IsKeyDown(Keys.Up)) Direction = DpadDirection.Up;
         }
-
-        //public void AfterUpdate()
-        //{
-        //    WasPressingLeft = IsPressingLeft;
-        //    WasPressingRight = IsPressingRight;
-        //    WasPressingJump = IsPressingJump;
-        //}
     }
 }

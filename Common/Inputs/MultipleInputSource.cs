@@ -4,20 +4,7 @@
     {
         private readonly Inputs[] inputs;
 
-        public Direction Direction { get; set; }
-        //public bool WasPressingLeft { get; private set; }
-
-        //public bool IsPressingRight { get; set; }
-        //public bool WasPressingRight { get; private set; }
-
-        //public bool IsPressingJump { get; set; }
-        //public bool WasPressingJump { get; private set; }
-
-        //public bool IsPressingDown { get; set; }
-        //public bool WasPressingDown { get; private set; }
-
-        //public bool IsPressingUp { get; set; }
-        //public bool WasPressingUp { get; private set; }
+        public DpadDirection Direction { get; set; }
 
         public MultipleInputSource(params Inputs[] inputs)
         {
@@ -26,13 +13,13 @@
 
         public void Update()
         {
-            Direction = Direction.None;
+            Direction = DpadDirection.None;
 
             foreach (var item in inputs)
             {
                 item.Update();
 
-                if (item.Direction != Direction.None)
+                if (item.Direction != DpadDirection.None)
                     Direction = item.Direction;
             }
         }

@@ -110,10 +110,10 @@ namespace ThirdGame
                         position.X
                         , position.Y
                         , ++time
-                        , Up: Inputs.Direction == Direction.Up
-                        , Down: Inputs.Direction == Direction.Down
-                        , Left: Inputs.Direction == Direction.Left
-                        , Right: Inputs.Direction == Direction.Right
+                        , Up: Inputs.Direction == DpadDirection.Up
+                        , Down: Inputs.Direction == DpadDirection.Down
+                        , Left: Inputs.Direction == DpadDirection.Left
+                        , Right: Inputs.Direction == DpadDirection.Right
                         , A: false
                         , B: false
                         , C: false

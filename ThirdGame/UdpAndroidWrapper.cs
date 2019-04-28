@@ -124,7 +124,7 @@ namespace ThirdGame
                             }
                         }
                     }
-                    catch //(Exception ex)
+                    catch
                     {
                         await Task.Delay(1000);
                     }

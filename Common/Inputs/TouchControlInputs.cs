@@ -65,17 +65,17 @@ namespace Common
 
         private Vector2 previousPosition;
 
-        public Direction Direction { get; set; }
-        private Direction previousDirection;
+        public DpadDirection Direction { get; set; }
+        private DpadDirection previousDirection;
 
         public void Update()
         {
-            //Game1.RectanglesToRender.Enqueue(LEFT_BUTTON);
-            //Game1.RectanglesToRender.Enqueue(RIGHT_BUTTON);
-            //Game1.RectanglesToRender.Enqueue(TOP_BUTTON);
-            //Game1.RectanglesToRender.Enqueue(BOT_BUTTON);
-            Game1.RectanglesToRender.Enqueue(ANY_BUTTON);
-            Game1.RectanglesToRender.Enqueue(CENTRAL_BUTTON);
+            //Game1.RectanglesToRenderUI.Enqueue(LEFT_BUTTON);
+            //Game1.RectanglesToRenderUI.Enqueue(RIGHT_BUTTON);
+            //Game1.RectanglesToRenderUI.Enqueue(TOP_BUTTON);
+            //Game1.RectanglesToRenderUI.Enqueue(BOT_BUTTON);
+            //Game1.RectanglesToRenderUI.Enqueue(ANY_BUTTON);
+            //Game1.RectanglesToRenderUI.Enqueue(CENTRAL_BUTTON);
 
             TouchInputs.Update();
             var touchCollection = TouchInputs.GetTouchCollection();
@@ -89,22 +89,22 @@ namespace Common
                     {
                         if (LEFT_BUTTON.Contains(position))
                         {
-                            Direction = Direction.Left;
+                            Direction = DpadDirection.Left;
                             anyDpadPressed = true;
                         }
                         else if (RIGHT_BUTTON.Contains(position))
                         {
-                            Direction = Direction.Right;
+                            Direction = DpadDirection.Right;
                             anyDpadPressed = true;
                         }
                         else if (BOT_BUTTON.Contains(position))
                         {
-                            Direction = Direction.Down;
+                            Direction = DpadDirection.Down;
                             anyDpadPressed = true;
                         }
                         else if (TOP_BUTTON.Contains(position))
                         {
-                            Direction = Direction.Up;
+                            Direction = DpadDirection.Up;
                             anyDpadPressed = true;
                         }
                         else if (CENTRAL_BUTTON.Contains(position))
@@ -122,24 +122,24 @@ namespace Common
                             if (HorizontalDiference && !VerticalDiference)
                             {
                                 if (distanceX >= 0)
-                                    Direction = Direction.Right;
+                                    Direction = DpadDirection.Right;
                                 else
-                                    Direction = Direction.Left;
+                                    Direction = DpadDirection.Left;
                             }
                             else if (!HorizontalDiference && VerticalDiference)
                             {
                                 if (distanceY >= 0)
-                                    Direction = Direction.Down;
+                                    Direction = DpadDirection.Down;
                                 else
-                                    Direction = Direction.Up;
+                                    Direction = DpadDirection.Up;
 
                             }
                             else if (HorizontalDiference && VerticalDiference)
                             {
                                 if (distanceX >= 0)
-                                    Direction = Direction.Right;
+                                    Direction = DpadDirection.Right;
                                 else
-                                    Direction = Direction.Left;
+                                    Direction = DpadDirection.Left;
                             }
                             else
                             {
@@ -155,11 +155,11 @@ namespace Common
                 }
 
                 if (!anyDpadPressed)
-                    Direction = Direction.None;
+                    Direction = DpadDirection.None;
             }
             else
             {
-                Direction = Direction.None;
+                Direction = DpadDirection.None;
             }
 
         }

@@ -39,7 +39,7 @@ namespace ThirdGame
         public TouchControllerRenderer(Camera2d camera, Inputs inputs) : base("Touch Controller Renderer")
         {
             Animation = new AnimationGroup(
-                new TogglableAnimation(() => inputs.Direction == Direction.Up,
+                new TogglableAnimation(() => inputs.Direction == DpadDirection.Up,
                     new Animation(
                         new AnimationFrame
                         {
@@ -63,7 +63,7 @@ namespace ThirdGame
                             RotationAnchor = new Vector2(BUTTON_WIDTH / 2, BUTTON_HEIGHT / 2)
                         })
                 ),
-                new TogglableAnimation(() => inputs.Direction == Direction.Down
+                new TogglableAnimation(() => inputs.Direction == DpadDirection.Down
                     , new Animation(new AnimationFrame
                     {
                         Offset = new Vector2(BUTTON_BOT_X + (BUTTON_WIDTH / 2), BUTTON_BOT_Y + (BUTTON_HEIGHT / 2)),
@@ -87,7 +87,7 @@ namespace ThirdGame
                         RotationAnchor = new Vector2(BUTTON_WIDTH / 2, BUTTON_HEIGHT / 2),
                         Rotation = DEGREE_180
                     })),
-                new TogglableAnimation(() => inputs.Direction == Direction.Left
+                new TogglableAnimation(() => inputs.Direction == DpadDirection.Left
                     , new Animation(new AnimationFrame
                     {
                         Offset = new Vector2(BUTTON_LEFT_X + (BUTTON_WIDTH / 2), BUTTON_LEFT_Y + (BUTTON_HEIGHT / 2)),
@@ -110,7 +110,7 @@ namespace ThirdGame
                         RotationAnchor = new Vector2(BUTTON_WIDTH / 2, BUTTON_HEIGHT / 2),
                         Rotation = DEGREE_270
                     })),
-                new TogglableAnimation(() => inputs.Direction == Direction.Right
+                new TogglableAnimation(() => inputs.Direction == DpadDirection.Right
                     , new Animation(new AnimationFrame
                     {
                         Offset = new Vector2(BUTTON_RIGHT_X + (BUTTON_WIDTH / 2), BUTTON_RIGHT_Y + (BUTTON_HEIGHT / 2)),
@@ -136,7 +136,7 @@ namespace ThirdGame
 
 
 
-                new TogglableAnimation(() => inputs.Direction == Direction.Up,
+                new TogglableAnimation(() => inputs.Direction == DpadDirection.Up,
                     new Animation(
                         new AnimationFrame
                         {
@@ -160,7 +160,7 @@ namespace ThirdGame
                             RotationAnchor = new Vector2(BUTTON_WIDTH / 2, BUTTON_HEIGHT / 2)
                         })
                 ),
-                new TogglableAnimation(() => inputs.Direction == Direction.Down
+                new TogglableAnimation(() => inputs.Direction == DpadDirection.Down
                     , new Animation(new AnimationFrame
                     {
                         Offset = new Vector2(BUTTON2_BOT_X + (BUTTON_WIDTH / 2), BUTTON2_BOT_Y + (BUTTON_HEIGHT / 2)),
@@ -184,7 +184,7 @@ namespace ThirdGame
                         RotationAnchor = new Vector2(BUTTON_WIDTH / 2, BUTTON_HEIGHT / 2),
                         Rotation = DEGREE_180
                     })),
-                new TogglableAnimation(() => inputs.Direction == Direction.Left
+                new TogglableAnimation(() => inputs.Direction == DpadDirection.Left
                     , new Animation(new AnimationFrame
                     {
                         Offset = new Vector2(BUTTON2_LEFT_X + (BUTTON_WIDTH / 2), BUTTON2_LEFT_Y + (BUTTON_HEIGHT / 2)),
@@ -207,7 +207,7 @@ namespace ThirdGame
                         RotationAnchor = new Vector2(BUTTON_WIDTH / 2, BUTTON_HEIGHT / 2),
                         Rotation = DEGREE_270
                     })),
-                new TogglableAnimation(() => inputs.Direction == Direction.Right
+                new TogglableAnimation(() => inputs.Direction == DpadDirection.Right
                     , new Animation(new AnimationFrame
                     {
                         Offset = new Vector2(BUTTON2_RIGHT_X + (BUTTON_WIDTH / 2), BUTTON2_RIGHT_Y + (BUTTON_HEIGHT / 2)),

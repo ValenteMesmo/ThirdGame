@@ -13,8 +13,8 @@ namespace Common
         private readonly Animation CrouchAnimation;
         private readonly Animation UpAnimation;
         private Animation CurremtAnimation;
-        private const int SIZE = 800;
-        private const int CENTER = 50;
+        public const int SIZE = 800;
+        public const int CENTER = 50;
 
         public PlayerAnimator(PositionComponent playerPosition, Inputs Inputs)
         {
@@ -80,11 +80,11 @@ namespace Common
 
         public void Update()
         {
-            if ((Inputs.Direction == Direction.Left || Inputs.Direction == Direction.Right))
+            if ((Inputs.Direction == DpadDirection.Left || Inputs.Direction == DpadDirection.Right))
                 CurremtAnimation = WalkAnimation;
-            else if (Inputs.Direction == Direction.Down)
+            else if (Inputs.Direction == DpadDirection.Down)
                 CurremtAnimation = CrouchAnimation;
-            else if (Inputs.Direction == Direction.Up)
+            else if (Inputs.Direction == DpadDirection.Up)
                 CurremtAnimation = UpAnimation;
             else
                 CurremtAnimation = IdleAnimation;

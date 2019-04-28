@@ -25,7 +25,7 @@ namespace UnitTestProject
             var sut = new TouchControlInputs(touchInputs);
             sut.Update();
 
-            Assert.AreEqual(Direction.Left, sut.Direction);
+            Assert.AreEqual(DpadDirection.Left, sut.Direction);
         }
 
         [TestMethod]
@@ -44,7 +44,7 @@ namespace UnitTestProject
             var sut = new TouchControlInputs(touchInputs);
             sut.Update();
 
-            Assert.AreEqual(Direction.Right, sut.Direction);
+            Assert.AreEqual(DpadDirection.Right, sut.Direction);
         }
 
         [TestMethod]
@@ -63,7 +63,7 @@ namespace UnitTestProject
             var sut = new TouchControlInputs(touchInputs);
             sut.Update();
 
-            Assert.AreEqual(Direction.Down, sut.Direction);
+            Assert.AreEqual(DpadDirection.Down, sut.Direction);
         }
 
         [TestMethod]
@@ -82,7 +82,7 @@ namespace UnitTestProject
             var sut = new TouchControlInputs(touchInputs);
             sut.Update();
 
-            Assert.AreEqual(Direction.Up, sut.Direction);
+            Assert.AreEqual(DpadDirection.Up, sut.Direction);
         }
 
         [TestMethod]
@@ -110,7 +110,7 @@ namespace UnitTestProject
             sut.Update();
 
 
-            Assert.AreEqual(Direction.Left, sut.Direction);
+            Assert.AreEqual(DpadDirection.Left, sut.Direction);
         }
 
         [TestMethod]
@@ -138,7 +138,7 @@ namespace UnitTestProject
             sut.Update();
 
 
-            Assert.AreEqual(Direction.Right, sut.Direction);
+            Assert.AreEqual(DpadDirection.Right, sut.Direction);
         }
     }
 }
