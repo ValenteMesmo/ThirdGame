@@ -29,6 +29,12 @@ namespace ThirdGame
 
             Add(controller);
             Add(new TouchControllerRenderer(CameraUI, PlayerInputs));
+
+            for (int i = -10; i < 20; i++)
+            {
+                Add(new Block() { Position = new Vector2(1000 * i, 1000) });
+            }
+
             Add(new Block() { Position= new Vector2(7000,-500)});
             Add(new Block() { Position= new Vector2(-8000,-500)});
             //TODO: move to other class
