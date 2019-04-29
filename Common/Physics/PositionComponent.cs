@@ -3,9 +3,8 @@ using System;
 
 namespace Common
 {
-    [Obsolete]
-    public class PositionComponent
+    public class PositionComponent : IHavePosition
     {
-        public Vector2 Current { get; set; }
+        public Vector2 Position { get; set; }
     }
 }

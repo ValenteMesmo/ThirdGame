@@ -44,6 +44,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Physics\CollisionDirection.cs" />
+    <Compile Include="Physics\CollisionHandler.cs" />
+    <Compile Include="Physics\IHavePosition.cs" />
+    <Compile Include="Physics\NoCollision.cs" />
     <Compile Include="Physics\ColliderExtensions.cs" />
     <Compile Include="Drawing\AnimationGroup.cs" />
     <Compile Include="Physics\Area.cs" />

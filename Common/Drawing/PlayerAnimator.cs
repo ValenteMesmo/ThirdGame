@@ -6,7 +6,7 @@ namespace Common
 {
     public class PlayerAnimator : AnimationHandler
     {
-        private readonly PositionComponent playerPosition;
+        private readonly IHavePosition playerPosition;
         private readonly Inputs Inputs;
         private readonly Animation IdleAnimation;
         private readonly Animation WalkAnimation;
@@ -16,7 +16,7 @@ namespace Common
         public const int SIZE = 800;
         public const int CENTER = 50;
 
-        public PlayerAnimator(PositionComponent playerPosition, Inputs Inputs)
+        public PlayerAnimator(IHavePosition playerPosition, Inputs Inputs)
         {
             this.playerPosition = playerPosition;
             this.Inputs = Inputs;

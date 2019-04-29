@@ -44,7 +44,7 @@ namespace ThirdGame
                         new AnimationFrame
                         {
                             Offset = new Vector2(BUTTON_TOP_X + (BUTTON_WIDTH / 2), BUTTON_TOP_Y + (BUTTON_HEIGHT / 2)),
-                            Anchor = camera.Pos,
+                            Anchor = camera,
                             Height = BUTTON_HEIGHT,
                             Width = BUTTON_WIDTH,
                             Texture = "dpad",
@@ -55,7 +55,7 @@ namespace ThirdGame
                         new AnimationFrame
                         {
                             Offset = new Vector2(BUTTON_TOP_X + (BUTTON_WIDTH / 2), BUTTON_TOP_Y + (BUTTON_HEIGHT / 2)),
-                            Anchor = camera.Pos,
+                            Anchor = camera,
                             Height = BUTTON_HEIGHT,
                             Width = BUTTON_WIDTH,
                             Texture = "dpad",
@@ -67,7 +67,7 @@ namespace ThirdGame
                     , new Animation(new AnimationFrame
                     {
                         Offset = new Vector2(BUTTON_BOT_X + (BUTTON_WIDTH / 2), BUTTON_BOT_Y + (BUTTON_HEIGHT / 2)),
-                        Anchor = camera.Pos,
+                        Anchor = camera,
                         Height = BUTTON_HEIGHT,
                         Width = BUTTON_WIDTH,
                         Texture = "dpad",
@@ -79,7 +79,7 @@ namespace ThirdGame
                     , new Animation(new AnimationFrame
                     {
                         Offset = new Vector2(BUTTON_BOT_X + (BUTTON_WIDTH / 2), BUTTON_BOT_Y + (BUTTON_HEIGHT / 2)),
-                        Anchor = camera.Pos,
+                        Anchor = camera,
                         Height = BUTTON_HEIGHT,
                         Width = BUTTON_WIDTH,
                         Texture = "dpad",
@@ -91,7 +91,7 @@ namespace ThirdGame
                     , new Animation(new AnimationFrame
                     {
                         Offset = new Vector2(BUTTON_LEFT_X + (BUTTON_WIDTH / 2), BUTTON_LEFT_Y + (BUTTON_HEIGHT / 2)),
-                        Anchor = camera.Pos,
+                        Anchor = camera,
                         Height = BUTTON_HEIGHT,
                         Width = BUTTON_WIDTH,
                         Texture = "dpad",
@@ -102,7 +102,7 @@ namespace ThirdGame
                     , new Animation(new AnimationFrame
                     {
                         Offset = new Vector2(BUTTON_LEFT_X + (BUTTON_WIDTH / 2), BUTTON_LEFT_Y + (BUTTON_HEIGHT / 2)),
-                        Anchor = camera.Pos,
+                        Anchor = camera,
                         Height = BUTTON_HEIGHT,
                         Width = BUTTON_WIDTH,
                         Texture = "dpad",
@@ -114,7 +114,7 @@ namespace ThirdGame
                     , new Animation(new AnimationFrame
                     {
                         Offset = new Vector2(BUTTON_RIGHT_X + (BUTTON_WIDTH / 2), BUTTON_RIGHT_Y + (BUTTON_HEIGHT / 2)),
-                        Anchor = camera.Pos,
+                        Anchor = camera,
                         Height = BUTTON_HEIGHT,
                         Width = BUTTON_WIDTH,
                         Texture = "dpad",
@@ -125,7 +125,7 @@ namespace ThirdGame
                      , new Animation(new AnimationFrame
                      {
                          Offset = new Vector2(BUTTON_RIGHT_X + (BUTTON_WIDTH / 2), BUTTON_RIGHT_Y + (BUTTON_HEIGHT / 2)),
-                         Anchor = camera.Pos,
+                         Anchor = camera,
                          Height = BUTTON_HEIGHT,
                          Width = BUTTON_WIDTH,
                          Texture = "dpad",
@@ -141,7 +141,7 @@ namespace ThirdGame
                         new AnimationFrame
                         {
                             Offset = new Vector2(BUTTON2_TOP_X + (BUTTON_WIDTH / 2), BUTTON2_TOP_Y + (BUTTON_HEIGHT / 2)),
-                            Anchor = camera.Pos,
+                            Anchor = camera,
                             Height = BUTTON_HEIGHT,
                             Width = BUTTON_WIDTH,
                             Texture = "dpad",
@@ -152,7 +152,7 @@ namespace ThirdGame
                         new AnimationFrame
                         {
                             Offset = new Vector2(BUTTON2_TOP_X + (BUTTON_WIDTH / 2), BUTTON2_TOP_Y + (BUTTON_HEIGHT / 2)),
-                            Anchor = camera.Pos,
+                            Anchor = camera,
                             Height = BUTTON_HEIGHT,
                             Width = BUTTON_WIDTH,
                             Texture = "dpad",
@@ -164,7 +164,7 @@ namespace ThirdGame
                     , new Animation(new AnimationFrame
                     {
                         Offset = new Vector2(BUTTON2_BOT_X + (BUTTON_WIDTH / 2), BUTTON2_BOT_Y + (BUTTON_HEIGHT / 2)),
-                        Anchor = camera.Pos,
+                        Anchor = camera,
                         Height = BUTTON_HEIGHT,
                         Width = BUTTON_WIDTH,
                         Texture = "dpad",
@@ -176,7 +176,7 @@ namespace ThirdGame
                     , new Animation(new AnimationFrame
                     {
                         Offset = new Vector2(BUTTON2_BOT_X + (BUTTON_WIDTH / 2), BUTTON2_BOT_Y + (BUTTON_HEIGHT / 2)),
-                        Anchor = camera.Pos,
+                        Anchor = camera,
                         Height = BUTTON_HEIGHT,
                         Width = BUTTON_WIDTH,
                         Texture = "dpad",
@@ -188,7 +188,7 @@ namespace ThirdGame
                     , new Animation(new AnimationFrame
                     {
                         Offset = new Vector2(BUTTON2_LEFT_X + (BUTTON_WIDTH / 2), BUTTON2_LEFT_Y + (BUTTON_HEIGHT / 2)),
-                        Anchor = camera.Pos,
+                        Anchor = camera,
                         Height = BUTTON_HEIGHT,
                         Width = BUTTON_WIDTH,
                         Texture = "dpad",
@@ -199,7 +199,7 @@ namespace ThirdGame
                     , new Animation(new AnimationFrame
                     {
                         Offset = new Vector2(BUTTON2_LEFT_X + (BUTTON_WIDTH / 2), BUTTON2_LEFT_Y + (BUTTON_HEIGHT / 2)),
-                        Anchor = camera.Pos,
+                        Anchor = camera,
                         Height = BUTTON_HEIGHT,
                         Width = BUTTON_WIDTH,
                         Texture = "dpad",
@@ -211,7 +211,7 @@ namespace ThirdGame
                     , new Animation(new AnimationFrame
                     {
                         Offset = new Vector2(BUTTON2_RIGHT_X + (BUTTON_WIDTH / 2), BUTTON2_RIGHT_Y + (BUTTON_HEIGHT / 2)),
-                        Anchor = camera.Pos,
+                        Anchor = camera,
                         Height = BUTTON_HEIGHT,
                         Width = BUTTON_WIDTH,
                         Texture = "dpad",
@@ -222,7 +222,7 @@ namespace ThirdGame
                      , new Animation(new AnimationFrame
                      {
                          Offset = new Vector2(BUTTON2_RIGHT_X + (BUTTON_WIDTH / 2), BUTTON2_RIGHT_Y + (BUTTON_HEIGHT / 2)),
-                         Anchor = camera.Pos,
+                         Anchor = camera,
                          Height = BUTTON_HEIGHT,
                          Width = BUTTON_WIDTH,
                          Texture = "dpad",

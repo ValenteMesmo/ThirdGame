@@ -4,9 +4,9 @@ using System;
 
 namespace Common
 {
-    public class Camera2d
+    public class Camera2d : IHavePosition
     {
-        public PositionComponent Pos = new PositionComponent();
+        public Vector2 Position { get; set; }
         private PositionComponent OriginalPosition = new PositionComponent();
         public Matrix Transform;
         protected float Rotation;
@@ -53,7 +53,7 @@ namespace Common
 
             Transform =
               Matrix.CreateTranslation(
-                  new Vector3(-Pos.Current.X, -Pos.Current.Y, 0))
+                  new Vector3(-Position.X, -Position.Y, 0))
                     * Matrix.CreateRotationZ(Rotation)
                     * Matrix.CreateScale(new Vector3(Zoom * widthDiff, Zoom * HeightDiff, 1))
                     * Matrix.CreateTranslation(new Vector3(
@@ -87,19 +87,18 @@ namespace Common
 
         internal void Update()
         {
-            OriginalPosition.Current = Pos.Current;
+            OriginalPosition.Position = Position;
 
             if (shakeUpDuration > 0)
             {
-                Pos.Current = new Vector2(Pos.Current.X, OriginalPosition.Current.Y + shakeUpDuration * shakeUpPower);
-
+                Position = new Vector2(Position.X, OriginalPosition.Position.Y + shakeUpDuration * shakeUpPower);
                 shakeUpDuration--;
             }
             else
             {
                 shakeUpDuration = 0;
                 shakeUpPower = 0;
-                Pos.Current = new Vector2(Pos.Current.X, OriginalPosition.Current.Y);
+                Position = new Vector2(Position.X, OriginalPosition.Position.Y);
             }
         }
     }

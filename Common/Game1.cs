@@ -158,7 +158,7 @@ LOG: {LOG}"
                         (obj.Animation.RenderOnUiLayer ? spriteBatchUi : spriteBatch).Draw(
                         texture: Sprites[frame.Texture]
                         , destinationRectangle: new Rectangle(
-                            (frame.Anchor.Current + frame.Offset).ToPoint()
+                            (frame.Anchor.Position + frame.Offset).ToPoint()
                             , new Point(frame.Width, frame.Height)
                         )
                         , sourceRectangle: null

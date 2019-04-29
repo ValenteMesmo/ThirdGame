@@ -35,7 +35,7 @@ namespace Common
 
         private void NewMethod(Vector2 position)
         {
-            PlayerPosition.Current = Camera.ToWorldLocation(position);
+            PlayerPosition.Position = Camera.ToWorldLocation(position);
         }
     }
 }

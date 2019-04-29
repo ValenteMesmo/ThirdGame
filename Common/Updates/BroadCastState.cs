@@ -5,25 +5,25 @@ namespace Common
     public class BroadCastState : IHandleUpdates
     {
         private readonly Camera2d Camera;
-        private readonly PositionComponent Position;
+        private readonly IHavePosition Something;
         private readonly NetworkHandler NetworkHandler;
 
         public BroadCastState(
             Camera2d Camera
-            , PositionComponent Position
+            , IHavePosition Something
             , NetworkHandler NetworkHandler
         )
         {
             this.Camera = Camera;
-            this.Position = Position;
+            this.Something = Something;
             this.NetworkHandler = NetworkHandler;
         }
 
         public void Update()
         {
-            NetworkHandler.Send(Position.Current.ToPoint());
-            Game1.LOG = $@"X = {Position.Current.X}
-Y = {Position.Current.Y}";
+            NetworkHandler.Send(Something.Position.ToPoint());
+            Game1.LOG = $@"X = {Something.Position.X}
+Y = {Something.Position.Y}";
         }
     }
 }

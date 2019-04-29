@@ -40,7 +40,7 @@ namespace ThirdGame
                         network.PlayerConnected(ip);
                         return;
                     }
-                    p.NetworkPosition.Current = new Vector2(message.X, message.Y);
+                    p.NetworkPosition.Position = new Vector2(message.X, message.Y);
                     if (message.Left)
                         p.NetworkInputs.Direction = DpadDirection.Left;
                     else if (message.Right)
@@ -71,7 +71,7 @@ namespace ThirdGame
                         return;
 
                     var netPlayer = new NetworkPlayer(ip);
-                    netPlayer.Position.Current = Player.Position.Current;
+                    netPlayer.Position = Player.Position;
                     Add(netPlayer);
                 };
 
@@ -113,16 +113,16 @@ namespace ThirdGame
             {
                 GameObjects[i].Update.Update();
 
-                GameObjects[i].Position.Current = new Vector2(
-                         GameObjects[i].Position.Current.X
-                         , GameObjects[i].Position.Current.Y + GameObjects[i].Velocity.Y //* elapsed
+                GameObjects[i].Position = new Vector2(
+                         GameObjects[i].Position.X
+                         , GameObjects[i].Position.Y + GameObjects[i].Velocity.Y //* elapsed
                      );
                 for (int j = 0; j < GameObjects[i].Colliders.Length; j++)
                     CheckCollisions(CollisionDirection.Vertical, GameObjects[i].Colliders[j]);
                 
-                GameObjects[i].Position.Current = new Vector2(
-                    GameObjects[i].Position.Current.X + GameObjects[i].Velocity.X //* elapsed
-                    , GameObjects[i].Position.Current.Y
+                GameObjects[i].Position = new Vector2(
+                    GameObjects[i].Position.X + GameObjects[i].Velocity.X //* elapsed
+                    , GameObjects[i].Position.Y
                 );
                 for (int j = 0; j < GameObjects[i].Colliders.Length; j++)
                     CheckCollisions(CollisionDirection.Horizontal, GameObjects[i].Colliders[j]);

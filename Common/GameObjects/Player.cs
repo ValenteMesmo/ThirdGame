@@ -9,7 +9,7 @@ namespace ThirdGame
             var playerUpdateHandler = new UpdateAggregation(
                  new ChangeSpeedUsingKeyboard(Inputs, this)
                  //, new MovesPlayerUsingMouse(Position, Camera)
-                 , new BroadCastState(Camera, Position, network)
+                 , new BroadCastState(Camera, this, network)
             );
 
             Colliders = new Collider[] {
@@ -21,7 +21,7 @@ namespace ThirdGame
                 }
             };
 
-            Animation = new PlayerAnimator(Position, Inputs);
+            Animation = new PlayerAnimator(this, Inputs);
             Update = playerUpdateHandler;
             Collision = new LogCollision();
         }

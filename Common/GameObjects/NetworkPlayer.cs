@@ -4,15 +4,15 @@ namespace ThirdGame
 {
     public class NetworkPlayer : GameObject
     {
-        public NetworkInputs NetworkInputs { get; set; } = new NetworkInputs();
+        public NetworkInputs NetworkInputs { get; } = new NetworkInputs();
         public PositionComponent NetworkPosition { get; } = new PositionComponent();
 
         public NetworkPlayer(string Id) : base(Id)
         {
-            Animation = new PlayerAnimator(Position, NetworkInputs);
+            Animation = new PlayerAnimator(this, NetworkInputs);
             Update = new UpdateAggregation(
                  new ChangeSpeedUsingKeyboard(NetworkInputs, this)
-                 , new LearpToPosition(Position, NetworkPosition)
+                 , new LearpToPosition(this, NetworkPosition)
             );
             Colliders = new Collider[] {
                 new Collider(this) {
