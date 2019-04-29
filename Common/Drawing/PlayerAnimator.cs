@@ -22,54 +22,25 @@ namespace Common
             this.Inputs = Inputs;
 
             IdleAnimation = new Animation(
-                new AnimationFrame
-                {
-                    Texture = "char",
-                    Anchor = playerPosition,
-                    Width = SIZE,
-                    Height = SIZE,
-                    Color = Color.White
-                }
+                new AnimationFrame(playerPosition, "char", SIZE, SIZE)
             );
 
             CrouchAnimation = new Animation(
-                new AnimationFrame
-                {
-                    Texture = "char_crouch",
-                    Anchor = playerPosition,
-                    Width = SIZE,
-                    Height = SIZE,
-                    Color = Color.White
-                }
+                new AnimationFrame(playerPosition, "char_crouch", SIZE, SIZE)
             );
 
             UpAnimation = new Animation(
-                new AnimationFrame
-                {
-                    Texture = "char_up",
-                    Anchor = playerPosition,
-                    Width = SIZE,
-                    Height = SIZE,
-                    Color = Color.White
-                }
+                new AnimationFrame(playerPosition, "char_up", SIZE, SIZE)
             );
 
             WalkAnimation = new Animation(
-                new AnimationFrame
+                new AnimationFrame(playerPosition, "char", SIZE, SIZE)
                 {
-                    Texture = "char",
-                    Anchor = playerPosition,
-                    Width = SIZE,
-                    Height = SIZE,
                     DurationInUpdateCount = 5,
                     Color = Color.White
                 },
-                new AnimationFrame
+                new AnimationFrame(playerPosition, "char_walk", SIZE, SIZE)
                 {
-                    Texture = "char_walk",
-                    Anchor = playerPosition,
-                    Width = SIZE,
-                    Height = SIZE,
                     DurationInUpdateCount = 5,
                     Color = Color.White
                 }

@@ -45,7 +45,7 @@ namespace Common
             currentFrameDuration = Frames[0].DurationInUpdateCount;
         }
 
-        public bool RenderOnUiLayer => true;
+        public bool RenderOnUiLayer { get; set; }
 
         public IEnumerable<AnimationFrame> GetFrame()
         {

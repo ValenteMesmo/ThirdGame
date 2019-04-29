@@ -15,13 +15,13 @@ namespace ThirdGame
             {
                 if (a.Right() - b.Right() > 0)
                 {
-                    a.Parent.Collision.Left(b);
-                    b.Parent.Collision.Right(a);
+                    a.Collision.Left(a,b);
+                    //b.Collision.Right(b,a);
                 }
                 else if (a.Right() - b.Right() < 0)
                 {
-                    a.Parent.Collision.Right(b);
-                    b.Parent.Collision.Left(a);
+                    a.Collision.Right(a,b);
+                    //b.Collision.Left(b,a);
                 }
             }
         }
@@ -38,13 +38,13 @@ namespace ThirdGame
             {
                 if (a.Bottom() - b.Bottom() > 0)
                 {
-                    a.Parent.Collision.Top(b);
-                    b.Parent.Collision.Bot(a);
+                    a.Collision.Top(a,b);
+                    //b.Collision.Bot(b,a);
                 }
                 else if (a.Bottom() - b.Bottom() < 0)
                 {
-                    a.Parent.Collision.Bot(b);
-                    b.Parent.Collision.Top(a);
+                    a.Collision.Bot(a,b);
+                    //b.Collision.Top(b,a);
                 }
             }
         }

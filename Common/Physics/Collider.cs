@@ -13,6 +13,7 @@ namespace Common
         public float Height { get; set; }
         public bool Disabled { get; set; }
         public readonly GameObject Parent;
+        public CollisionHandler Collision = NoCollision.Instance;
 
         public Collider(GameObject Parent)
         {
@@ -20,5 +21,7 @@ namespace Common
         }
 
         public Rectangle AsRectangle() => new Rectangle((int)X, (int)Y, (int)Width, (int)Height);
+
+        public override string ToString() => $"{nameof(Collider)} ({Parent})";
     }
 }

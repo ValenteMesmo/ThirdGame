@@ -9,7 +9,6 @@ namespace Common
         public Vector2 Position { get; set; }
         public IHandleUpdates Update = NoUpdate.Instance;
         public AnimationHandler Animation = NoAnimation.Instance;
-        public CollisionHandler Collision = NoCollision.Instance;
         public Collider[] Colliders = NoCollision.Empty;
         public Vector2 Velocity;
 

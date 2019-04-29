@@ -29,7 +29,8 @@ namespace ThirdGame
 
             Add(controller);
             Add(new TouchControllerRenderer(CameraUI, PlayerInputs));
-
+            Add(new Block() { Position= new Vector2(7000,-500)});
+            Add(new Block() { Position= new Vector2(-8000,-500)});
             //TODO: move to other class
             {
                 network.MessageReceivedFromOtherClients += (ip, message) =>
@@ -119,7 +120,7 @@ namespace ThirdGame
                      );
                 for (int j = 0; j < GameObjects[i].Colliders.Length; j++)
                     CheckCollisions(CollisionDirection.Vertical, GameObjects[i].Colliders[j]);
-                
+
                 GameObjects[i].Position = new Vector2(
                     GameObjects[i].Position.X + GameObjects[i].Velocity.X //* elapsed
                     , GameObjects[i].Position.Y

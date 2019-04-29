@@ -17,40 +17,14 @@ namespace ThirdGame
                     X = 0,
                     Y=0,
                     Width=PlayerAnimator.SIZE,
-                    Height=PlayerAnimator.SIZE
+                    Height=PlayerAnimator.SIZE,
+                    Collision =new CollisionHandlerAggregation( new LogCollision(), new BlockCollisionHandler())
                 }
             };
 
             Animation = new PlayerAnimator(this, Inputs);
             Update = playerUpdateHandler;
-            Collision = new LogCollision();
-        }
-    }
-
-    public class LogCollision : CollisionHandler
-    {
-        public void Bot(Collider collider)
-        {
-            Game1.LOG += $@"
-BOTCollidingWith {collider.Parent}";
-        }
-
-        public void Left(Collider collider)
-        {
-            Game1.LOG += $@"
-LEFTCollidingWith {collider.Parent}";
-        }
-
-        public void Right(Collider collider)
-        {
-            Game1.LOG += $@"
-RIGHTCollidingWith {collider.Parent}";
-        }
-
-        public void Top(Collider collider)
-        {
-            Game1.LOG += $@"
-TOPCollidingWith {collider.Parent}";
+            
         }
     }
 }

@@ -7,9 +7,9 @@
 
         private NoCollision() { }
 
-        public void Bot(Collider collider) { }
-        public void Left(Collider collider) { }
-        public void Right(Collider collider) { }
-        public void Top(Collider collider) { }
+        public void Bot(Collider Source, Collider Target) { }
+        public void Left(Collider Source, Collider Target) { }
+        public void Right(Collider Source, Collider Target) { }
+        public void Top(Collider Source, Collider Target) { }
     }
 }

@@ -3,14 +3,27 @@ using Microsoft.Xna.Framework;
 
 namespace ThirdGame
 {
-    public struct AnimationFrame
+    public class AnimationFrame
     {
-        public string Texture { get; set; }        
+        public AnimationFrame(IHavePosition Anchor, string TextureName, int Width, int Height, Color? TextureColor = null)
+        {
+            if (TextureColor.HasValue)
+                Color = TextureColor.Value;
+            else
+                Color = Color.White;
+
+            this.Width = Width;
+            this.Height = Height;
+            this.Anchor = Anchor;
+            Texture = TextureName;
+        }
+
+        public string Texture { get; }        
         public Vector2 RotationAnchor { get; set; }
-        public IHavePosition Anchor { get; set; }
+        public IHavePosition Anchor { get;  }
         public Vector2 Offset { get; set; }
-        public int Width { get; set; }
-        public int Height { get; set; }
+        public int Width { get; }
+        public int Height { get; }
         public int DurationInUpdateCount { get; set; }
         public Color Color { get; set; }
         public float Rotation { get; internal set; }

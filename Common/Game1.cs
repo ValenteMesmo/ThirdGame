@@ -1,6 +1,7 @@
 using Common;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System;
 using System.Collections.Generic;
 
 namespace ThirdGame
@@ -181,7 +182,7 @@ LOG: {LOG}"
                 spriteBatch.End();
                 spriteBatchUi.End();
             }
-            catch //(System.Exception ex)
+            catch(Exception ex) //(System.Exception ex)
             {
 
             }

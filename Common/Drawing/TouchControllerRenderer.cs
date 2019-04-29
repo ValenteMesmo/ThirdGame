@@ -41,94 +41,58 @@ namespace ThirdGame
             Animation = new AnimationGroup(
                 new TogglableAnimation(() => inputs.Direction == DpadDirection.Up,
                     new Animation(
-                        new AnimationFrame
+                        new AnimationFrame(camera, "dpad", BUTTON_WIDTH, BUTTON_HEIGHT)
                         {
                             Offset = new Vector2(BUTTON_TOP_X + (BUTTON_WIDTH / 2), BUTTON_TOP_Y + (BUTTON_HEIGHT / 2)),
-                            Anchor = camera,
-                            Height = BUTTON_HEIGHT,
-                            Width = BUTTON_WIDTH,
-                            Texture = "dpad",
-                            Color = Color.White,
                             RotationAnchor = new Vector2(BUTTON_WIDTH / 2, BUTTON_HEIGHT / 2)
                         })
                     , new Animation(
-                        new AnimationFrame
+                        new AnimationFrame(camera, "dpad", BUTTON_WIDTH, BUTTON_HEIGHT)
                         {
                             Offset = new Vector2(BUTTON_TOP_X + (BUTTON_WIDTH / 2), BUTTON_TOP_Y + (BUTTON_HEIGHT / 2)),
-                            Anchor = camera,
-                            Height = BUTTON_HEIGHT,
-                            Width = BUTTON_WIDTH,
-                            Texture = "dpad",
                             Color = Color.Red,
                             RotationAnchor = new Vector2(BUTTON_WIDTH / 2, BUTTON_HEIGHT / 2)
                         })
                 ),
                 new TogglableAnimation(() => inputs.Direction == DpadDirection.Down
-                    , new Animation(new AnimationFrame
+                    , new Animation(new AnimationFrame(camera, "dpad", BUTTON_WIDTH, BUTTON_HEIGHT)
                     {
                         Offset = new Vector2(BUTTON_BOT_X + (BUTTON_WIDTH / 2), BUTTON_BOT_Y + (BUTTON_HEIGHT / 2)),
-                        Anchor = camera,
-                        Height = BUTTON_HEIGHT,
-                        Width = BUTTON_WIDTH,
-                        Texture = "dpad",
-                        Color = Color.White,
                         RotationAnchor = new Vector2(BUTTON_WIDTH / 2, BUTTON_HEIGHT / 2),
                         Rotation = DEGREE_180
 
                     })
-                    , new Animation(new AnimationFrame
+                    , new Animation(new AnimationFrame(camera, "dpad", BUTTON_WIDTH, BUTTON_HEIGHT)
                     {
                         Offset = new Vector2(BUTTON_BOT_X + (BUTTON_WIDTH / 2), BUTTON_BOT_Y + (BUTTON_HEIGHT / 2)),
-                        Anchor = camera,
-                        Height = BUTTON_HEIGHT,
-                        Width = BUTTON_WIDTH,
-                        Texture = "dpad",
                         Color = Color.Red,
                         RotationAnchor = new Vector2(BUTTON_WIDTH / 2, BUTTON_HEIGHT / 2),
                         Rotation = DEGREE_180
                     })),
                 new TogglableAnimation(() => inputs.Direction == DpadDirection.Left
-                    , new Animation(new AnimationFrame
+                    , new Animation(new AnimationFrame(camera, "dpad", BUTTON_WIDTH, BUTTON_HEIGHT)
                     {
                         Offset = new Vector2(BUTTON_LEFT_X + (BUTTON_WIDTH / 2), BUTTON_LEFT_Y + (BUTTON_HEIGHT / 2)),
-                        Anchor = camera,
-                        Height = BUTTON_HEIGHT,
-                        Width = BUTTON_WIDTH,
-                        Texture = "dpad",
-                        Color = Color.White,
                         RotationAnchor = new Vector2(BUTTON_WIDTH / 2, BUTTON_HEIGHT / 2),
                         Rotation = DEGREE_270
                     })
-                    , new Animation(new AnimationFrame
+                    , new Animation(new AnimationFrame(camera, "dpad", BUTTON_WIDTH, BUTTON_HEIGHT)
                     {
                         Offset = new Vector2(BUTTON_LEFT_X + (BUTTON_WIDTH / 2), BUTTON_LEFT_Y + (BUTTON_HEIGHT / 2)),
-                        Anchor = camera,
-                        Height = BUTTON_HEIGHT,
-                        Width = BUTTON_WIDTH,
-                        Texture = "dpad",
                         Color = Color.Red,
                         RotationAnchor = new Vector2(BUTTON_WIDTH / 2, BUTTON_HEIGHT / 2),
                         Rotation = DEGREE_270
                     })),
                 new TogglableAnimation(() => inputs.Direction == DpadDirection.Right
-                    , new Animation(new AnimationFrame
+                    , new Animation(new AnimationFrame(camera, "dpad", BUTTON_WIDTH, BUTTON_HEIGHT)
                     {
                         Offset = new Vector2(BUTTON_RIGHT_X + (BUTTON_WIDTH / 2), BUTTON_RIGHT_Y + (BUTTON_HEIGHT / 2)),
-                        Anchor = camera,
-                        Height = BUTTON_HEIGHT,
-                        Width = BUTTON_WIDTH,
-                        Texture = "dpad",
-                        Color = Color.White,
                         RotationAnchor = new Vector2(BUTTON_WIDTH / 2, BUTTON_HEIGHT / 2),
                         Rotation = DEGREE_90
                     })
-                     , new Animation(new AnimationFrame
+                     , new Animation(new AnimationFrame(camera, "dpad", BUTTON_WIDTH, BUTTON_HEIGHT)
                      {
                          Offset = new Vector2(BUTTON_RIGHT_X + (BUTTON_WIDTH / 2), BUTTON_RIGHT_Y + (BUTTON_HEIGHT / 2)),
-                         Anchor = camera,
-                         Height = BUTTON_HEIGHT,
-                         Width = BUTTON_WIDTH,
-                         Texture = "dpad",
                          Color = Color.Red,
                          RotationAnchor = new Vector2(BUTTON_WIDTH / 2, BUTTON_HEIGHT / 2),
                          Rotation = DEGREE_90
@@ -138,94 +102,58 @@ namespace ThirdGame
 
                 new TogglableAnimation(() => inputs.Direction == DpadDirection.Up,
                     new Animation(
-                        new AnimationFrame
+                        new AnimationFrame(camera, "dpad", BUTTON_WIDTH, BUTTON_HEIGHT)
                         {
                             Offset = new Vector2(BUTTON2_TOP_X + (BUTTON_WIDTH / 2), BUTTON2_TOP_Y + (BUTTON_HEIGHT / 2)),
-                            Anchor = camera,
-                            Height = BUTTON_HEIGHT,
-                            Width = BUTTON_WIDTH,
-                            Texture = "dpad",
-                            Color = Color.White,
                             RotationAnchor = new Vector2(BUTTON_WIDTH / 2, BUTTON_HEIGHT / 2)
                         })
                     , new Animation(
-                        new AnimationFrame
+                        new AnimationFrame(camera, "dpad", BUTTON_WIDTH, BUTTON_HEIGHT)
                         {
                             Offset = new Vector2(BUTTON2_TOP_X + (BUTTON_WIDTH / 2), BUTTON2_TOP_Y + (BUTTON_HEIGHT / 2)),
-                            Anchor = camera,
-                            Height = BUTTON_HEIGHT,
-                            Width = BUTTON_WIDTH,
-                            Texture = "dpad",
                             Color = Color.Red,
                             RotationAnchor = new Vector2(BUTTON_WIDTH / 2, BUTTON_HEIGHT / 2)
                         })
                 ),
                 new TogglableAnimation(() => inputs.Direction == DpadDirection.Down
-                    , new Animation(new AnimationFrame
+                    , new Animation(new AnimationFrame(camera, "dpad", BUTTON_WIDTH, BUTTON_HEIGHT)
                     {
                         Offset = new Vector2(BUTTON2_BOT_X + (BUTTON_WIDTH / 2), BUTTON2_BOT_Y + (BUTTON_HEIGHT / 2)),
-                        Anchor = camera,
-                        Height = BUTTON_HEIGHT,
-                        Width = BUTTON_WIDTH,
-                        Texture = "dpad",
-                        Color = Color.White,
                         RotationAnchor = new Vector2(BUTTON_WIDTH / 2, BUTTON_HEIGHT / 2),
                         Rotation = DEGREE_180
 
                     })
-                    , new Animation(new AnimationFrame
+                    , new Animation(new AnimationFrame(camera, "dpad", BUTTON_WIDTH, BUTTON_HEIGHT)
                     {
                         Offset = new Vector2(BUTTON2_BOT_X + (BUTTON_WIDTH / 2), BUTTON2_BOT_Y + (BUTTON_HEIGHT / 2)),
-                        Anchor = camera,
-                        Height = BUTTON_HEIGHT,
-                        Width = BUTTON_WIDTH,
-                        Texture = "dpad",
                         Color = Color.Red,
                         RotationAnchor = new Vector2(BUTTON_WIDTH / 2, BUTTON_HEIGHT / 2),
                         Rotation = DEGREE_180
                     })),
                 new TogglableAnimation(() => inputs.Direction == DpadDirection.Left
-                    , new Animation(new AnimationFrame
+                    , new Animation(new AnimationFrame(camera, "dpad", BUTTON_WIDTH, BUTTON_HEIGHT)
                     {
                         Offset = new Vector2(BUTTON2_LEFT_X + (BUTTON_WIDTH / 2), BUTTON2_LEFT_Y + (BUTTON_HEIGHT / 2)),
-                        Anchor = camera,
-                        Height = BUTTON_HEIGHT,
-                        Width = BUTTON_WIDTH,
-                        Texture = "dpad",
-                        Color = Color.White,
                         RotationAnchor = new Vector2(BUTTON_WIDTH / 2, BUTTON_HEIGHT / 2),
                         Rotation = DEGREE_270
                     })
-                    , new Animation(new AnimationFrame
+                    , new Animation(new AnimationFrame(camera, "dpad", BUTTON_WIDTH, BUTTON_HEIGHT)
                     {
                         Offset = new Vector2(BUTTON2_LEFT_X + (BUTTON_WIDTH / 2), BUTTON2_LEFT_Y + (BUTTON_HEIGHT / 2)),
-                        Anchor = camera,
-                        Height = BUTTON_HEIGHT,
-                        Width = BUTTON_WIDTH,
-                        Texture = "dpad",
                         Color = Color.Red,
                         RotationAnchor = new Vector2(BUTTON_WIDTH / 2, BUTTON_HEIGHT / 2),
                         Rotation = DEGREE_270
                     })),
                 new TogglableAnimation(() => inputs.Direction == DpadDirection.Right
-                    , new Animation(new AnimationFrame
+                    , new Animation(new AnimationFrame(camera, "dpad", BUTTON_WIDTH, BUTTON_HEIGHT)
                     {
                         Offset = new Vector2(BUTTON2_RIGHT_X + (BUTTON_WIDTH / 2), BUTTON2_RIGHT_Y + (BUTTON_HEIGHT / 2)),
-                        Anchor = camera,
-                        Height = BUTTON_HEIGHT,
-                        Width = BUTTON_WIDTH,
-                        Texture = "dpad",
-                        Color = Color.White,
                         RotationAnchor = new Vector2(BUTTON_WIDTH / 2, BUTTON_HEIGHT / 2),
                         Rotation = DEGREE_90
                     })
-                     , new Animation(new AnimationFrame
+                     , new Animation(new AnimationFrame(camera, "dpad", BUTTON_WIDTH, BUTTON_HEIGHT)
                      {
                          Offset = new Vector2(BUTTON2_RIGHT_X + (BUTTON_WIDTH / 2), BUTTON2_RIGHT_Y + (BUTTON_HEIGHT / 2)),
-                         Anchor = camera,
-                         Height = BUTTON_HEIGHT,
-                         Width = BUTTON_WIDTH,
-                         Texture = "dpad",
                          Color = Color.Red,
                          RotationAnchor = new Vector2(BUTTON_WIDTH / 2, BUTTON_HEIGHT / 2),
                          Rotation = DEGREE_90
