@@ -101,7 +101,7 @@ namespace ThirdGame
             {
 
                 Camera.Update();
-                GameLoop.Update();
+                GameLoop.Update(gameTime.ElapsedGameTime.Milliseconds * 0.05f);
             }
             catch //(System.Exception ex)
             {
@@ -119,7 +119,7 @@ namespace ThirdGame
             try
             {
                 smartFPS.Update((float)gameTime.ElapsedGameTime.TotalSeconds);
-                GraphicsDevice.Clear(Color.CornflowerBlue);
+                GraphicsDevice.Clear(Color.Black);
                 spriteBatch.Begin(
                     SpriteSortMode.BackToFront,
                     BlendState.AlphaBlend,
