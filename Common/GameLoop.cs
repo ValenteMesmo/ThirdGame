@@ -11,12 +11,12 @@ namespace ThirdGame
         private readonly Camera2d Camera;
         private readonly Inputs PlayerInputs;
         private readonly NetworkHandler network;
-        public readonly Quadtree quadtree;
+        public readonly QuadTree quadtree;
 
         public GameLoop(UdpService UdpWrapper, Camera2d Camera, Camera2d CameraUI)
         {
             this.Camera = Camera;
-            quadtree = new Quadtree(5, new Rectangle(-8000, -7000, 16000, 12000));
+            quadtree = new QuadTree(new Rectangle(-9000, -7000, 18000, 12000), 50, 10);
             var TouchWrapper = new TouchInputsWrapper(CameraUI);
             PlayerInputs = new MultipleInputSource(new KeyboardInputs(), new TouchControlInputs(TouchWrapper));
             network = new NetworkHandler(UdpWrapper, PlayerInputs);
@@ -35,8 +35,8 @@ namespace ThirdGame
                 Add(new Block() { Position = new Vector2(1000 * i, 1000) });
             }
 
-            Add(new Block() { Position= new Vector2(7000,-500)});
-            Add(new Block() { Position= new Vector2(-8000,-500)});
+            Add(new Block() { Position = new Vector2(7000, -500) });
+            Add(new Block() { Position = new Vector2(-8000, -500) });
             //TODO: move to other class
             {
                 network.MessageReceivedFromOtherClients += (ip, message) =>
@@ -102,18 +102,15 @@ namespace ThirdGame
             GameObjects.Remove(GameObject);
         }
 
-        public void Update()
+        public void Update(float elapsed)
         {
             PlayerInputs.Update();
             network.Update();
-            quadtree.clear();
+            quadtree.Clear();
 
             for (int i = 0; i < GameObjects.Count; i++)
             {
-                for (int j = 0; j < GameObjects[i].Colliders.Length; j++)
-                {
-                    quadtree.insert(GameObjects[i].Colliders[j]);
-                }
+                quadtree.AddRange(GameObjects[i].Colliders);
             }
 
             for (int i = 0; i < GameObjects.Count; i++)
@@ -122,13 +119,13 @@ namespace ThirdGame
 
                 GameObjects[i].Position = new Vector2(
                          GameObjects[i].Position.X
-                         , GameObjects[i].Position.Y + GameObjects[i].Velocity.Y //* elapsed
+                         , GameObjects[i].Position.Y + GameObjects[i].Velocity.Y * elapsed
                      );
                 for (int j = 0; j < GameObjects[i].Colliders.Length; j++)
                     CheckCollisions(CollisionDirection.Vertical, GameObjects[i].Colliders[j]);
 
                 GameObjects[i].Position = new Vector2(
-                    GameObjects[i].Position.X + GameObjects[i].Velocity.X //* elapsed
+                    GameObjects[i].Position.X + GameObjects[i].Velocity.X * elapsed
                     , GameObjects[i].Position.Y
                 );
                 for (int j = 0; j < GameObjects[i].Colliders.Length; j++)
@@ -142,9 +139,9 @@ namespace ThirdGame
 
         private void CheckCollisions(CollisionDirection direction, Collider source)
         {
-            var targets = quadtree.retrieve(source.X, source.Y, source.Width, source.Height);
+            var targets = quadtree.Get(source);
 
-            for (int i = 0; i < targets.Count; i++)
+            for (int i = 0; i < targets.Length; i++)
             {
                 if (source.Parent == targets[i].Parent)
                     continue;

@@ -6,162 +6,285 @@ using System.Linq;
 
 namespace ThirdGame
 {
-    public class Quadtree
+    public class QuadTree
     {
-        private int MAX_OBJECTS = 1;//10;
-        private int MAX_LEVELS = 5;
+        private readonly Node Root;
 
-        private int level;
-        private List<Collider> objects;
-        private Rectangle bounds;
-        private Quadtree[] nodes;
-
-        public Quadtree(int pLevel, Rectangle pBounds)
+        public QuadTree(Rectangle bounds, int maxDepth, int maxChildren)
         {
-            level = pLevel;
-            objects = new List<Collider>();
-            bounds = pBounds;
-            nodes = new Quadtree[4];
+            var Node = new Node(bounds, 0, maxDepth, maxChildren);
+            Root = Node;
         }
 
-        public void clear()
+        public void Add(Collider item)
         {
-            objects.Clear();
+            Root.Add(item);
+        }
 
-            for (int i = 0; i < nodes.Length; i++)
+        public void AddRange(Collider[] itens)
+        {
+            for (int i = 0; i < itens.Length; i++)
+                Root.Add(itens[i]);
+        }
+
+        public Collider[] Get(Collider item)
+        {
+            return Root.Get(item);
+        }
+
+        public void Clear()
+        {
+            Root.Clear();
+        }
+
+        internal void DrawDebug()
+        {
+            Root.DrawDebug();
+        }
+    }
+
+    public class Node
+    {
+        private readonly Rectangle Bounds;
+        private readonly int Depth;
+        private readonly int MaxDepth;
+        private readonly int MaxChildren;
+        private readonly List<Node> Nodes;
+        private readonly List<Collider> Children;
+        private readonly List<Collider> StuckChildren;
+        private const int TOP_LEFT = 0;
+        private const int TOP_RIGHT = 1;
+        private const int BOTTOM_LEFT = 2;
+        private const int BOTTOM_RIGHT = 3;
+
+        public Node(Rectangle Bounds, int Depth, int MaxDepth, int MaxChildren)
+        {
+            this.Bounds = Bounds;
+            this.Depth = Depth;
+            this.MaxDepth = MaxDepth;
+            this.MaxChildren = MaxChildren;
+            Nodes = new List<Node>();
+            Children = new List<Collider>();
+            StuckChildren = new List<Collider>();
+        }
+
+        public void Add(Collider item)
+        {
+            if (Nodes.Any())
             {
-                if (nodes[i] != null)
-                {
-                    nodes[i].clear();
-                    nodes[i] = null;
-                }
+                var index = FindIndex(item);
+                var node = Nodes[index];
+
+                if (item.X >= node.Bounds.X
+                    && item.X + item.Width <= node.Bounds.X + node.Bounds.Width
+                    && item.Y >= node.Bounds.Y
+                    && item.Y + item.Height <= node.Bounds.Y + node.Bounds.Height)
+                    Nodes[index].Add(item);
+                else
+                    StuckChildren.Add(item);
+
+                return;
+            }
+
+            Children.Add(item);
+
+            if (Depth < MaxDepth && Children.Count > MaxChildren)
+            {
+                Subdivide();
+
+                for (int i = 0; i < Children.Count; i++)
+                    Add(Children[i]);
+
+                Children.Clear();
             }
         }
 
-        private void split()
+        public void Clear()
         {
-            int subWidth = bounds.Width / 2;
-            int subHeight = bounds.Height / 2;
-            int x = bounds.X;
-            int y = bounds.Y;
+            StuckChildren.Clear();
+            Children.Clear();
 
-            nodes[0] = new Quadtree(level + 1, new Rectangle(x + subWidth, y, subWidth, subHeight));
-            nodes[1] = new Quadtree(level + 1, new Rectangle(x, y, subWidth, subHeight));
-            nodes[2] = new Quadtree(level + 1, new Rectangle(x, y + subHeight, subWidth, subHeight));
-            nodes[3] = new Quadtree(level + 1, new Rectangle(x + subWidth, y + subHeight, subWidth, subHeight));
+            var len = Nodes.Count;
+
+            if (!Nodes.Any())
+                return;
+
+            for (var i = 0; i < len; i++)
+                Nodes[i].Clear();
+
+            Nodes.Clear();
         }
 
-        private int getIndex(float X, float Y, float Width, float Height)
+        private Collider[] GetAllContent(List<Collider> Out = null)
         {
-            int index = -1;
-            double verticalMidpoint = bounds.X + (bounds.Width / 2);
-            double horizontalMidpoint = bounds.Y + (bounds.Height / 2);
+            if (Out == null)
+                Out = new List<Collider>();
 
-            // Object can completely fit within the top quadrants
-            var topQuadrant = (Y < horizontalMidpoint && Y + Height < horizontalMidpoint);
-            // Object can completely fit within the bottom quadrants
-            var bottomQuadrant = (Y > horizontalMidpoint);
-
-            // Object can completely fit within the left quadrants
-            if (X < verticalMidpoint && X + Width < verticalMidpoint)
+            if (Nodes.Any())
             {
-                if (topQuadrant)
+                for (var i = 0; i < Nodes.Count; i++)
                 {
-                    index = 1;
-                }
-                else if (bottomQuadrant)
-                {
-                    index = 2;
+                    Nodes[i].GetAllContent(Out);
                 }
             }
-            // Object can completely fit within the right quadrants
-            else if (X > verticalMidpoint)
+            Out.AddRange(StuckChildren);
+            Out.AddRange(Children);
+
+            return Out.ToArray();
+        }
+
+        public Collider[] Get(Collider item)
+        {
+            var Out = new List<Collider>();
+            
+            if (Nodes.Any())
             {
-                if (topQuadrant)
+                var index = FindIndex(item);
+                var node = Nodes[index];
+
+                if (item.X >= node.Bounds.X
+                    && item.X + item.Width <= node.Bounds.X + node.Bounds.Width
+                    && item.Y >= node.Bounds.Y
+                    && item.Y + item.Height <= node.Bounds.Y + node.Bounds.Height)
                 {
-                    index = 0;
+                    Out.AddRange(Nodes[index].Get(item));
                 }
-                else if (bottomQuadrant)
+                else
                 {
-                    index = 3;
+                    //Part of the item are overlapping multiple child nodes. For each of the overlapping nodes, return all containing objects.
+                    if (item.X <= Nodes[TOP_RIGHT].Bounds.X)
+                    {
+                        if (item.Y <= Nodes[BOTTOM_LEFT].Bounds.Y)
+                            Out.AddRange(Nodes[TOP_LEFT].GetAllContent());
+
+                        if (item.Y + item.Height > Nodes[BOTTOM_LEFT].Bounds.Y)
+                            Out.AddRange(Nodes[BOTTOM_LEFT].GetAllContent());
+                    }
+
+                    if (item.X + item.Width > Nodes[TOP_RIGHT].Bounds.X)
+                    {//position+width bigger than middle x
+                        if (item.Y <= Nodes[BOTTOM_RIGHT].Bounds.Y)
+                            Out.AddRange(Nodes[TOP_RIGHT].GetAllContent());
+
+                        if (item.Y + item.Height > Nodes[BOTTOM_RIGHT].Bounds.Y)
+                            Out.AddRange(Nodes[BOTTOM_RIGHT].GetAllContent());
+                    }
+                }
+            }
+
+            Out.AddRange(StuckChildren);
+            Out.AddRange(Children);
+
+            return Out.ToArray();
+        }
+
+        private int FindIndex(Collider item)
+        {
+            var b = Bounds;
+            var left = (item.X > b.X + b.Width / 2) ? false : true;
+            var top = (item.Y > b.Y + b.Height / 2) ? false : true;
+
+            //top left
+            var index = TOP_LEFT;
+            if (left)
+            {
+                //left side
+                if (!top)
+                {
+                    //bottom left
+                    index = BOTTOM_LEFT;
+                }
+            }
+            else
+            {
+                //right side
+                if (top)
+                {
+                    //top right
+                    index = TOP_RIGHT;
+                }
+                else
+                {
+                    //bottom right
+                    index = BOTTOM_RIGHT;
                 }
             }
 
             return index;
         }
 
-        public void insert(Collider collider)
+        private void Subdivide()
         {
-            if (nodes[0] != null)
-            {
-                int index = getIndex(collider.X, collider.Y, collider.Width, collider.Height);
+            var depth = Depth + 1;
 
-                if (index != -1)
-                {
-                    nodes[index].insert(collider);
+            var bx = Bounds.X;
+            var by = Bounds.Y;
 
-                    return;
-                }
-            }
+            //floor the values
+            var b_w_h = (Bounds.Width / 2); //todo: Math.floor?
+            var b_h_h = (Bounds.Height / 2);
+            var bx_b_w_h = bx + b_w_h;
+            var by_b_h_h = by + b_h_h;
 
-            objects.Add(collider);
+            //TOP_LEFT
+            Nodes.Add(new Node(
+                new Rectangle(bx, by, b_w_h, b_h_h)
+                , depth
+                , MaxDepth
+                , MaxChildren
+            ));
 
-            if (objects.Count > MAX_OBJECTS && level < MAX_LEVELS)
-            {
-                if (nodes[0] == null)
-                {
-                    split();
-                }
+            //TOP_RIGHT
+            Nodes.Add(new Node(
+               new Rectangle(
+                    bx_b_w_h
+                    , by
+                    , b_w_h
+                    , b_h_h
+                )
+                , depth
+                , MaxDepth
+                , MaxChildren
+   ));
 
-                int i = 0;
-                while (i < objects.Count)
-                {
-                    int index = getIndex(objects[i].X, objects[i].Y, objects[i].Width, objects[i].Height);
-                    if (index != -1)
-                    {
-                        nodes[index].insert(objects[i]);
-                        objects.Remove(objects[i]);
-                    }
-                    else
-                    {
-                        i++;
-                    }
-                }
+            //BOTTOM_LEFT
+            Nodes.Add(new Node(
+               new Rectangle(
+                    bx
+                    , by_b_h_h
+                    , b_w_h
+                    , b_h_h
+                ),
+                depth
+                , MaxDepth
+                , MaxChildren
+   ));
 
-            }
-        }
-
-        public List<Collider> retrieve(float X, float Y, float Width, float Height, List<Collider> returnObjects = null)
-        {
-            if (returnObjects == null)
-                returnObjects = new List<Collider>();
-
-            int index = getIndex(X, Y, Width, Height);
-            if (index != -1 && nodes[0] != null)
-                nodes[index].retrieve(X, Y, Width, Height, returnObjects);
-
-            returnObjects.AddRange(objects);
-
-            return returnObjects;
+            //BOTTOM_RIGHT            
+            Nodes.Add(new Node(
+               new Rectangle(
+                    bx_b_w_h
+                    , by_b_h_h
+                    , b_w_h
+                    , b_h_h
+                )
+                , depth
+                , MaxDepth
+                , MaxChildren
+   ));
         }
 
         internal void DrawDebug()
         {
-            NewMethod(this);
-        }
+            Game1.RectanglesToRender.Enqueue(Bounds);
 
-        private void NewMethod(Quadtree quad)
-        {
-            if (quad == null)
-                return;
+            for (int i = 0; i < Nodes.Count; i++)
+                Nodes[i].DrawDebug();
 
-            foreach (var item in quad.nodes)
-                NewMethod(item);
+            var currentContent = GetAllContent();
 
-            Game1.RectanglesToRender.Enqueue(quad.bounds); 
-
-            foreach (var obj in quad.objects)
-                Game1.RectanglesToRender.Enqueue(obj.AsRectangle());
+            for (int i = 0; i < currentContent.Length; i++)
+                Game1.RectanglesToRender.Enqueue(currentContent[i].AsRectangle());
         }
     }
 }
