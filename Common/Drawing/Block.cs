@@ -13,7 +13,7 @@ namespace ThirdGame
                 Height = 1000
             } };
 
-           Animation = new Animation(new AnimationFrame(this, "block", 1000, 1000));
+           //Animation = new Animation(new AnimationFrame(this, "block", 1000, 1000));
         }
     }
 }

@@ -4,19 +4,25 @@ using ThirdGame;
 
 namespace Common
 {
+    public class PositionComponent
+    {
+        public Vector2 Position;
+    }
+
     public class PlayerAnimator : AnimationHandler
     {
-        private readonly IHavePosition playerPosition;
+        private readonly PositionComponent playerPosition;
         private readonly Inputs Inputs;
         private readonly Animation IdleAnimation;
-        private readonly Animation WalkAnimation;
+        private readonly Animation WalkRightAnimation;
+        private readonly Animation WalkLeftAnimation;
         private readonly Animation CrouchAnimation;
         private readonly Animation UpAnimation;
         private Animation CurremtAnimation;
         public const int SIZE = 800;
         public const int CENTER = 50;
 
-        public PlayerAnimator(IHavePosition playerPosition, Inputs Inputs)
+        public PlayerAnimator(PositionComponent playerPosition, Inputs Inputs)
         {
             this.playerPosition = playerPosition;
             this.Inputs = Inputs;
@@ -33,7 +39,22 @@ namespace Common
                 new AnimationFrame(playerPosition, "char_up", SIZE, SIZE)
             );
 
-            WalkAnimation = new Animation(
+            WalkRightAnimation = new Animation(
+                new AnimationFrame(playerPosition, "char", SIZE, SIZE)
+                {
+                    DurationInUpdateCount = 5,
+                    Color = Color.White,
+                    Flipped = true
+                },
+                new AnimationFrame(playerPosition, "char_walk", SIZE, SIZE)
+                {
+                    DurationInUpdateCount = 5,
+                    Color = Color.White,
+                    Flipped = true
+                }
+            );
+
+            WalkLeftAnimation = new Animation(
                 new AnimationFrame(playerPosition, "char", SIZE, SIZE)
                 {
                     DurationInUpdateCount = 5,
@@ -51,8 +72,10 @@ namespace Common
 
         public void Update()
         {
-            if ((Inputs.Direction == DpadDirection.Left || Inputs.Direction == DpadDirection.Right))
-                CurremtAnimation = WalkAnimation;
+            if (Inputs.Direction == DpadDirection.Right)
+                CurremtAnimation = WalkRightAnimation;
+            else if (Inputs.Direction == DpadDirection.Left)
+                CurremtAnimation = WalkLeftAnimation;
             else if (Inputs.Direction == DpadDirection.Down)
                 CurremtAnimation = CrouchAnimation;
             else if (Inputs.Direction == DpadDirection.Up)

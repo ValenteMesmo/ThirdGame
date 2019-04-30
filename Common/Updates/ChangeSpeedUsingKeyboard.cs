@@ -33,16 +33,6 @@ namespace Common
 
             if (GameObject.Velocity.X < -100)
                 GameObject.Velocity.X = -100;
-
-            //if (Inputs.IsPressingJump)
-            //    Speed.Y = -200;
-            //else
-            //    Speed.Y += 20;
-
-            //if (Speed.Y > 200)
-            //    Speed.Y = 200;
-            //if (Speed.Y < -200)
-            //    Speed.Y = -200;
         }
     }
 }

@@ -4,6 +4,8 @@ namespace ThirdGame
 {
     public class LogCollision : CollisionHandler
     {
+        public void BeforeCollisions() { }
+
         public void Bot(Collider Source, Collider Target)
         {
             Game1.LOG += $@"

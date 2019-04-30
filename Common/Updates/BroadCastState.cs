@@ -5,12 +5,12 @@ namespace Common
     public class BroadCastState : IHandleUpdates
     {
         private readonly Camera2d Camera;
-        private readonly IHavePosition Something;
+        private readonly PositionComponent Something;
         private readonly NetworkHandler NetworkHandler;
 
         public BroadCastState(
             Camera2d Camera
-            , IHavePosition Something
+            , PositionComponent Something
             , NetworkHandler NetworkHandler
         )
         {

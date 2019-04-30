@@ -4,9 +4,8 @@ using System;
 
 namespace Common
 {
-    public class Camera2d : IHavePosition
+    public class Camera2d : PositionComponent
     {
-        public Vector2 Position { get; set; }
         private PositionComponent OriginalPosition = new PositionComponent();
         public Matrix Transform;
         protected float Rotation;
@@ -91,14 +90,13 @@ namespace Common
 
             if (shakeUpDuration > 0)
             {
-                Position = new Vector2(Position.X, OriginalPosition.Position.Y + shakeUpDuration * shakeUpPower);
+                Position.Y += shakeUpDuration * shakeUpPower;
                 shakeUpDuration--;
             }
             else
             {
                 shakeUpDuration = 0;
                 shakeUpPower = 0;
-                Position = new Vector2(Position.X, OriginalPosition.Position.Y);
             }
         }
     }

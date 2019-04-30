@@ -28,15 +28,19 @@ namespace ThirdGame
             var controller = new GameObject("Controller");
 
             Add(controller);
-            Add(new TouchControllerRenderer(CameraUI, PlayerInputs));
+            //Add(new TouchControllerRenderer(CameraUI, PlayerInputs));
 
-            for (int i = -10; i < 20; i++)
+            for (int i = -10; i < 10; i++)
             {
-                Add(new Block() { Position = new Vector2(1000 * i, 1000) });
+                Add(new Block { Position = new Vector2(1000 * i, 1000) });
+                Add(new Block { Position = new Vector2(1000 * i, -6000) });
+
+                //Add(new Block { Position = new Vector2(1000 * 10, 1000*i) });
+                //Add(new Block { Position = new Vector2(1000 * -10, 1000 * i) });
             }
 
-            Add(new Block() { Position = new Vector2(7000, -500) });
-            Add(new Block() { Position = new Vector2(-8000, -500) });
+            Add(new Block { Position = new Vector2(7000, -500) });
+            Add(new Block { Position = new Vector2(-8000, -500) });
             //TODO: move to other class
             {
                 network.MessageReceivedFromOtherClients += (ip, message) =>
@@ -117,17 +121,13 @@ namespace ThirdGame
             {
                 GameObjects[i].Update.Update();
 
-                GameObjects[i].Position = new Vector2(
-                         GameObjects[i].Position.X
-                         , GameObjects[i].Position.Y + GameObjects[i].Velocity.Y * elapsed
-                     );
+                GameObjects[i].Position.Y += GameObjects[i].Velocity.Y * elapsed;
                 for (int j = 0; j < GameObjects[i].Colliders.Length; j++)
+                {
                     CheckCollisions(CollisionDirection.Vertical, GameObjects[i].Colliders[j]);
+                }
 
-                GameObjects[i].Position = new Vector2(
-                    GameObjects[i].Position.X + GameObjects[i].Velocity.X * elapsed
-                    , GameObjects[i].Position.Y
-                );
+                GameObjects[i].Position.X += GameObjects[i].Velocity.X * elapsed;
                 for (int j = 0; j < GameObjects[i].Colliders.Length; j++)
                     CheckCollisions(CollisionDirection.Horizontal, GameObjects[i].Colliders[j]);
 

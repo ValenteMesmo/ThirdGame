@@ -5,10 +5,10 @@ namespace ThirdGame
 {
     class LearpToPosition : IHandleUpdates
     {
-        private readonly IHavePosition From;
-        private readonly IHavePosition To;
+        private readonly PositionComponent From;
+        private readonly PositionComponent To;
 
-        public LearpToPosition(IHavePosition From, IHavePosition To)
+        public LearpToPosition(PositionComponent From, PositionComponent To)
         {
             this.From = From;
             this.To = To;
@@ -16,10 +16,8 @@ namespace ThirdGame
 
         public void Update()
         {
-            From.Position = new Vector2(
-                MathHelper.Lerp(From.Position.X, To.Position.X, 0.08f),
-                MathHelper.Lerp(From.Position.Y, To.Position.Y, 0.08f)
-            );
+            From.Position.X = MathHelper.Lerp(From.Position.X, To.Position.X, 0.08f);
+            From.Position.Y = MathHelper.Lerp(From.Position.Y, To.Position.Y, 0.08f);
         }
     }
 }

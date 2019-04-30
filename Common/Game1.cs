@@ -119,7 +119,7 @@ namespace ThirdGame
             try
             {
                 smartFPS.Update((float)gameTime.ElapsedGameTime.TotalSeconds);
-                GraphicsDevice.Clear(Color.Black);
+                GraphicsDevice.Clear(Color.CornflowerBlue);
                 spriteBatch.Begin(
                     SpriteSortMode.BackToFront,
                     BlendState.AlphaBlend,
@@ -166,7 +166,7 @@ LOG: {LOG}"
                         , color: frame.Color
                         , rotation: frame.Rotation
                         , origin: frame.RotationAnchor
-                        , effects: SpriteEffects.None
+                        , effects: frame.Flipped ? SpriteEffects.FlipHorizontally : SpriteEffects.None
                         , layerDepth: 0f
                     );
                     }
@@ -182,7 +182,7 @@ LOG: {LOG}"
                 spriteBatch.End();
                 spriteBatchUi.End();
             }
-            catch(Exception ex) //(System.Exception ex)
+            catch //(System.Exception ex)
             {
 
             }

@@ -1,6 +1,5 @@
 ﻿using Common;
 using Microsoft.Xna.Framework;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -245,7 +244,7 @@ namespace ThirdGame
                 , depth
                 , MaxDepth
                 , MaxChildren
-   ));
+            ));
 
             //BOTTOM_LEFT
             Nodes.Add(new Node(

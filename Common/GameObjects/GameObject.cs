@@ -2,20 +2,17 @@
 
 namespace Common
 {
-
-    public class GameObject : IHavePosition
+    public class GameObject : PositionComponent
     {
         public string Id { get; }
-        public Vector2 Position { get; set; }
-        public IHandleUpdates Update = NoUpdate.Instance;
-        public AnimationHandler Animation = NoAnimation.Instance;
-        public Collider[] Colliders = NoCollision.Empty;
         public Vector2 Velocity;
-
-        internal bool Destroyed;
+        public IHandleUpdates Update { get; set; } = NoUpdate.Instance;
+        public AnimationHandler Animation { get; set; } = NoAnimation.Instance;
+        public Collider[] Colliders { get; set; } = NoCollision.Empty;
 
         public GameObject(string Id) => this.Id = Id;
 
+        internal bool Destroyed;
         public void Destroy() => Destroyed = true;
 
         public override string ToString() => $"{nameof(GameObject)} - {Id}";

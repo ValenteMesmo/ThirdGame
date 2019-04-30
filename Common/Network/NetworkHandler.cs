@@ -94,8 +94,8 @@ namespace ThirdGame
                     
                     serverIp = ServerIpFinder.FindIp(Sockets.Select(f => f.IP), UdpWrapper.myIp);
                 }
-                //TODO:
-                //else lower count... latency event
+                //TODO: latency event
+                //else lower count...
             }
         }
 
