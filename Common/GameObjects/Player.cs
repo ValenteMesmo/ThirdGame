@@ -51,9 +51,9 @@ namespace ThirdGame
             Colliders = new Collider[] {
                 new Collider(this) {
                     X = 0,
-                    Y=0,
-                    Width=PlayerAnimator.SIZE,
-                    Height=PlayerAnimator.SIZE,
+                    Y = 0,
+                    Width = PlayerAnimator.SIZE,
+                    Height = PlayerAnimator.SIZE,
                     Collision =new CollisionHandlerAggregation(
                         new LogCollision()
                         , new BlockCollisionHandler()
@@ -61,16 +61,15 @@ namespace ThirdGame
                 }
                 , new Collider(this){
                     X = 0,
-                    Y=0,
-                    Width=PlayerAnimator.SIZE,
-                    Height=PlayerAnimator.SIZE +1,
-                     Collision =new FlagAsGrounded(this)
+                    Y = 0,
+                    Width = PlayerAnimator.SIZE,
+                    Height = PlayerAnimator.SIZE + 1,
+                    Collision = new FlagAsGrounded(this)
                 }
             };
 
-            //Animation = new PlayerAnimator(this, Inputs);
+            Animation = new PlayerAnimator(this, Inputs);
             Update = playerUpdateHandler;
-
         }
     }
 }

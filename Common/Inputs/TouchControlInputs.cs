@@ -56,6 +56,20 @@ namespace Common
             , TouchControllerRenderer.BUTTON_HEIGHT * 3
        );
 
+        private readonly Rectangle ANY_BUTTON2 = new Rectangle(
+           TouchControllerRenderer.BUTTON2_LEFT_X
+            , TouchControllerRenderer.BUTTON2_TOP_Y
+            , TouchControllerRenderer.BUTTON_WIDTH * 3
+            , TouchControllerRenderer.BUTTON_HEIGHT * 3
+       );
+
+        private readonly Rectangle BOT2_BUTTON = new Rectangle(
+            TouchControllerRenderer.BUTTON2_BOT_X,
+            TouchControllerRenderer.BUTTON2_BOT_Y,
+            TouchControllerRenderer.BUTTON_WIDTH,
+            TouchControllerRenderer.BUTTON_HEIGHT
+        );
+
         private readonly Rectangle CENTRAL_BUTTON = new Rectangle(
           TouchControllerRenderer.BUTTON_LEFT_X + TouchControllerRenderer.BUTTON_WIDTH 
            , TouchControllerRenderer.BUTTON_TOP_Y + (TouchControllerRenderer.BUTTON_HEIGHT ) 
@@ -153,6 +167,14 @@ namespace Common
                         previousDirection = Direction;
                         break;
                     }
+                    else if (ANY_BUTTON2.Contains(position)) {
+                        if (BOT2_BUTTON.Contains(position))
+                        {
+                            Jump = true;
+                        }
+                        else
+                            Jump = false;
+                    }
                 }
 
                 if (!anyDpadPressed)
@@ -161,6 +183,7 @@ namespace Common
             else
             {
                 Direction = DpadDirection.None;
+                Jump = false;
             }
 
         }

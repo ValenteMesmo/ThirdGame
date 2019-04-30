@@ -28,7 +28,7 @@ namespace ThirdGame
             var controller = new GameObject("Controller");
 
             Add(controller);
-            //Add(new TouchControllerRenderer(CameraUI, PlayerInputs));
+            Add(new TouchControllerRenderer(CameraUI, PlayerInputs));
 
             for (int i = -10; i < 10; i++)
             {

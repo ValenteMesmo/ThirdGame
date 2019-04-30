@@ -115,7 +115,7 @@ namespace ThirdGame
                             RotationAnchor = new Vector2(BUTTON_WIDTH / 2, BUTTON_HEIGHT / 2)
                         })
                 ),
-                new TogglableAnimation(() => inputs.Direction == DpadDirection.Down
+                new TogglableAnimation(() => inputs.Jump
                     , new Animation(new AnimationFrame(camera, "dpad", BUTTON_WIDTH, BUTTON_HEIGHT)
                     {
                         Offset = new Vector2(BUTTON2_BOT_X + (BUTTON_WIDTH / 2), BUTTON2_BOT_Y + (BUTTON_HEIGHT / 2)),
