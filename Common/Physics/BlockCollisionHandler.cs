@@ -33,7 +33,7 @@ namespace ThirdGame
 
         public void Update()
         {
-            if (Inputs.Jump)
+            if (Inputs.Jump && GameObject.Grounded)
                 GameObject.Velocity.Y = -200;
         }
     }

@@ -124,6 +124,7 @@ namespace ThirdGame
                 GameObjects[i].Position.Y += GameObjects[i].Velocity.Y * elapsed;
                 for (int j = 0; j < GameObjects[i].Colliders.Length; j++)
                 {
+                    GameObjects[i].Colliders[j].Collision.BeforeCollisions();
                     CheckCollisions(CollisionDirection.Vertical, GameObjects[i].Colliders[j]);
                 }
 

@@ -11,6 +11,12 @@ namespace ThirdGame
             this.collisionHandlers = collisionHandlers;
         }
 
+        public void BeforeCollisions()
+        {
+            for (int i = 0; i < collisionHandlers.Length; i++)
+                collisionHandlers[i].BeforeCollisions();
+        }
+
         public void Bot(Collider Source, Collider target)
         {
             for (int i = 0; i < collisionHandlers.Length; i++)
