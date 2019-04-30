@@ -3,7 +3,7 @@
     public interface Inputs
     {
         DpadDirection Direction { get; set; }
-
+        bool Jump { get; set; }
         void Update();
     }
 

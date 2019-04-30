@@ -66,6 +66,7 @@ namespace Common
         private Vector2 previousPosition;
 
         public DpadDirection Direction { get; set; }
+        public bool Jump { get; set; }
         private DpadDirection previousDirection;
 
         public void Update()

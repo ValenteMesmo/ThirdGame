@@ -5,6 +5,7 @@
         private readonly Inputs[] inputs;
 
         public DpadDirection Direction { get; set; }
+        public bool Jump { get; set; }
 
         public MultipleInputSource(params Inputs[] inputs)
         {
@@ -14,6 +15,7 @@
         public void Update()
         {
             Direction = DpadDirection.None;
+            Jump = false;
 
             foreach (var item in inputs)
             {
@@ -21,6 +23,9 @@
 
                 if (item.Direction != DpadDirection.None)
                     Direction = item.Direction;
+
+                if (!Jump)
+                    Jump = item.Jump;
             }
         }
     }

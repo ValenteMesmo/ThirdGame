@@ -44,7 +44,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BlockCollisionHandler.cs" />
+    <Compile Include="Physics\BlockCollisionHandler.cs" />
     <Compile Include="Drawing\Block.cs" />
     <Compile Include="Physics\CollisionHandlerAggregation.cs" />
     <Compile Include="Physics\LogCollision.cs" />

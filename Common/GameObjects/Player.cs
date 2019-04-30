@@ -8,7 +8,8 @@ namespace ThirdGame
         {
             var playerUpdateHandler = new UpdateAggregation(
                  new ChangeSpeedUsingKeyboard(Inputs, this)
-                 //, new MovesPlayerUsingMouse(Position, Camera)
+                 , new AffectedByGravity(this)
+                 , new Jump(this, Inputs)
                  , new BroadCastState(Camera, this, network)
             );
 
@@ -24,7 +25,7 @@ namespace ThirdGame
 
             Animation = new PlayerAnimator(this, Inputs);
             Update = playerUpdateHandler;
-            
+
         }
     }
 }
