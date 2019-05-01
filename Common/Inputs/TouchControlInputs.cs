@@ -19,7 +19,7 @@ namespace Common
         }
 
         private bool anyDpadPressed;
-
+        private bool anyActionPressed;
 
         private readonly Rectangle LEFT_BUTTON = new Rectangle(
             TouchControllerRenderer.BUTTON_LEFT_X,
@@ -95,6 +95,7 @@ namespace Common
             TouchInputs.Update();
             var touchCollection = TouchInputs.GetTouchCollection();
             anyDpadPressed = false;
+            anyActionPressed = false;
 
             if (touchCollection.Any())
             {
@@ -165,18 +166,21 @@ namespace Common
 
                         previousPosition = position;
                         previousDirection = Direction;
-                        break;
                     }
-                    else if (ANY_BUTTON2.Contains(position)) {
+
+                    if (ANY_BUTTON2.Contains(position))
+                    {
                         if (BOT2_BUTTON.Contains(position))
                         {
-                            Jump = true;
+                            anyActionPressed = Jump = true;
                         }
                         else
                             Jump = false;
                     }
                 }
 
+                if (!anyActionPressed)
+                    Jump = false;
                 if (!anyDpadPressed)
                     Direction = DpadDirection.None;
             }
