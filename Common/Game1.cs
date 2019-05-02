@@ -20,6 +20,9 @@ namespace ThirdGame
         private Camera2d Camera;
         private Camera2d CameraUI;
         private Dictionary<string, Texture2D> Sprites = new Dictionary<string, Texture2D>();
+
+        public static Action<int> AndroidVibrate { get; set; } = f => { };
+
         private SpriteFont SpriteFont;
         private FramerateCounter smartFPS = new FramerateCounter();
 

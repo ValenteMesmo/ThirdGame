@@ -5,7 +5,6 @@ using ThirdGame;
 
 namespace Common
 {
-    //TODO: add vibration feedback on touch
     //TODO: add an extra area of touch around the buttons
     //TODO: implement diagonal inputs
     public class TouchControlInputs : Inputs
@@ -18,35 +17,37 @@ namespace Common
             previousPosition = ANY_BUTTON.Center.ToVector2();
         }
 
+        private bool anyDpadWasPressed;
         private bool anyDpadPressed;
+        private bool anyActionWasPressed;
         private bool anyActionPressed;
 
         private readonly Rectangle LEFT_BUTTON = new Rectangle(
             TouchControllerRenderer.BUTTON_LEFT_X,
             TouchControllerRenderer.BUTTON_LEFT_Y,
-            TouchControllerRenderer.BUTTON_WIDTH ,
+            TouchControllerRenderer.BUTTON_WIDTH,
             TouchControllerRenderer.BUTTON_HEIGHT
         );
 
         private readonly Rectangle RIGHT_BUTTON = new Rectangle(
-            TouchControllerRenderer.BUTTON_RIGHT_X ,
-            TouchControllerRenderer.BUTTON_RIGHT_Y ,
-            TouchControllerRenderer.BUTTON_WIDTH ,
-            TouchControllerRenderer.BUTTON_HEIGHT 
+            TouchControllerRenderer.BUTTON_RIGHT_X,
+            TouchControllerRenderer.BUTTON_RIGHT_Y,
+            TouchControllerRenderer.BUTTON_WIDTH,
+            TouchControllerRenderer.BUTTON_HEIGHT
         );
 
         private readonly Rectangle BOT_BUTTON = new Rectangle(
-            TouchControllerRenderer.BUTTON_BOT_X ,
-            TouchControllerRenderer.BUTTON_BOT_Y ,
-            TouchControllerRenderer.BUTTON_WIDTH ,
-            TouchControllerRenderer.BUTTON_HEIGHT 
+            TouchControllerRenderer.BUTTON_BOT_X,
+            TouchControllerRenderer.BUTTON_BOT_Y,
+            TouchControllerRenderer.BUTTON_WIDTH,
+            TouchControllerRenderer.BUTTON_HEIGHT
         );
 
         private readonly Rectangle TOP_BUTTON = new Rectangle(
-            TouchControllerRenderer.BUTTON_TOP_X ,
-            TouchControllerRenderer.BUTTON_TOP_Y ,
-            TouchControllerRenderer.BUTTON_WIDTH ,
-            TouchControllerRenderer.BUTTON_HEIGHT 
+            TouchControllerRenderer.BUTTON_TOP_X,
+            TouchControllerRenderer.BUTTON_TOP_Y,
+            TouchControllerRenderer.BUTTON_WIDTH,
+            TouchControllerRenderer.BUTTON_HEIGHT
         );
 
         private readonly Rectangle ANY_BUTTON = new Rectangle(
@@ -71,9 +72,9 @@ namespace Common
         );
 
         private readonly Rectangle CENTRAL_BUTTON = new Rectangle(
-          TouchControllerRenderer.BUTTON_LEFT_X + TouchControllerRenderer.BUTTON_WIDTH 
-           , TouchControllerRenderer.BUTTON_TOP_Y + (TouchControllerRenderer.BUTTON_HEIGHT ) 
-           , TouchControllerRenderer.BUTTON_WIDTH 
+          TouchControllerRenderer.BUTTON_LEFT_X + TouchControllerRenderer.BUTTON_WIDTH
+           , TouchControllerRenderer.BUTTON_TOP_Y + (TouchControllerRenderer.BUTTON_HEIGHT)
+           , TouchControllerRenderer.BUTTON_WIDTH
            , TouchControllerRenderer.BUTTON_HEIGHT
       );
 
@@ -94,7 +95,9 @@ namespace Common
 
             TouchInputs.Update();
             var touchCollection = TouchInputs.GetTouchCollection();
+            anyDpadWasPressed = anyDpadPressed;
             anyDpadPressed = false;
+            anyActionWasPressed = anyActionPressed;
             anyActionPressed = false;
 
             if (touchCollection.Any())
@@ -189,7 +192,10 @@ namespace Common
                 Direction = DpadDirection.None;
                 Jump = false;
             }
-
+            if ((!anyActionWasPressed && anyActionPressed) || (!anyDpadWasPressed && anyDpadPressed))
+                Game1.AndroidVibrate(10);
+            else if ((anyActionWasPressed && !anyActionPressed) || (anyDpadWasPressed && !anyDpadPressed))
+                Game1.AndroidVibrate(5);
         }
     }
 }

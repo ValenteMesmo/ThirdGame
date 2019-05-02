@@ -7,6 +7,14 @@ using Android.Views;
 
 namespace ThirdGame
 {
+    public class AndroidVibratorWrapper
+    {
+        public AndroidVibratorWrapper(Vibrator Vibrator)
+        {
+
+        }
+    }
+
     [Activity(Label = "ó"
         , MainLauncher = true
         , Icon = "@drawable/icon"
@@ -28,7 +36,9 @@ namespace ThirdGame
             //var WifiLock = WifiManager.CreateWifiLock(WifiMode.FullHighPerf, "WifiLock");
             //WifiLock.Acquire();
 
+            Vibrator vibrator = (Vibrator)GetSystemService(VibratorService);
             game = new Game1(new UdpAndroidWrapper(), true);
+            Game1.AndroidVibrate = f => vibrator.Vibrate(VibrationEffect.CreateOneShot(f, VibrationEffect.DefaultAmplitude));
 
             SetViewFullScreen();
             //SetContentView((View)game.Services.GetService(typeof(View)));
