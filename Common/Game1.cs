@@ -155,7 +155,7 @@ LOG: {LOG}"
                     , SpriteEffects.None
                     , 0);
 
-                foreach (var obj in GameLoop.GetGameObjects())
+                foreach (var obj in GameLoop.GameObjects)
                 {
                     foreach (var frame in obj.Animation.GetFrame())
                     {

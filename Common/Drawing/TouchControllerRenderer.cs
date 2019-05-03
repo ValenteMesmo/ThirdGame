@@ -7,9 +7,9 @@ namespace ThirdGame
     {
         private const int BONUS_SIZE = 0;
         private const int BONUS_X = -550;
-        private const int BONUS_Y = -50;
         private const int BONUS2_X = 450;
-        private const int BONUS2_Y = -50;
+        private const int BONUS_Y = -350;
+        private const int BONUS2_Y = -350;
 
         public const int BUTTON_TOP_X = 0 + BONUS_X;
         public const int BUTTON_TOP_Y = 0 + BONUS_Y;

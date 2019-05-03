@@ -7,7 +7,7 @@ namespace ThirdGame
 {
     public class GameLoop
     {
-        private List<GameObject> GameObjects = new List<GameObject>();
+        public List<GameObject> GameObjects = new List<GameObject>();
         private readonly Camera2d Camera;
         private readonly Inputs PlayerInputs;
         private readonly NetworkHandler network;
@@ -23,24 +23,24 @@ namespace ThirdGame
 
             var Player = new Player("player", PlayerInputs, Camera, network);
 
-            Add(Player);
+            GameObjects.Add(Player);
 
             var controller = new GameObject("Controller");
 
-            Add(controller);
-            Add(new TouchControllerRenderer(CameraUI, PlayerInputs));
+            GameObjects.Add(controller);
+            GameObjects.Add(new TouchControllerRenderer(CameraUI, PlayerInputs));
 
             for (int i = -10; i < 10; i++)
             {
-                Add(new Block { Position = new Vector2(1000 * i, 1000) });
-                Add(new Block { Position = new Vector2(1000 * i, -6000) });
+                GameObjects.Add(new Block { Position = new Vector2(1000 * i, 1000) });
+                GameObjects.Add(new Block { Position = new Vector2(1000 * i, -6000) });
 
                 //Add(new Block { Position = new Vector2(1000 * 10, 1000*i) });
                 //Add(new Block { Position = new Vector2(1000 * -10, 1000 * i) });
             }
 
-            Add(new Block { Position = new Vector2(7000, -500) });
-            Add(new Block { Position = new Vector2(-8000, -500) });
+            GameObjects.Add(new Block { Position = new Vector2(7000, -500) });
+            GameObjects.Add(new Block { Position = new Vector2(-8000, -500) });
             //TODO: move to other class
             {
                 network.MessageReceivedFromOtherClients += (ip, message) =>
@@ -83,27 +83,16 @@ namespace ThirdGame
 
                     var netPlayer = new NetworkPlayer(ip);
                     netPlayer.Position = Player.Position;
-                    Add(netPlayer);
+                    GameObjects.Add(netPlayer);
                 };
 
                 network.PlayerDisconnected += (ip) =>
                 {
                     var obj = GameObjects.FirstOrDefault(f => f.Id == ip);
                     if (obj != null)
-                        Remove(obj);
+                        GameObjects.Remove(obj);
                 };
             }
-        }
-
-        public void Add(GameObject GameObject) =>
-            GameObjects.Add(GameObject);
-
-        public List<GameObject> GetGameObjects() =>
-            GameObjects;
-
-        public void Remove(GameObject GameObject)
-        {
-            GameObjects.Remove(GameObject);
         }
 
         public void Update(float elapsed)
@@ -135,7 +124,7 @@ namespace ThirdGame
                 GameObjects[i].Animation.Update();
             }
 
-            quadtree.DrawDebug();
+            //quadtree.DrawDebug();
         }
 
         private void CheckCollisions(CollisionDirection direction, Collider source)
