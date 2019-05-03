@@ -106,69 +106,52 @@ namespace Common
                 {
                     if (ANY_BUTTON.Contains(position))
                     {
-                        if (LEFT_BUTTON.Contains(position))
-                        {
-                            Direction = DpadDirection.Left;
-                            anyDpadPressed = true;
-                        }
-                        else if (RIGHT_BUTTON.Contains(position))
-                        {
-                            Direction = DpadDirection.Right;
-                            anyDpadPressed = true;
-                        }
-                        else if (BOT_BUTTON.Contains(position))
-                        {
-                            Direction = DpadDirection.Down;
-                            anyDpadPressed = true;
-                        }
-                        else if (TOP_BUTTON.Contains(position))
-                        {
-                            Direction = DpadDirection.Up;
-                            anyDpadPressed = true;
-                        }
-                        else if (CENTRAL_BUTTON.Contains(position))
-                        {
-                            var distanceX = position.X - previousPosition.X;
-                            var distanceY = position.Y - previousPosition.Y;
-                            var distanceXAbs = Math.Abs(distanceX);
-                            var distanceYAbs = Math.Abs(distanceY);
+                        anyDpadPressed = true;
 
-                            anyDpadPressed = true;
+                        var distanceX = position.X - previousPosition.X;
+                        var distanceY = position.Y - previousPosition.Y;
+                        var distanceXAbs = Math.Abs(distanceX);
+                        var distanceYAbs = Math.Abs(distanceY);
 
-                            var HorizontalDiference = distanceXAbs > TouchControllerRenderer.BUTTON_WIDTH / 5;
-                            var VerticalDiference = distanceYAbs > TouchControllerRenderer.BUTTON_WIDTH / 5;
+                        var movingUp = false;
+                        var movingLeft = false;
+                        var movingRight = false;
+                        var movingDown = false;
 
-                            if (HorizontalDiference && !VerticalDiference)
-                            {
-                                if (distanceX >= 0)
-                                    Direction = DpadDirection.Right;
-                                else
-                                    Direction = DpadDirection.Left;
-                            }
-                            else if (!HorizontalDiference && VerticalDiference)
-                            {
-                                if (distanceY >= 0)
-                                    Direction = DpadDirection.Down;
-                                else
-                                    Direction = DpadDirection.Up;
-
-                            }
-                            else if (HorizontalDiference && VerticalDiference)
-                            {
-                                if (distanceX >= 0)
-                                    Direction = DpadDirection.Right;
-                                else
-                                    Direction = DpadDirection.Left;
-                            }
+                        if(distanceXAbs > 30)
+                        {
+                            if (distanceX > 0) 
+                                movingRight = true;
                             else
-                            {
-                                Direction = previousDirection;
-                            }
-
+                                movingLeft = true;
                         }
 
-                        previousPosition = position;
-                        previousDirection = Direction;
+                        if(distanceYAbs> 30)
+                        {
+                            if (distanceY > 0)
+                                movingDown = true;
+                            else
+                                movingUp = true;
+                        }
+
+                        if (movingRight && !movingUp && !movingDown)
+                            Direction = DpadDirection.Right;
+                        else if (movingLeft && !movingUp && !movingDown)
+                            Direction = DpadDirection.Left;
+                        else if (movingUp && !movingRight && !movingLeft)
+                            Direction = DpadDirection.Up;
+                        else if (movingDown && !movingRight && !movingLeft)
+                            Direction = DpadDirection.Down;
+                        else if (movingUp && movingRight)
+                            Direction = DpadDirection.UpRight;
+                        else if (movingUp && movingLeft)
+                            Direction = DpadDirection.UpLeft;
+                        else if (movingDown && movingRight)
+                            Direction = DpadDirection.DownRight;
+                        else if (movingDown && movingLeft)
+                            Direction = DpadDirection.DownLeft;
+                        else
+                            Direction = previousDirection;
                     }
 
                     if (ANY_BUTTON2.Contains(position))
@@ -192,6 +175,7 @@ namespace Common
                 Direction = DpadDirection.None;
                 Jump = false;
             }
+
             if ((!anyActionWasPressed && anyActionPressed) || (!anyDpadWasPressed && anyDpadPressed))
                 Game1.AndroidVibrate(10);
             else if ((anyActionWasPressed && !anyActionPressed) || (anyDpadWasPressed && !anyDpadPressed))
