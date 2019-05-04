@@ -280,10 +280,10 @@ namespace ThirdGame
             for (int i = 0; i < Nodes.Count; i++)
                 Nodes[i].DrawDebug();
 
-            var currentContent = GetAllContent();
+            //var currentContent = GetAllContent();
 
-            for (int i = 0; i < currentContent.Length; i++)
-                Game1.RectanglesToRender.Enqueue(currentContent[i].AsRectangle());
+            //for (int i = 0; i < currentContent.Length; i++)
+            //    Game1.RectanglesToRender.Enqueue(currentContent[i].AsRectangle());
         }
     }
 }

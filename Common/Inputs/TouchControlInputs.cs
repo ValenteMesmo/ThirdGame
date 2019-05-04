@@ -118,18 +118,36 @@ namespace Common
                         var movingRight = false;
                         var movingDown = false;
 
-                        if(distanceXAbs > 30)
+                        if (distanceXAbs > 30)
                         {
-                            if (distanceX > 0) 
+                            if (distanceX > 0)
                                 movingRight = true;
                             else
                                 movingLeft = true;
                         }
 
-                        if(distanceYAbs> 30)
+                        if (distanceYAbs > 60)
                         {
                             if (distanceY > 0)
+                            {
                                 movingDown = true;
+                            }
+                            else
+                            {
+                                //TODO: continue
+                                //wip: 
+                                if (Direction == DpadDirection.Down
+                                    || Direction == DpadDirection.DownLeft
+                                    || Direction == DpadDirection.DownRight)
+                                    movingUp = true;
+                            }
+                        }
+                        if (distanceYAbs > 30)
+                        {
+                            if (distanceY > 0)
+                            {
+                                movingDown = true;
+                            }
                             else
                                 movingUp = true;
                         }

@@ -16,8 +16,9 @@ namespace ThirdGame
 
         public void Update()
         {
+            //TODO: 
             From.Position.X = MathHelper.Lerp(From.Position.X, To.Position.X, 0.08f);
-            From.Position.Y = MathHelper.Lerp(From.Position.Y, To.Position.Y, 0.08f);
+            From.Position.Y = MathHelper.Lerp(From.Position.Y, To.Position.Y, 0.5f);
         }
     }
 }

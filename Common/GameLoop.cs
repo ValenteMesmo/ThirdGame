@@ -16,7 +16,7 @@ namespace ThirdGame
         public GameLoop(UdpService UdpWrapper, Camera2d Camera, Camera2d CameraUI)
         {
             this.Camera = Camera;
-            quadtree = new QuadTree(new Rectangle(-9000, -7000, 18000, 12000), 50, 10);
+            quadtree = new QuadTree(new Rectangle(-11000, -7000, 23000, 15000), 50, 5);
             var TouchWrapper = new TouchInputsWrapper(CameraUI);
             PlayerInputs = new MultipleInputSource(new KeyboardInputs(), new TouchControlInputs(TouchWrapper));
             network = new NetworkHandler(UdpWrapper, PlayerInputs);
@@ -32,15 +32,13 @@ namespace ThirdGame
 
             for (int i = -10; i < 10; i++)
             {
-                GameObjects.Add(new Block { Position = new Vector2(1000 * i, 1000) });
+                GameObjects.Add(new Block { Position = new Vector2(1000 * i, 6000) });
                 GameObjects.Add(new Block { Position = new Vector2(1000 * i, -6000) });
 
-                //Add(new Block { Position = new Vector2(1000 * 10, 1000*i) });
-                //Add(new Block { Position = new Vector2(1000 * -10, 1000 * i) });
+                GameObjects.Add(new Block { Position = new Vector2(1000 * 10, 1000*i) });
+                GameObjects.Add(new Block { Position = new Vector2(1000 * -10, 1000 * i) });
             }
 
-            GameObjects.Add(new Block { Position = new Vector2(7000, -500) });
-            GameObjects.Add(new Block { Position = new Vector2(-8000, -500) });
             //TODO: move to other class
             {
                 network.MessageReceivedFromOtherClients += (ip, message) =>
