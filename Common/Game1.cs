@@ -176,10 +176,10 @@ LOG: {LOG}"
 
                 }
 
-                while (RectanglesToRender.Count > 0)
+                while (RectanglesToRenderUI.Count > 0)
                 {
-                    var rectangle = RectanglesToRender.Dequeue();
-                    DrawBorder(rectangle, 50, Color.Red);
+                    var rectangle = RectanglesToRenderUI.Dequeue();
+                    DrawBorder(rectangle, 5, Color.Red, spriteBatchUi);
                 }
 
                 spriteBatch.End();
@@ -192,7 +192,7 @@ LOG: {LOG}"
             base.Draw(gameTime);
         }
 
-        private void DrawBorder(Rectangle rectangleToDraw, int thicknessOfBorder, Color borderColor)
+        private void DrawBorder(Rectangle rectangleToDraw, int thicknessOfBorder, Color borderColor, SpriteBatch spriteBatch)
         {
             var pixel = Sprites["pixel"];
             spriteBatch.Draw(pixel, new Rectangle(rectangleToDraw.X, rectangleToDraw.Y, rectangleToDraw.Width, thicknessOfBorder), null, borderColor, 0, Vector2.Zero, SpriteEffects.None, 0);

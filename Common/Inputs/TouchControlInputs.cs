@@ -51,10 +51,10 @@ namespace Common
         );
 
         private readonly Rectangle ANY_BUTTON = new Rectangle(
-           TouchControllerRenderer.BUTTON_LEFT_X
-            , TouchControllerRenderer.BUTTON_TOP_Y
-            , TouchControllerRenderer.BUTTON_WIDTH * 3
-            , TouchControllerRenderer.BUTTON_HEIGHT * 3
+           TouchControllerRenderer.BUTTON_LEFT_X - TouchControllerRenderer.BUTTON_WIDTH / 2
+            , TouchControllerRenderer.BUTTON_TOP_Y - TouchControllerRenderer.BUTTON_HEIGHT / 2
+            , (int)(TouchControllerRenderer.BUTTON_WIDTH * 4.5f)
+            , (int)(TouchControllerRenderer.BUTTON_HEIGHT * 4.5f)
        );
 
         private readonly Rectangle ANY_BUTTON2 = new Rectangle(
@@ -90,7 +90,7 @@ namespace Common
             //Game1.RectanglesToRenderUI.Enqueue(RIGHT_BUTTON);
             //Game1.RectanglesToRenderUI.Enqueue(TOP_BUTTON);
             //Game1.RectanglesToRenderUI.Enqueue(BOT_BUTTON);
-            //Game1.RectanglesToRenderUI.Enqueue(ANY_BUTTON);
+            Game1.RectanglesToRenderUI.Enqueue(ANY_BUTTON);
             //Game1.RectanglesToRenderUI.Enqueue(CENTRAL_BUTTON);
 
             TouchInputs.Update();
@@ -104,7 +104,7 @@ namespace Common
             {
                 foreach (var position in touchCollection)
                 {
-                    if (ANY_BUTTON.Contains(position))
+                    if (!anyDpadPressed && ANY_BUTTON.Contains(position))
                     {
                         anyDpadPressed = true;
 
@@ -118,7 +118,7 @@ namespace Common
                         var movingRight = false;
                         var movingDown = false;
 
-                        if (distanceXAbs > 30)
+                        if (distanceXAbs > TouchControllerRenderer.BUTTON_WIDTH / 2)
                         {
                             if (distanceX > 0)
                                 movingRight = true;
@@ -126,31 +126,54 @@ namespace Common
                                 movingLeft = true;
                         }
 
-                        if (distanceYAbs > 60)
+                        if (distanceYAbs > TouchControllerRenderer.BUTTON_HEIGHT)
                         {
                             if (distanceY > 0)
-                            {
                                 movingDown = true;
-                            }
-                            else
-                            {
-                                //TODO: continue
-                                //wip: 
-                                if (Direction == DpadDirection.Down
-                                    || Direction == DpadDirection.DownLeft
-                                    || Direction == DpadDirection.DownRight)
-                                    movingUp = true;
-                            }
-                        }
-                        if (distanceYAbs > 30)
-                        {
-                            if (distanceY > 0)
-                            {
-                                movingDown = true;
-                            }
                             else
                                 movingUp = true;
                         }
+                        else if (distanceYAbs > TouchControllerRenderer.BUTTON_HEIGHT * 0.5f)
+                        {
+                            if (distanceY > 0)
+                            {
+                                if (previousDirection != DpadDirection.Up
+                                    && previousDirection != DpadDirection.UpRight
+                                    && previousDirection != DpadDirection.UpLeft)
+                                {
+                                    movingDown = true;
+                                }
+                            }
+                            else
+                            {
+                                if (previousDirection != DpadDirection.Down
+                                    && previousDirection != DpadDirection.DownRight
+                                    && previousDirection != DpadDirection.DownLeft)
+                                {
+                                    movingUp = true;
+                                }
+                            }
+                        }
+
+                        if (!movingUp && !movingDown && !movingLeft && !movingRight)
+                        {
+                            //if (distanceXAbs > distanceYAbs)
+                            //{
+                            //    if (distanceX > 0)
+                            //        movingRight = true;
+                            //    else
+                            //        movingLeft = true;
+                            //}
+                            //else
+                            //{
+                            //    if (distanceY > 0)
+                            //        movingDown = true;
+                            //    else
+                            //        movingUp = true;
+                            //}
+                        }
+
+                        previousPosition = position;
 
                         if (movingRight && !movingUp && !movingDown)
                             Direction = DpadDirection.Right;
@@ -170,6 +193,8 @@ namespace Common
                             Direction = DpadDirection.DownLeft;
                         else
                             Direction = previousDirection;
+
+                        previousDirection = Direction;
                     }
 
                     if (ANY_BUTTON2.Contains(position))
