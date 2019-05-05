@@ -22,56 +22,56 @@ namespace Common
         private bool anyActionWasPressed;
         private bool anyActionPressed;
 
-        private readonly Rectangle LEFT_BUTTON = new Rectangle(
+        public readonly Rectangle LEFT_BUTTON = new Rectangle(
             TouchControllerRenderer.BUTTON_LEFT_X,
             TouchControllerRenderer.BUTTON_LEFT_Y,
             TouchControllerRenderer.BUTTON_WIDTH,
             TouchControllerRenderer.BUTTON_HEIGHT
         );
 
-        private readonly Rectangle RIGHT_BUTTON = new Rectangle(
+        public readonly Rectangle RIGHT_BUTTON = new Rectangle(
             TouchControllerRenderer.BUTTON_RIGHT_X,
             TouchControllerRenderer.BUTTON_RIGHT_Y,
             TouchControllerRenderer.BUTTON_WIDTH,
             TouchControllerRenderer.BUTTON_HEIGHT
         );
 
-        private readonly Rectangle BOT_BUTTON = new Rectangle(
+        public readonly Rectangle BOT_BUTTON = new Rectangle(
             TouchControllerRenderer.BUTTON_BOT_X,
             TouchControllerRenderer.BUTTON_BOT_Y,
             TouchControllerRenderer.BUTTON_WIDTH,
             TouchControllerRenderer.BUTTON_HEIGHT
         );
 
-        private readonly Rectangle TOP_BUTTON = new Rectangle(
+        public readonly Rectangle TOP_BUTTON = new Rectangle(
             TouchControllerRenderer.BUTTON_TOP_X,
             TouchControllerRenderer.BUTTON_TOP_Y,
             TouchControllerRenderer.BUTTON_WIDTH,
             TouchControllerRenderer.BUTTON_HEIGHT
         );
 
-        private readonly Rectangle ANY_BUTTON = new Rectangle(
+        public readonly Rectangle ANY_BUTTON = new Rectangle(
            TouchControllerRenderer.BUTTON_LEFT_X - TouchControllerRenderer.BUTTON_WIDTH / 2
             , TouchControllerRenderer.BUTTON_TOP_Y - TouchControllerRenderer.BUTTON_HEIGHT / 2
             , (int)(TouchControllerRenderer.BUTTON_WIDTH * 4.5f)
             , (int)(TouchControllerRenderer.BUTTON_HEIGHT * 4.5f)
-       );
+        );
 
-        private readonly Rectangle ANY_BUTTON2 = new Rectangle(
+        public readonly Rectangle ANY_BUTTON2 = new Rectangle(
            TouchControllerRenderer.BUTTON2_LEFT_X
             , TouchControllerRenderer.BUTTON2_TOP_Y
             , TouchControllerRenderer.BUTTON_WIDTH * 3
             , TouchControllerRenderer.BUTTON_HEIGHT * 3
        );
 
-        private readonly Rectangle BOT2_BUTTON = new Rectangle(
+        public readonly Rectangle BOT2_BUTTON = new Rectangle(
             TouchControllerRenderer.BUTTON2_BOT_X,
             TouchControllerRenderer.BUTTON2_BOT_Y,
             TouchControllerRenderer.BUTTON_WIDTH,
             TouchControllerRenderer.BUTTON_HEIGHT
         );
 
-        private readonly Rectangle CENTRAL_BUTTON = new Rectangle(
+        public readonly Rectangle CENTRAL_BUTTON = new Rectangle(
           TouchControllerRenderer.BUTTON_LEFT_X + TouchControllerRenderer.BUTTON_WIDTH
            , TouchControllerRenderer.BUTTON_TOP_Y + (TouchControllerRenderer.BUTTON_HEIGHT)
            , TouchControllerRenderer.BUTTON_WIDTH
