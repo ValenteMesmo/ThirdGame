@@ -9,7 +9,7 @@ namespace Common
     //TODO: implement diagonal inputs
     public class TouchControlInputs : Inputs
     {
-        private readonly TouchInputs TouchInputs;
+        public readonly TouchInputs TouchInputs;
 
         public TouchControlInputs(TouchInputs TouchInputs)
         {

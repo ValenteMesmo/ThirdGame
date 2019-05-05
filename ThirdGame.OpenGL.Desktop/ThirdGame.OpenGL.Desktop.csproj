@@ -108,9 +108,9 @@
     <None Include="app.manifest" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Common\ThidGame.Commons.csproj">
+    <ProjectReference Include="..\ThirdGame.Commons\ThirdGame.Commons.csproj">
       <Project>{4936e3db-2fd8-4721-bb58-4cf82ca26c59}</Project>
-      <Name>ThidGame.Commons</Name>
+      <Name>ThirdGame.Commons</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

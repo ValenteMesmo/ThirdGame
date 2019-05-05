@@ -7,8 +7,8 @@
     <ProjectGuid>{4936E3DB-2FD8-4721-BB58-4CF82CA26C59}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Common</RootNamespace>
-    <AssemblyName>Common</AssemblyName>
+    <RootNamespace>ThirdGame.Commons</RootNamespace>
+    <AssemblyName>ThirdGame.Commons</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
