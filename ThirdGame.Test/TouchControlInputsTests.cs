@@ -1,6 +1,7 @@
-﻿using Xunit;
+﻿using AutoFixture;
 using Common;
 using NSubstitute;
+using Xunit;
 
 namespace ThirdGame.Tests
 {
@@ -18,11 +19,11 @@ namespace ThirdGame.Tests
         }
 
         [Theory, AutoMockData]
-        public void pressing_right(TouchControlInputs sut)
+        public void pressing_right(IFixture fixture, TouchControlInputs sut)
         {
             sut.TouchInputs.GetTouchCollection()
                 .Returns(sut.RIGHT_BUTTON.Center.ToVector2().Yield());
-
+            var aa = new TouchControlInputs(fixture.Create<TouchInputs>());
             sut.Update();
 
             Assert.Equal(DpadDirection.Right, sut.Direction);
@@ -82,6 +83,38 @@ namespace ThirdGame.Tests
             Assert.Equal(DpadDirection.Right, sut.Direction);
         }
 
+        [Theory, AutoMockData]
+        public void pressing_center_from_up(TouchControlInputs sut)
+        {
+            sut.TouchInputs.GetTouchCollection()
+             .Returns(sut.TOP_BUTTON.Center.ToVector2().Yield());
+
+            sut.Update();
+
+            sut.TouchInputs.GetTouchCollection()
+                .Returns(sut.CENTRAL_BUTTON.Center.ToVector2().Yield());
+
+            sut.Update();
+
+            Assert.Equal(DpadDirection.Down, sut.Direction);
+        }
+
+        [Theory, AutoMockData]
+        public void pressing_center_from_down(TouchControlInputs sut)
+        {
+            sut.TouchInputs.GetTouchCollection()
+             .Returns(sut.BOT_BUTTON.Center.ToVector2().Yield());
+
+            sut.Update();
+
+            sut.TouchInputs.GetTouchCollection()
+                .Returns(sut.CENTRAL_BUTTON.Center.ToVector2().Yield());
+
+            sut.Update();
+
+            Assert.Equal(DpadDirection.Up, sut.Direction);
+        }
+
 
         [Theory, AutoMockData]
         public void pressing_up_from_right(TouchControlInputs sut)
@@ -104,6 +137,54 @@ namespace ThirdGame.Tests
         {
             sut.TouchInputs.GetTouchCollection()
                 .Returns(sut.RIGHT_BUTTON.Center.ToVector2().Yield());
+
+            sut.Update();
+
+            sut.TouchInputs.GetTouchCollection()
+                .Returns(sut.TOP_BUTTON.Center.ToVector2().Yield());
+
+            sut.Update();
+
+            Assert.Equal(DpadDirection.Up, sut.Direction);
+        }
+
+        [Theory, AutoMockData]
+        public void pressing_right_from_down(TouchControlInputs sut)
+        {
+            sut.TouchInputs.GetTouchCollection()
+                .Returns(sut.BOT_BUTTON.Center.ToVector2().Yield());
+
+            sut.Update();
+
+            sut.TouchInputs.GetTouchCollection()
+                .Returns(sut.RIGHT_BUTTON.Center.ToVector2().Yield());
+
+            sut.Update();
+
+            Assert.Equal(DpadDirection.Right, sut.Direction);
+        }
+
+        [Theory, AutoMockData]
+        public void pressing_left_from_down(TouchControlInputs sut)
+        {
+            sut.TouchInputs.GetTouchCollection()
+                .Returns(sut.BOT_BUTTON.Center.ToVector2().Yield());
+
+            sut.Update();
+
+            sut.TouchInputs.GetTouchCollection()
+                .Returns(sut.LEFT_BUTTON.Center.ToVector2().Yield());
+
+            sut.Update();
+
+            Assert.Equal(DpadDirection.Left, sut.Direction);
+        }
+
+        [Theory, AutoMockData]
+        public void pressing_up_from_down(TouchControlInputs sut)
+        {
+            sut.TouchInputs.GetTouchCollection()
+                .Returns(sut.BOT_BUTTON.Center.ToVector2().Yield());
 
             sut.Update();
 

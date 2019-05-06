@@ -118,10 +118,10 @@ namespace Common
                         var movingRight = false;
                         var movingDown = false;
 
-                        var fingerWentLeft = distanceXAbs > TouchControllerRenderer.BUTTON_WIDTH / 2
+                        var fingerWentLeft = distanceXAbs > TouchControllerRenderer.BUTTON_WIDTH * 0.5f
                             && distanceX < 0;
 
-                        var fingerWentRight = distanceXAbs > TouchControllerRenderer.BUTTON_WIDTH / 2
+                        var fingerWentRight = distanceXAbs > TouchControllerRenderer.BUTTON_WIDTH * 0.5f
                             && distanceX > 0;
 
                         var fingerWentUp = distanceYAbs > TouchControllerRenderer.BUTTON_HEIGHT * 0.5f
@@ -130,32 +130,45 @@ namespace Common
                         var fingerWentDown = distanceYAbs > TouchControllerRenderer.BUTTON_HEIGHT * 0.5f
                           && distanceY > 0;
 
-                        var fingerWentVeryUp = distanceYAbs > TouchControllerRenderer.BUTTON_HEIGHT * 0.5f
+                        var fingerWentVeryUp = distanceYAbs > TouchControllerRenderer.BUTTON_HEIGHT
                             && distanceY < 0;
 
-                        var fingerWentVeryDown = distanceYAbs > TouchControllerRenderer.BUTTON_HEIGHT * 0.5f
+                        var fingerWentVeryDown = distanceYAbs > TouchControllerRenderer.BUTTON_HEIGHT
                           && distanceY > 0;
 
                         if (fingerWentVeryUp)
                         {
-                            //if(previousDirection != DpadDirection.UpRight
-                            //    && previousDirection != DpadDirection.Right)
+                            if (!fingerWentLeft && !fingerWentRight)
+                            {
+                                movingUp = true;
+                            }
                         }
                         else if (fingerWentVeryDown)
                         {
-                            if (fingerWentDown)
+                            if (!fingerWentLeft && !fingerWentRight)
                             {
-                                //TODO: wip
-                                //move
+                                movingDown = true;
                             }
                         }
                         else if (fingerWentUp)
                         {
-
+                            if (previousDirection == DpadDirection.Down
+                                || previousDirection == DpadDirection.DownRight
+                                || previousDirection == DpadDirection.DownLeft)
+                            {
+                                if (fingerWentRight)
+                                    movingRight = true;
+                                else if (fingerWentLeft)
+                                    movingLeft = true;
+                                else
+                                    movingUp = true;
+                            }
+                            else
+                                movingUp = true;
                         }
                         else if (fingerWentDown)
                         {
-
+                            movingDown = true;
                         }
                         else
                         {
@@ -173,64 +186,7 @@ namespace Common
                             }
                         }
 
-                        //if (distanceXAbs > TouchControllerRenderer.BUTTON_WIDTH / 2)
-                        //{
-                        //    if (distanceX > 0)
-                        //        movingRight = true;
-                        //    else
-                        //    {
-                        //        if (previousDirection != DpadDirection.UpRight
-                        //            && previousDirection != DpadDirection.Right)
-                        //            movingLeft = true;
-                        //    }
-                        //}
-
-                        //if (distanceYAbs > TouchControllerRenderer.BUTTON_HEIGHT)
-                        //{
-                        //    if (distanceY > 0)
-                        //        movingDown = true;
-                        //    else
-                        //        movingUp = true;
-                        //}
-                        //else if (distanceYAbs > TouchControllerRenderer.BUTTON_HEIGHT * 0.5f)
-                        //{
-                        //    if (distanceY > 0)
-                        //    {
-                        //        if (previousDirection != DpadDirection.Up
-                        //            && previousDirection != DpadDirection.UpRight
-                        //            && previousDirection != DpadDirection.UpLeft)
-                        //        {
-                        //            movingDown = true;
-                        //        }
-                        //    }
-                        //    else
-                        //    {
-                        //        if (previousDirection != DpadDirection.Down
-                        //            && previousDirection != DpadDirection.DownRight
-                        //            && previousDirection != DpadDirection.DownLeft)
-                        //        {
-                        //            movingUp = true;
-                        //        }
-                        //    }
-                        //}
-
-                        //if (!movingUp && !movingDown && !movingLeft && !movingRight)
-                        //{
-                        //    //if (distanceXAbs > distanceYAbs)
-                        //    //{
-                        //    //    if (distanceX > 0)
-                        //    //        movingRight = true;
-                        //    //    else
-                        //    //        movingLeft = true;
-                        //    //}
-                        //    //else
-                        //    //{
-                        //    //    if (distanceY > 0)
-                        //    //        movingDown = true;
-                        //    //    else
-                        //    //        movingUp = true;
-                        //    //}
-                        //}
+                        
 
                         previousPosition = position;
 
