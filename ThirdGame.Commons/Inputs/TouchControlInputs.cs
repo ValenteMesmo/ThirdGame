@@ -118,60 +118,119 @@ namespace Common
                         var movingRight = false;
                         var movingDown = false;
 
-                        if (distanceXAbs > TouchControllerRenderer.BUTTON_WIDTH / 2)
+                        var fingerWentLeft = distanceXAbs > TouchControllerRenderer.BUTTON_WIDTH / 2
+                            && distanceX < 0;
+
+                        var fingerWentRight = distanceXAbs > TouchControllerRenderer.BUTTON_WIDTH / 2
+                            && distanceX > 0;
+
+                        var fingerWentUp = distanceYAbs > TouchControllerRenderer.BUTTON_HEIGHT * 0.5f
+                            && distanceY < 0;
+
+                        var fingerWentDown = distanceYAbs > TouchControllerRenderer.BUTTON_HEIGHT * 0.5f
+                          && distanceY > 0;
+
+                        var fingerWentVeryUp = distanceYAbs > TouchControllerRenderer.BUTTON_HEIGHT * 0.5f
+                            && distanceY < 0;
+
+                        var fingerWentVeryDown = distanceYAbs > TouchControllerRenderer.BUTTON_HEIGHT * 0.5f
+                          && distanceY > 0;
+
+                        if (fingerWentVeryUp)
                         {
-                            if (distanceX > 0)
-                                movingRight = true;
-                            else
+                            //if(previousDirection != DpadDirection.UpRight
+                            //    && previousDirection != DpadDirection.Right)
+                        }
+                        else if (fingerWentVeryDown)
+                        {
+                            if (fingerWentDown)
+                            {
+                                //TODO: wip
+                                //move
+                            }
+                        }
+                        else if (fingerWentUp)
+                        {
+
+                        }
+                        else if (fingerWentDown)
+                        {
+
+                        }
+                        else
+                        {
+                            if (fingerWentLeft)
+                            {
                                 movingLeft = true;
-                        }
-
-                        if (distanceYAbs > TouchControllerRenderer.BUTTON_HEIGHT)
-                        {
-                            if (distanceY > 0)
-                                movingDown = true;
-                            else
-                                movingUp = true;
-                        }
-                        else if (distanceYAbs > TouchControllerRenderer.BUTTON_HEIGHT * 0.5f)
-                        {
-                            if (distanceY > 0)
+                            }
+                            else if (fingerWentRight)
                             {
-                                if (previousDirection != DpadDirection.Up
-                                    && previousDirection != DpadDirection.UpRight
-                                    && previousDirection != DpadDirection.UpLeft)
-                                {
-                                    movingDown = true;
-                                }
+                                movingRight = true;
                             }
                             else
                             {
-                                if (previousDirection != DpadDirection.Down
-                                    && previousDirection != DpadDirection.DownRight
-                                    && previousDirection != DpadDirection.DownLeft)
-                                {
-                                    movingUp = true;
-                                }
+
                             }
                         }
 
-                        if (!movingUp && !movingDown && !movingLeft && !movingRight)
-                        {
-                            //if (distanceXAbs > distanceYAbs)
-                            //{
-                            //    if (distanceX > 0)
-                            //        movingRight = true;
-                            //    else
-                            //        movingLeft = true;
-                            //}
-                            //else
-                            //{
-                            //    if (distanceY > 0)
-                            //        movingDown = true;
-                            //    else
-                            //        movingUp = true;
-                            //}
-                        }
+                        //if (distanceXAbs > TouchControllerRenderer.BUTTON_WIDTH / 2)
+                        //{
+                        //    if (distanceX > 0)
+                        //        movingRight = true;
+                        //    else
+                        //    {
+                        //        if (previousDirection != DpadDirection.UpRight
+                        //            && previousDirection != DpadDirection.Right)
+                        //            movingLeft = true;
+                        //    }
+                        //}
+
+                        //if (distanceYAbs > TouchControllerRenderer.BUTTON_HEIGHT)
+                        //{
+                        //    if (distanceY > 0)
+                        //        movingDown = true;
+                        //    else
+                        //        movingUp = true;
+                        //}
+                        //else if (distanceYAbs > TouchControllerRenderer.BUTTON_HEIGHT * 0.5f)
+                        //{
+                        //    if (distanceY > 0)
+                        //    {
+                        //        if (previousDirection != DpadDirection.Up
+                        //            && previousDirection != DpadDirection.UpRight
+                        //            && previousDirection != DpadDirection.UpLeft)
+                        //        {
+                        //            movingDown = true;
+                        //        }
+                        //    }
+                        //    else
+                        //    {
+                        //        if (previousDirection != DpadDirection.Down
+                        //            && previousDirection != DpadDirection.DownRight
+                        //            && previousDirection != DpadDirection.DownLeft)
+                        //        {
+                        //            movingUp = true;
+                        //        }
+                        //    }
+                        //}
+
+                        //if (!movingUp && !movingDown && !movingLeft && !movingRight)
+                        //{
+                        //    //if (distanceXAbs > distanceYAbs)
+                        //    //{
+                        //    //    if (distanceX > 0)
+                        //    //        movingRight = true;
+                        //    //    else
+                        //    //        movingLeft = true;
+                        //    //}
+                        //    //else
+                        //    //{
+                        //    //    if (distanceY > 0)
+                        //    //        movingDown = true;
+                        //    //    else
+                        //    //        movingUp = true;
+                        //    //}
+                        //}
 
                         previousPosition = position;
 
