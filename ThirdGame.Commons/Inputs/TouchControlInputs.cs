@@ -142,6 +142,16 @@ namespace Common
                             {
                                 movingUp = true;
                             }
+                            else if (!fingerWentLeft && fingerWentRight)
+                            {
+                                movingUp = true;
+                                movingRight = true;
+                            }
+                            else if (fingerWentLeft && !fingerWentRight)
+                            {
+                                movingUp = true;
+                                movingLeft = true;
+                            }
                         }
                         else if (fingerWentVeryDown)
                         {
@@ -149,12 +159,18 @@ namespace Common
                             {
                                 movingDown = true;
                             }
+                            else if(fingerWentLeft && previousDirection == DpadDirection.UpRight)
+                            {
+                                movingDown = true;
+                            }
+                            else if (fingerWentRight && previousDirection == DpadDirection.UpLeft)
+                            {
+                                movingDown = true;
+                            }
                         }
                         else if (fingerWentUp)
                         {
-                            if (previousDirection == DpadDirection.Down
-                                || previousDirection == DpadDirection.DownRight
-                                || previousDirection == DpadDirection.DownLeft)
+                            if (previousDirection == DpadDirection.Down)
                             {
                                 if (fingerWentRight)
                                     movingRight = true;
@@ -163,16 +179,69 @@ namespace Common
                                 else
                                     movingUp = true;
                             }
+                            else if (previousDirection == DpadDirection.DownRight)
+                            {
+                                if (fingerWentLeft)
+                                    movingLeft = true;
+                                else
+                                    movingRight = true;
+                            }
+                            else if (previousDirection == DpadDirection.DownLeft)
+                            {
+                                if (fingerWentRight)
+                                    movingRight = true;
+                                else
+                                    movingLeft = true;
+                            }
                             else
                                 movingUp = true;
                         }
                         else if (fingerWentDown)
                         {
-                            movingDown = true;
+                            if (previousDirection == DpadDirection.Up)
+                            {
+                                if (fingerWentRight)
+                                    movingRight = true;
+                                else if (fingerWentLeft)
+                                    movingLeft = true;
+                                else
+                                    movingDown = true;
+                            }
+                            else if (previousDirection == DpadDirection.UpRight)
+                            {
+                                if (fingerWentLeft)
+                                    movingLeft = true;
+                                else
+                                    movingRight = true;
+                            }
+                            else if (previousDirection == DpadDirection.UpLeft)
+                            {
+                                if (fingerWentRight)
+                                    movingRight = true;
+                                else
+                                    movingLeft = true;
+                            }
+                            else
+                            {
+                                movingDown = true;
+
+                                if (fingerWentRight)
+                                    movingRight = true;
+                                else if (fingerWentLeft)
+                                    movingLeft = true;
+                            }
                         }
                         else
                         {
-                            if (fingerWentLeft)
+                            if(previousDirection == DpadDirection.DownLeft && fingerWentRight)
+                            {
+                                movingDown = true;
+                            }
+                            else if (previousDirection == DpadDirection.DownRight && fingerWentLeft)
+                            {
+                                movingDown = true;
+                            }
+                            else if (fingerWentLeft)
                             {
                                 movingLeft = true;
                             }
@@ -186,7 +255,7 @@ namespace Common
                             }
                         }
 
-                        
+
 
                         previousPosition = position;
 

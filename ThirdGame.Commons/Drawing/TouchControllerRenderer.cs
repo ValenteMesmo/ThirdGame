@@ -6,10 +6,10 @@ namespace ThirdGame
     public class TouchControllerRenderer : GameObject
     {
         private const int BONUS_SIZE = 0;
-        private const int BONUS_X = -590;
-        private const int BONUS2_X = 490;
-        private const int BONUS_Y = -350;
-        private const int BONUS2_Y = -350;
+        private const int BONUS_X = -560;
+        private const int BONUS2_X = 560;
+        private const int BONUS_Y = -340;
+        private const int BONUS2_Y = -340;
 
         public const int BUTTON_TOP_X = 0 + BONUS_X;
         public const int BUTTON_TOP_Y = 0 + BONUS_Y;
@@ -29,8 +29,8 @@ namespace ThirdGame
         public const int BUTTON2_RIGHT_X = BUTTON_WIDTH + BONUS2_X;
         public const int BUTTON2_RIGHT_Y = BUTTON_HEIGHT + BONUS2_Y;
 
-        public const int BUTTON_WIDTH = 64 + BONUS_SIZE;
-        public const int BUTTON_HEIGHT = 64 + BONUS_SIZE;
+        public const int BUTTON_WIDTH = 80 + BONUS_SIZE;
+        public const int BUTTON_HEIGHT = 80 + BONUS_SIZE;
 
         public const float DEGREE_90 = 0;//1.57f;
         public const float DEGREE_180 = 0;//3.141f;
@@ -39,7 +39,7 @@ namespace ThirdGame
         public TouchControllerRenderer(Camera2d camera, Inputs inputs) : base("Touch Controller Renderer")
         {
             Animation = new AnimationGroup(
-                new TogglableAnimation(() => inputs.Direction == DpadDirection.Up,
+                new TogglableAnimation(() => inputs.Direction == DpadDirection.Up || inputs.Direction == DpadDirection.UpRight || inputs.Direction == DpadDirection.UpLeft,
                     new Animation(
                         new AnimationFrame(camera, "dpad", BUTTON_WIDTH, BUTTON_HEIGHT)
                         {
@@ -54,7 +54,7 @@ namespace ThirdGame
                             RotationAnchor = new Vector2(BUTTON_WIDTH / 2, BUTTON_HEIGHT / 2)
                         })
                 ),
-                new TogglableAnimation(() => inputs.Direction == DpadDirection.Down
+                new TogglableAnimation(() => inputs.Direction == DpadDirection.Down || inputs.Direction == DpadDirection.DownRight || inputs.Direction == DpadDirection.Left
                     , new Animation(new AnimationFrame(camera, "dpad", BUTTON_WIDTH, BUTTON_HEIGHT)
                     {
                         Offset = new Vector2(BUTTON_BOT_X + (BUTTON_WIDTH / 2), BUTTON_BOT_Y + (BUTTON_HEIGHT / 2)),
@@ -69,7 +69,7 @@ namespace ThirdGame
                         RotationAnchor = new Vector2(BUTTON_WIDTH / 2, BUTTON_HEIGHT / 2),
                         Rotation = DEGREE_180
                     })),
-                new TogglableAnimation(() => inputs.Direction == DpadDirection.Left
+                new TogglableAnimation(() => inputs.Direction == DpadDirection.Left || inputs.Direction == DpadDirection.DownLeft || inputs.Direction == DpadDirection.UpLeft
                     , new Animation(new AnimationFrame(camera, "dpad", BUTTON_WIDTH, BUTTON_HEIGHT)
                     {
                         Offset = new Vector2(BUTTON_LEFT_X + (BUTTON_WIDTH / 2), BUTTON_LEFT_Y + (BUTTON_HEIGHT / 2)),
@@ -83,7 +83,7 @@ namespace ThirdGame
                         RotationAnchor = new Vector2(BUTTON_WIDTH / 2, BUTTON_HEIGHT / 2),
                         Rotation = DEGREE_270
                     })),
-                new TogglableAnimation(() => inputs.Direction == DpadDirection.Right
+                new TogglableAnimation(() => inputs.Direction == DpadDirection.Right || inputs.Direction == DpadDirection.DownRight || inputs.Direction == DpadDirection.UpRight
                     , new Animation(new AnimationFrame(camera, "dpad", BUTTON_WIDTH, BUTTON_HEIGHT)
                     {
                         Offset = new Vector2(BUTTON_RIGHT_X + (BUTTON_WIDTH / 2), BUTTON_RIGHT_Y + (BUTTON_HEIGHT / 2)),
