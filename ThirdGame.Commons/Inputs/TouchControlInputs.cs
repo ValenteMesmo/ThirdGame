@@ -5,7 +5,6 @@ using ThirdGame;
 
 namespace Common
 {
-    //TODO: move pressed animations right and down size/10
     public class TouchControlInputs : Inputs
     {
         public readonly TouchInputs TouchInputs;
@@ -137,6 +136,29 @@ namespace Common
             {
                 foreach (var position in touchCollection)
                 {
+                    var distanceX = position.X - previousPosition.X;
+                    var distanceY = position.Y - previousPosition.Y;
+                    var distanceXAbs = Math.Abs(distanceX);
+                    var distanceYAbs = Math.Abs(distanceY);
+
+                    var fingerWentLeft = distanceXAbs > TouchControllerRenderer.BUTTON_WIDTH * 0.5f
+                        && distanceX < 0;
+
+                    var fingerWentRight = distanceXAbs > TouchControllerRenderer.BUTTON_WIDTH * 0.5f
+                        && distanceX > 0;
+
+                    var fingerWentUp = distanceYAbs > TouchControllerRenderer.BUTTON_HEIGHT * 0.5f
+                        && distanceY < 0;
+
+                    var fingerWentDown = distanceYAbs > TouchControllerRenderer.BUTTON_HEIGHT * 0.5f
+                      && distanceY > 0;
+
+                    var fingerWentVeryUp = distanceYAbs > TouchControllerRenderer.BUTTON_HEIGHT
+                        && distanceY < 0;
+
+                    var fingerWentVeryDown = distanceYAbs > TouchControllerRenderer.BUTTON_HEIGHT
+                      && distanceY > 0;
+
                     if (!anyDpadPressed && ANY_BUTTON.Contains(position))
                     {
                         anyDpadPressed = true;
@@ -159,30 +181,30 @@ namespace Common
                         }
                         else if (UP_RIGHT_BUTTON.Contains(position))
                         {
-                            if (RIGHT_BUTTON.Contains(previousPosition) || UP_RIGHT_BUTTON.Contains(previousPosition))
+                            if (fingerWentUp && (RIGHT_BUTTON.Contains(previousPosition) || UP_RIGHT_BUTTON.Contains(previousPosition) || DOWN_RIGHT_BUTTON.Contains(previousPosition)))
                                 Direction = DpadDirection.Up;
-                            else
-                                Direction = DpadDirection.Left;
+                            else if (fingerWentRight)
+                                Direction = DpadDirection.Right;
                         }
                         else if (UP_LEFT_BUTTON.Contains(position))
                         {
-                            if (LEFT_BUTTON.Contains(previousPosition) || UP_LEFT_BUTTON.Contains(previousPosition))
+                            if (fingerWentUp && (LEFT_BUTTON.Contains(previousPosition) || UP_LEFT_BUTTON.Contains(previousPosition) || DOWN_LEFT_BUTTON.Contains(previousPosition)))
                                 Direction = DpadDirection.Up;
-                            else
+                            else if (fingerWentLeft)
                                 Direction = DpadDirection.Left;
                         }
                         else if (DOWN_LEFT_BUTTON.Contains(position))
                         {
-                            if (LEFT_BUTTON.Contains(previousPosition) || DOWN_LEFT_BUTTON.Contains(previousPosition))
+                            if (fingerWentDown && (LEFT_BUTTON.Contains(previousPosition) || DOWN_LEFT_BUTTON.Contains(previousPosition) || UP_LEFT_BUTTON.Contains(previousPosition)))
                                 Direction = DpadDirection.Down;
-                            else
+                            else if(fingerWentLeft)
                                 Direction = DpadDirection.Left;
                         }
                         else if (DOWN_RIGHT_BUTTON.Contains(position))
                         {
-                            if (RIGHT_BUTTON.Contains(previousPosition) || DOWN_RIGHT_BUTTON.Contains(previousPosition))
+                            if (fingerWentDown && (RIGHT_BUTTON.Contains(previousPosition) || DOWN_RIGHT_BUTTON.Contains(previousPosition) || UP_RIGHT_BUTTON.Contains(previousPosition)))
                                 Direction = DpadDirection.Down;
-                            else
+                            else if (fingerWentRight)
                                 Direction = DpadDirection.Right;
                         }
                         else if (CENTER_BUTTON.Contains(position))

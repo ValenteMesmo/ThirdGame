@@ -104,6 +104,96 @@ namespace ThirdGame.Tests
         }
 
         [Theory, AutoMockData]
+        public void pressing_rightdown_leftup_leftup(TouchControlInputs sut)
+        {
+            sut.TouchInputs.GetTouchCollection()
+                .Returns(sut.DOWN_RIGHT_BUTTON.Center.ToVector2().Yield());
+
+            sut.Update();
+
+            sut.TouchInputs.GetTouchCollection()
+                .Returns(sut.UP_LEFT_BUTTON.Center.ToVector2().Yield());
+
+            sut.Update();
+
+            sut.Update();
+
+            Assert.Equal(DpadDirection.Left, sut.Direction);
+        }
+
+        [Theory, AutoMockData]
+        public void pressing_rightdown_rightup_rightup(TouchControlInputs sut)
+        {
+            sut.TouchInputs.GetTouchCollection()
+                .Returns(sut.DOWN_RIGHT_BUTTON.Center.ToVector2().Yield());
+
+            sut.Update();
+
+            sut.TouchInputs.GetTouchCollection()
+                .Returns(sut.UP_RIGHT_BUTTON.Center.ToVector2().Yield());
+
+            sut.Update();
+
+            sut.Update();
+
+            Assert.Equal(DpadDirection.Up, sut.Direction);
+        }
+
+        [Theory, AutoMockData]
+        public void pressing_leftdown_leftup_leftup(TouchControlInputs sut)
+        {
+            sut.TouchInputs.GetTouchCollection()
+                .Returns(sut.DOWN_LEFT_BUTTON.Center.ToVector2().Yield());
+
+            sut.Update();
+
+            sut.TouchInputs.GetTouchCollection()
+                .Returns(sut.UP_LEFT_BUTTON.Center.ToVector2().Yield());
+
+            sut.Update();
+
+            sut.Update();
+
+            Assert.Equal(DpadDirection.Up, sut.Direction);
+        }
+
+        [Theory, AutoMockData]
+        public void pressing_leftup_leftdown_leftdown(TouchControlInputs sut)
+        {
+            sut.TouchInputs.GetTouchCollection()
+                .Returns(sut.UP_LEFT_BUTTON.Center.ToVector2().Yield());
+
+            sut.Update();
+
+            sut.TouchInputs.GetTouchCollection()
+                .Returns(sut.DOWN_LEFT_BUTTON.Center.ToVector2().Yield());
+
+            sut.Update();
+
+            sut.Update();
+
+            Assert.Equal(DpadDirection.Down, sut.Direction);
+        }
+
+        [Theory, AutoMockData]
+        public void pressing_rightup_rightdown_rightdown(TouchControlInputs sut)
+        {
+            sut.TouchInputs.GetTouchCollection()
+                .Returns(sut.UP_RIGHT_BUTTON.Center.ToVector2().Yield());
+
+            sut.Update();
+
+            sut.TouchInputs.GetTouchCollection()
+                .Returns(sut.DOWN_RIGHT_BUTTON.Center.ToVector2().Yield());
+
+            sut.Update();
+
+            sut.Update();
+
+            Assert.Equal(DpadDirection.Down, sut.Direction);
+        }
+
+        [Theory, AutoMockData]
         public void pressing_center_from_left(TouchControlInputs sut)
         {
             sut.TouchInputs.GetTouchCollection()
@@ -438,6 +528,40 @@ namespace ThirdGame.Tests
             sut.Update();
 
             Assert.Equal(DpadDirection.Down, sut.Direction);
+        }
+
+        [Theory, AutoMockData]
+        public void pressing_dowm_downRight_downRight(TouchControlInputs sut)
+        {
+            sut.TouchInputs.GetTouchCollection()
+             .Returns(sut.DOWN_BUTTON.Center.ToVector2().Yield());
+
+            sut.Update();
+
+            sut.TouchInputs.GetTouchCollection()
+                .Returns(sut.DOWN_RIGHT_BUTTON.Center.ToVector2().Yield());
+
+            sut.Update();
+            sut.Update();
+
+            Assert.Equal(DpadDirection.Right, sut.Direction);
+        }
+
+        [Theory, AutoMockData]
+        public void pressing_dowm_downLeft_downLeft(TouchControlInputs sut)
+        {
+            sut.TouchInputs.GetTouchCollection()
+             .Returns(sut.DOWN_BUTTON.Center.ToVector2().Yield());
+
+            sut.Update();
+
+            sut.TouchInputs.GetTouchCollection()
+                .Returns(sut.DOWN_LEFT_BUTTON.Center.ToVector2().Yield());
+
+            sut.Update();
+            sut.Update();
+
+            Assert.Equal(DpadDirection.Left, sut.Direction);
         }
 
         [Theory, AutoMockData]
