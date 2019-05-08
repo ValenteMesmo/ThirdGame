@@ -179,7 +179,7 @@ LOG: {LOG}"
                 while (RectanglesToRenderUI.Count > 0)
                 {
                     var rectangle = RectanglesToRenderUI.Dequeue();
-                    DrawBorder(rectangle, 5, Color.Red, spriteBatchUi);
+                    DrawBorder(rectangle, 2, Color.Red, spriteBatchUi);
                 }
 
                 spriteBatch.End();

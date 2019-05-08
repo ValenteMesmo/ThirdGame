@@ -32,6 +32,8 @@ namespace ThirdGame
         public const int BUTTON_WIDTH = 80 + BONUS_SIZE;
         public const int BUTTON_HEIGHT = 80 + BONUS_SIZE;
 
+        public const int ANIMATION_BONUS = BUTTON_WIDTH/10;
+
         public const float DEGREE_90 = 0;//1.57f;
         public const float DEGREE_180 = 0;//3.141f;
         public const float DEGREE_270 = 0;//4.713f;
@@ -49,12 +51,12 @@ namespace ThirdGame
                     , new Animation(
                         new AnimationFrame(camera, "dpad", BUTTON_WIDTH, BUTTON_HEIGHT)
                         {
-                            Offset = new Vector2(BUTTON_TOP_X + (BUTTON_WIDTH / 2), BUTTON_TOP_Y + (BUTTON_HEIGHT / 2)),
-                            Color = Color.Red,
+                            Offset = new Vector2(BUTTON_TOP_X + (BUTTON_WIDTH / 2)+ ANIMATION_BONUS, BUTTON_TOP_Y + (BUTTON_HEIGHT / 2)+ ANIMATION_BONUS),
+                            Color = Color.DarkGray,
                             RotationAnchor = new Vector2(BUTTON_WIDTH / 2, BUTTON_HEIGHT / 2)
                         })
                 ),
-                new TogglableAnimation(() => inputs.Direction == DpadDirection.Down || inputs.Direction == DpadDirection.DownRight || inputs.Direction == DpadDirection.Left
+                new TogglableAnimation(() => inputs.Direction == DpadDirection.Down || inputs.Direction == DpadDirection.DownRight || inputs.Direction == DpadDirection.DownLeft
                     , new Animation(new AnimationFrame(camera, "dpad", BUTTON_WIDTH, BUTTON_HEIGHT)
                     {
                         Offset = new Vector2(BUTTON_BOT_X + (BUTTON_WIDTH / 2), BUTTON_BOT_Y + (BUTTON_HEIGHT / 2)),
@@ -64,8 +66,8 @@ namespace ThirdGame
                     })
                     , new Animation(new AnimationFrame(camera, "dpad", BUTTON_WIDTH, BUTTON_HEIGHT)
                     {
-                        Offset = new Vector2(BUTTON_BOT_X + (BUTTON_WIDTH / 2), BUTTON_BOT_Y + (BUTTON_HEIGHT / 2)),
-                        Color = Color.Red,
+                        Offset = new Vector2(BUTTON_BOT_X + (BUTTON_WIDTH / 2)+ ANIMATION_BONUS, BUTTON_BOT_Y + (BUTTON_HEIGHT / 2) + ANIMATION_BONUS),
+                        Color = Color.DarkGray,
                         RotationAnchor = new Vector2(BUTTON_WIDTH / 2, BUTTON_HEIGHT / 2),
                         Rotation = DEGREE_180
                     })),
@@ -78,8 +80,8 @@ namespace ThirdGame
                     })
                     , new Animation(new AnimationFrame(camera, "dpad", BUTTON_WIDTH, BUTTON_HEIGHT)
                     {
-                        Offset = new Vector2(BUTTON_LEFT_X + (BUTTON_WIDTH / 2), BUTTON_LEFT_Y + (BUTTON_HEIGHT / 2)),
-                        Color = Color.Red,
+                        Offset = new Vector2(BUTTON_LEFT_X + (BUTTON_WIDTH / 2) + ANIMATION_BONUS, BUTTON_LEFT_Y + (BUTTON_HEIGHT / 2) + ANIMATION_BONUS),
+                        Color = Color.DarkGray,
                         RotationAnchor = new Vector2(BUTTON_WIDTH / 2, BUTTON_HEIGHT / 2),
                         Rotation = DEGREE_270
                     })),
@@ -92,8 +94,8 @@ namespace ThirdGame
                     })
                      , new Animation(new AnimationFrame(camera, "dpad", BUTTON_WIDTH, BUTTON_HEIGHT)
                      {
-                         Offset = new Vector2(BUTTON_RIGHT_X + (BUTTON_WIDTH / 2), BUTTON_RIGHT_Y + (BUTTON_HEIGHT / 2)),
-                         Color = Color.Red,
+                         Offset = new Vector2(BUTTON_RIGHT_X + (BUTTON_WIDTH / 2) + ANIMATION_BONUS, BUTTON_RIGHT_Y + (BUTTON_HEIGHT / 2) + ANIMATION_BONUS),
+                         Color = Color.DarkGray,
                          RotationAnchor = new Vector2(BUTTON_WIDTH / 2, BUTTON_HEIGHT / 2),
                          Rotation = DEGREE_90
                      })),
@@ -111,7 +113,7 @@ namespace ThirdGame
                         new AnimationFrame(camera, "dpad", BUTTON_WIDTH, BUTTON_HEIGHT)
                         {
                             Offset = new Vector2(BUTTON2_TOP_X + (BUTTON_WIDTH / 2), BUTTON2_TOP_Y + (BUTTON_HEIGHT / 2)),
-                            Color = Color.Red,
+                            Color = Color.DarkGray,
                             RotationAnchor = new Vector2(BUTTON_WIDTH / 2, BUTTON_HEIGHT / 2)
                         })
                 ),
@@ -125,8 +127,8 @@ namespace ThirdGame
                     })
                     , new Animation(new AnimationFrame(camera, "dpad", BUTTON_WIDTH, BUTTON_HEIGHT)
                     {
-                        Offset = new Vector2(BUTTON2_BOT_X + (BUTTON_WIDTH / 2), BUTTON2_BOT_Y + (BUTTON_HEIGHT / 2)),
-                        Color = Color.Red,
+                        Offset = new Vector2(BUTTON2_BOT_X + (BUTTON_WIDTH / 2) + ANIMATION_BONUS, BUTTON2_BOT_Y + (BUTTON_HEIGHT / 2) + ANIMATION_BONUS),
+                        Color = Color.DarkGray,
                         RotationAnchor = new Vector2(BUTTON_WIDTH / 2, BUTTON_HEIGHT / 2),
                         Rotation = DEGREE_180
                     })),
@@ -140,7 +142,7 @@ namespace ThirdGame
                     , new Animation(new AnimationFrame(camera, "dpad", BUTTON_WIDTH, BUTTON_HEIGHT)
                     {
                         Offset = new Vector2(BUTTON2_LEFT_X + (BUTTON_WIDTH / 2), BUTTON2_LEFT_Y + (BUTTON_HEIGHT / 2)),
-                        Color = Color.Red,
+                        Color = Color.DarkGray,
                         RotationAnchor = new Vector2(BUTTON_WIDTH / 2, BUTTON_HEIGHT / 2),
                         Rotation = DEGREE_270
                     })),
@@ -154,7 +156,7 @@ namespace ThirdGame
                      , new Animation(new AnimationFrame(camera, "dpad", BUTTON_WIDTH, BUTTON_HEIGHT)
                      {
                          Offset = new Vector2(BUTTON2_RIGHT_X + (BUTTON_WIDTH / 2), BUTTON2_RIGHT_Y + (BUTTON_HEIGHT / 2)),
-                         Color = Color.Red,
+                         Color = Color.DarkGray,
                          RotationAnchor = new Vector2(BUTTON_WIDTH / 2, BUTTON_HEIGHT / 2),
                          Rotation = DEGREE_90
                      }))

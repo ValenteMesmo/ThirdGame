@@ -33,7 +33,7 @@ namespace ThirdGame.Tests
         public void pressing_down(TouchControlInputs sut)
         {
             sut.TouchInputs.GetTouchCollection()
-              .Returns(sut.BOT_BUTTON.Center.ToVector2().Yield());
+              .Returns(sut.DOWN_BUTTON.Center.ToVector2().Yield());
 
             sut.Update();
 
@@ -44,7 +44,7 @@ namespace ThirdGame.Tests
         public void pressing_up(TouchControlInputs sut)
         {
             sut.TouchInputs.GetTouchCollection()
-                .Returns(sut.TOP_BUTTON.Center.ToVector2().Yield());
+                .Returns(sut.UP_BUTTON.Center.ToVector2().Yield());
 
             sut.Update();
 
@@ -60,7 +60,7 @@ namespace ThirdGame.Tests
             sut.Update();
 
             sut.TouchInputs.GetTouchCollection()
-                .Returns(sut.CENTRAL_BUTTON.Center.ToVector2().Yield());
+                .Returns(sut.CENTER_BUTTON.Center.ToVector2().Yield());
 
             sut.Update();
 
@@ -76,7 +76,7 @@ namespace ThirdGame.Tests
             sut.Update();
 
             sut.TouchInputs.GetTouchCollection()
-                .Returns(sut.CENTRAL_BUTTON.Center.ToVector2().Yield());
+                .Returns(sut.CENTER_BUTTON.Center.ToVector2().Yield());
 
             sut.Update();
 
@@ -87,12 +87,12 @@ namespace ThirdGame.Tests
         public void pressing_center_from_up(TouchControlInputs sut)
         {
             sut.TouchInputs.GetTouchCollection()
-             .Returns(sut.TOP_BUTTON.Center.ToVector2().Yield());
+             .Returns(sut.UP_BUTTON.Center.ToVector2().Yield());
 
             sut.Update();
 
             sut.TouchInputs.GetTouchCollection()
-                .Returns(sut.CENTRAL_BUTTON.Center.ToVector2().Yield());
+                .Returns(sut.CENTER_BUTTON.Center.ToVector2().Yield());
 
             sut.Update();
 
@@ -108,7 +108,7 @@ namespace ThirdGame.Tests
             sut.Update();
 
             sut.TouchInputs.GetTouchCollection()
-                .Returns(sut.CENTRAL_BUTTON.Center.ToVector2().Yield());
+                .Returns(sut.CENTER_BUTTON.Center.ToVector2().Yield());
 
             sut.Update();
 
@@ -124,7 +124,7 @@ namespace ThirdGame.Tests
             sut.Update();
 
             sut.TouchInputs.GetTouchCollection()
-                .Returns(sut.CENTRAL_BUTTON.Center.ToVector2().Yield());
+                .Returns(sut.CENTER_BUTTON.Center.ToVector2().Yield());
 
             sut.Update();
 
@@ -140,7 +140,7 @@ namespace ThirdGame.Tests
             sut.Update();
 
             sut.TouchInputs.GetTouchCollection()
-                .Returns(sut.CENTRAL_BUTTON.Center.ToVector2().Yield());
+                .Returns(sut.CENTER_BUTTON.Center.ToVector2().Yield());
 
             sut.Update();
 
@@ -156,7 +156,7 @@ namespace ThirdGame.Tests
             sut.Update();
 
             sut.TouchInputs.GetTouchCollection()
-                .Returns(sut.CENTRAL_BUTTON.Center.ToVector2().Yield());
+                .Returns(sut.CENTER_BUTTON.Center.ToVector2().Yield());
 
             sut.Update();
 
@@ -167,12 +167,12 @@ namespace ThirdGame.Tests
         public void pressing_center_from_down(TouchControlInputs sut)
         {
             sut.TouchInputs.GetTouchCollection()
-             .Returns(sut.BOT_BUTTON.Center.ToVector2().Yield());
+             .Returns(sut.DOWN_BUTTON.Center.ToVector2().Yield());
 
             sut.Update();
 
             sut.TouchInputs.GetTouchCollection()
-                .Returns(sut.CENTRAL_BUTTON.Center.ToVector2().Yield());
+                .Returns(sut.CENTER_BUTTON.Center.ToVector2().Yield());
 
             sut.Update();
 
@@ -189,7 +189,7 @@ namespace ThirdGame.Tests
             sut.Update();
 
             sut.TouchInputs.GetTouchCollection()
-                .Returns(sut.TOP_BUTTON.Center.ToVector2().Yield());
+                .Returns(sut.UP_BUTTON.Center.ToVector2().Yield());
 
             sut.Update();
 
@@ -205,7 +205,7 @@ namespace ThirdGame.Tests
             sut.Update();
 
             sut.TouchInputs.GetTouchCollection()
-                .Returns(sut.TOP_BUTTON.Center.ToVector2().Yield());
+                .Returns(sut.UP_BUTTON.Center.ToVector2().Yield());
 
             sut.Update();
 
@@ -216,7 +216,7 @@ namespace ThirdGame.Tests
         public void pressing_right_from_down(TouchControlInputs sut)
         {
             sut.TouchInputs.GetTouchCollection()
-                .Returns(sut.BOT_BUTTON.Center.ToVector2().Yield());
+                .Returns(sut.DOWN_BUTTON.Center.ToVector2().Yield());
 
             sut.Update();
 
@@ -232,7 +232,7 @@ namespace ThirdGame.Tests
         public void pressing_left_from_down(TouchControlInputs sut)
         {
             sut.TouchInputs.GetTouchCollection()
-                .Returns(sut.BOT_BUTTON.Center.ToVector2().Yield());
+                .Returns(sut.DOWN_BUTTON.Center.ToVector2().Yield());
 
             sut.Update();
 
@@ -248,7 +248,7 @@ namespace ThirdGame.Tests
         public void pressing_right_from_up(TouchControlInputs sut)
         {
             sut.TouchInputs.GetTouchCollection()
-                .Returns(sut.TOP_BUTTON.Center.ToVector2().Yield());
+                .Returns(sut.UP_BUTTON.Center.ToVector2().Yield());
 
             sut.Update();
 
@@ -264,7 +264,7 @@ namespace ThirdGame.Tests
         public void pressing_left_from_up(TouchControlInputs sut)
         {
             sut.TouchInputs.GetTouchCollection()
-                .Returns(sut.TOP_BUTTON.Center.ToVector2().Yield());
+                .Returns(sut.UP_BUTTON.Center.ToVector2().Yield());
 
             sut.Update();
 
@@ -341,6 +341,38 @@ namespace ThirdGame.Tests
         }
 
         [Theory, AutoMockData]
+        public void pressing_up_from_down_left(TouchControlInputs sut)
+        {
+            sut.TouchInputs.GetTouchCollection()
+             .Returns((sut.LEFT_BUTTON.Center.ToVector2() + new Microsoft.Xna.Framework.Vector2(0, TouchControllerRenderer.BUTTON_HEIGHT)).Yield());
+
+            sut.Update();
+
+            sut.TouchInputs.GetTouchCollection()
+                .Returns(sut.UP_BUTTON.Center.ToVector2().Yield());
+
+            sut.Update();
+
+            Assert.Equal(DpadDirection.Up, sut.Direction);
+        }
+
+        [Theory, AutoMockData]
+        public void pressing_up_from_down_right(TouchControlInputs sut)
+        {
+            sut.TouchInputs.GetTouchCollection()
+             .Returns((sut.RIGHT_BUTTON.Center.ToVector2() + new Microsoft.Xna.Framework.Vector2(0, TouchControllerRenderer.BUTTON_HEIGHT)).Yield());
+
+            sut.Update();
+
+            sut.TouchInputs.GetTouchCollection()
+                .Returns(sut.UP_BUTTON.Center.ToVector2().Yield());
+
+            sut.Update();
+
+            Assert.Equal(DpadDirection.Up, sut.Direction);
+        }
+
+        [Theory, AutoMockData]
         public void pressing_dowm_from_down_left(TouchControlInputs sut)
         {
             sut.TouchInputs.GetTouchCollection()
@@ -349,7 +381,7 @@ namespace ThirdGame.Tests
             sut.Update();
 
             sut.TouchInputs.GetTouchCollection()
-                .Returns(sut.BOT_BUTTON.Center.ToVector2().Yield());
+                .Returns(sut.DOWN_BUTTON.Center.ToVector2().Yield());
 
             sut.Update();
 
@@ -365,7 +397,7 @@ namespace ThirdGame.Tests
             sut.Update();
 
             sut.TouchInputs.GetTouchCollection()
-                .Returns(sut.BOT_BUTTON.Center.ToVector2().Yield());
+                .Returns(sut.DOWN_BUTTON.Center.ToVector2().Yield());
 
             sut.Update();
 
@@ -381,7 +413,7 @@ namespace ThirdGame.Tests
             sut.Update();
 
             sut.TouchInputs.GetTouchCollection()
-                .Returns(sut.BOT_BUTTON.Center.ToVector2().Yield());
+                .Returns(sut.DOWN_BUTTON.Center.ToVector2().Yield());
 
             sut.Update();
 
@@ -397,7 +429,7 @@ namespace ThirdGame.Tests
             sut.Update();
 
             sut.TouchInputs.GetTouchCollection()
-                .Returns(sut.BOT_BUTTON.Center.ToVector2().Yield());
+                .Returns(sut.DOWN_BUTTON.Center.ToVector2().Yield());
 
             sut.Update();
 
@@ -453,6 +485,38 @@ namespace ThirdGame.Tests
         }
 
         [Theory, AutoMockData]
+        public void pressing_up_from_up_right(TouchControlInputs sut)
+        {
+            sut.TouchInputs.GetTouchCollection()
+             .Returns((sut.RIGHT_BUTTON.Center.ToVector2() + new Microsoft.Xna.Framework.Vector2(0, -TouchControllerRenderer.BUTTON_HEIGHT)).Yield());
+
+            sut.Update();
+
+            sut.TouchInputs.GetTouchCollection()
+                .Returns(sut.UP_BUTTON.Center.ToVector2().Yield());
+
+            sut.Update();
+
+            Assert.Equal(DpadDirection.Up, sut.Direction);
+        }
+
+        [Theory, AutoMockData]
+        public void pressing_up_from_up_left(TouchControlInputs sut)
+        {
+            sut.TouchInputs.GetTouchCollection()
+             .Returns((sut.LEFT_BUTTON.Center.ToVector2() + new Microsoft.Xna.Framework.Vector2(0, -TouchControllerRenderer.BUTTON_HEIGHT)).Yield());
+
+            sut.Update();
+
+            sut.TouchInputs.GetTouchCollection()
+                .Returns(sut.UP_BUTTON.Center.ToVector2().Yield());
+
+            sut.Update();
+
+            Assert.Equal(DpadDirection.Up, sut.Direction);
+        }
+
+        [Theory, AutoMockData]
         public void pressing_right_from_up_right(TouchControlInputs sut)
         {
             sut.TouchInputs.GetTouchCollection()
@@ -504,12 +568,12 @@ namespace ThirdGame.Tests
         public void pressing_up_from_down(TouchControlInputs sut)
         {
             sut.TouchInputs.GetTouchCollection()
-                .Returns(sut.BOT_BUTTON.Center.ToVector2().Yield());
+                .Returns(sut.DOWN_BUTTON.Center.ToVector2().Yield());
 
             sut.Update();
 
             sut.TouchInputs.GetTouchCollection()
-                .Returns(sut.TOP_BUTTON.Center.ToVector2().Yield());
+                .Returns(sut.UP_BUTTON.Center.ToVector2().Yield());
 
             sut.Update();
 

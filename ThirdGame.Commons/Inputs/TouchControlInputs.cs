@@ -5,8 +5,7 @@ using ThirdGame;
 
 namespace Common
 {
-    //TODO: add an extra area of touch around the buttons
-    //TODO: implement diagonal inputs
+    //TODO: move pressed animations right and down size/10
     public class TouchControlInputs : Inputs
     {
         public readonly TouchInputs TouchInputs;
@@ -22,39 +21,69 @@ namespace Common
         private bool anyActionWasPressed;
         private bool anyActionPressed;
 
+        public const int EXTRA_SIZE = 40;
+
+        public readonly Rectangle UP_LEFT_BUTTON = new Rectangle(
+            TouchControllerRenderer.BUTTON_LEFT_X - EXTRA_SIZE,
+            TouchControllerRenderer.BUTTON_TOP_Y - EXTRA_SIZE,
+            TouchControllerRenderer.BUTTON_WIDTH + EXTRA_SIZE,
+            TouchControllerRenderer.BUTTON_HEIGHT + EXTRA_SIZE
+        );
+
+        public readonly Rectangle UP_RIGHT_BUTTON = new Rectangle(
+            TouchControllerRenderer.BUTTON_RIGHT_X,
+            TouchControllerRenderer.BUTTON_TOP_Y - EXTRA_SIZE,
+            TouchControllerRenderer.BUTTON_WIDTH + EXTRA_SIZE,
+            TouchControllerRenderer.BUTTON_HEIGHT+ EXTRA_SIZE
+        );
+
+        public readonly Rectangle DOWN_RIGHT_BUTTON = new Rectangle(
+            TouchControllerRenderer.BUTTON_RIGHT_X,
+            TouchControllerRenderer.BUTTON_BOT_Y,
+            TouchControllerRenderer.BUTTON_WIDTH + EXTRA_SIZE,
+            TouchControllerRenderer.BUTTON_HEIGHT + EXTRA_SIZE
+        );
+
+        public readonly Rectangle DOWN_LEFT_BUTTON = new Rectangle(
+            TouchControllerRenderer.BUTTON_LEFT_X- EXTRA_SIZE,
+            TouchControllerRenderer.BUTTON_BOT_Y,
+            TouchControllerRenderer.BUTTON_WIDTH+ EXTRA_SIZE,
+            TouchControllerRenderer.BUTTON_HEIGHT+ EXTRA_SIZE
+        );
+
         public readonly Rectangle LEFT_BUTTON = new Rectangle(
-            TouchControllerRenderer.BUTTON_LEFT_X,
+            TouchControllerRenderer.BUTTON_LEFT_X- EXTRA_SIZE,
             TouchControllerRenderer.BUTTON_LEFT_Y,
-            TouchControllerRenderer.BUTTON_WIDTH,
+            TouchControllerRenderer.BUTTON_WIDTH+ EXTRA_SIZE,
             TouchControllerRenderer.BUTTON_HEIGHT
         );
 
         public readonly Rectangle RIGHT_BUTTON = new Rectangle(
             TouchControllerRenderer.BUTTON_RIGHT_X,
             TouchControllerRenderer.BUTTON_RIGHT_Y,
-            TouchControllerRenderer.BUTTON_WIDTH,
+            TouchControllerRenderer.BUTTON_WIDTH+ EXTRA_SIZE,
             TouchControllerRenderer.BUTTON_HEIGHT
         );
 
-        public readonly Rectangle BOT_BUTTON = new Rectangle(
+        public readonly Rectangle DOWN_BUTTON = new Rectangle(
             TouchControllerRenderer.BUTTON_BOT_X,
             TouchControllerRenderer.BUTTON_BOT_Y,
             TouchControllerRenderer.BUTTON_WIDTH,
-            TouchControllerRenderer.BUTTON_HEIGHT
+            TouchControllerRenderer.BUTTON_HEIGHT+ EXTRA_SIZE
         );
 
-        public readonly Rectangle TOP_BUTTON = new Rectangle(
+        public readonly Rectangle UP_BUTTON = new Rectangle(
             TouchControllerRenderer.BUTTON_TOP_X,
-            TouchControllerRenderer.BUTTON_TOP_Y,
+            TouchControllerRenderer.BUTTON_TOP_Y- EXTRA_SIZE,
             TouchControllerRenderer.BUTTON_WIDTH,
-            TouchControllerRenderer.BUTTON_HEIGHT
+            TouchControllerRenderer.BUTTON_HEIGHT+ EXTRA_SIZE
         );
 
         public readonly Rectangle ANY_BUTTON = new Rectangle(
-           TouchControllerRenderer.BUTTON_LEFT_X - TouchControllerRenderer.BUTTON_WIDTH / 2
-            , TouchControllerRenderer.BUTTON_TOP_Y - TouchControllerRenderer.BUTTON_HEIGHT / 2
-            , (int)(TouchControllerRenderer.BUTTON_WIDTH * 4.5f)
-            , (int)(TouchControllerRenderer.BUTTON_HEIGHT * 4.5f)
+           TouchControllerRenderer.BUTTON_LEFT_X - EXTRA_SIZE
+            , TouchControllerRenderer.BUTTON_TOP_Y - EXTRA_SIZE
+            , TouchControllerRenderer.BUTTON_WIDTH * 3 + EXTRA_SIZE*2
+            , TouchControllerRenderer.BUTTON_HEIGHT * 3 + EXTRA_SIZE * 2
         );
 
         public readonly Rectangle ANY_BUTTON2 = new Rectangle(
@@ -71,7 +100,7 @@ namespace Common
             TouchControllerRenderer.BUTTON_HEIGHT
         );
 
-        public readonly Rectangle CENTRAL_BUTTON = new Rectangle(
+        public readonly Rectangle CENTER_BUTTON = new Rectangle(
           TouchControllerRenderer.BUTTON_LEFT_X + TouchControllerRenderer.BUTTON_WIDTH
            , TouchControllerRenderer.BUTTON_TOP_Y + (TouchControllerRenderer.BUTTON_HEIGHT)
            , TouchControllerRenderer.BUTTON_WIDTH
@@ -86,12 +115,17 @@ namespace Common
 
         public void Update()
         {
+
+            Game1.RectanglesToRenderUI.Enqueue(DOWN_LEFT_BUTTON);
+            Game1.RectanglesToRenderUI.Enqueue(DOWN_RIGHT_BUTTON);
+            Game1.RectanglesToRenderUI.Enqueue(UP_RIGHT_BUTTON);
+            Game1.RectanglesToRenderUI.Enqueue(UP_LEFT_BUTTON);
             //Game1.RectanglesToRenderUI.Enqueue(LEFT_BUTTON);
             //Game1.RectanglesToRenderUI.Enqueue(RIGHT_BUTTON);
             //Game1.RectanglesToRenderUI.Enqueue(TOP_BUTTON);
             //Game1.RectanglesToRenderUI.Enqueue(BOT_BUTTON);
-            Game1.RectanglesToRenderUI.Enqueue(ANY_BUTTON);
-            //Game1.RectanglesToRenderUI.Enqueue(CENTRAL_BUTTON);
+            //Game1.RectanglesToRenderUI.Enqueue(ANY_BUTTON);
+            Game1.RectanglesToRenderUI.Enqueue(CENTER_BUTTON);
 
             TouchInputs.Update();
             var touchCollection = TouchInputs.GetTouchCollection();
@@ -136,126 +170,48 @@ namespace Common
                         var fingerWentVeryDown = distanceYAbs > TouchControllerRenderer.BUTTON_HEIGHT
                           && distanceY > 0;
 
-                        if (fingerWentVeryUp)
-                        {
-                            if (!fingerWentLeft && !fingerWentRight)
-                            {
-                                movingUp = true;
-                            }
-                            else if (!fingerWentLeft && fingerWentRight)
-                            {
-                                movingUp = true;
-                                movingRight = true;
-                            }
-                            else if (fingerWentLeft && !fingerWentRight)
-                            {
-                                movingUp = true;
-                                movingLeft = true;
-                            }
-                        }
-                        else if (fingerWentVeryDown)
-                        {
-                            if (!fingerWentLeft && !fingerWentRight)
-                            {
-                                movingDown = true;
-                            }
-                            else if(fingerWentLeft && previousDirection == DpadDirection.UpRight)
-                            {
-                                movingDown = true;
-                            }
-                            else if (fingerWentRight && previousDirection == DpadDirection.UpLeft)
-                            {
-                                movingDown = true;
-                            }
-                        }
-                        else if (fingerWentUp)
-                        {
-                            if (previousDirection == DpadDirection.Down)
-                            {
-                                if (fingerWentRight)
-                                    movingRight = true;
-                                else if (fingerWentLeft)
-                                    movingLeft = true;
-                                else
-                                    movingUp = true;
-                            }
-                            else if (previousDirection == DpadDirection.DownRight)
-                            {
-                                if (fingerWentLeft)
-                                    movingLeft = true;
-                                else
-                                    movingRight = true;
-                            }
-                            else if (previousDirection == DpadDirection.DownLeft)
-                            {
-                                if (fingerWentRight)
-                                    movingRight = true;
-                                else
-                                    movingLeft = true;
-                            }
-                            else
-                                movingUp = true;
-                        }
-                        else if (fingerWentDown)
-                        {
-                            if (previousDirection == DpadDirection.Up)
-                            {
-                                if (fingerWentRight)
-                                    movingRight = true;
-                                else if (fingerWentLeft)
-                                    movingLeft = true;
-                                else
-                                    movingDown = true;
-                            }
-                            else if (previousDirection == DpadDirection.UpRight)
-                            {
-                                if (fingerWentLeft)
-                                    movingLeft = true;
-                                else
-                                    movingRight = true;
-                            }
-                            else if (previousDirection == DpadDirection.UpLeft)
-                            {
-                                if (fingerWentRight)
-                                    movingRight = true;
-                                else
-                                    movingLeft = true;
-                            }
-                            else
-                            {
-                                movingDown = true;
 
-                                if (fingerWentRight)
-                                    movingRight = true;
-                                else if (fingerWentLeft)
-                                    movingLeft = true;
-                            }
-                        }
-                        else
+                        //aqui
+                        if (RIGHT_BUTTON.Contains(position))
                         {
-                            if(previousDirection == DpadDirection.DownLeft && fingerWentRight)
-                            {
-                                movingDown = true;
-                            }
-                            else if (previousDirection == DpadDirection.DownRight && fingerWentLeft)
-                            {
-                                movingDown = true;
-                            }
-                            else if (fingerWentLeft)
-                            {
-                                movingLeft = true;
-                            }
-                            else if (fingerWentRight)
-                            {
-                                movingRight = true;
-                            }
-                            else
-                            {
-
-                            }
+                            movingRight = true;
                         }
-
-
+                        else if (LEFT_BUTTON.Contains(position))
+                        {
+                            movingLeft = true;
+                        }
+                        else if (DOWN_BUTTON.Contains(position))
+                        {
+                            movingDown = true;
+                        }
+                        else if (UP_BUTTON.Contains(position))
+                        {
+                            movingUp = true;
+                        }
+                        else if (UP_RIGHT_BUTTON.Contains(position))
+                        {
+                            movingRight = true;
+                            movingUp = true;
+                        }
+                        else if (UP_LEFT_BUTTON.Contains(position))
+                        {
+                            movingLeft = true;
+                            movingUp = true;
+                        }
+                        else if (DOWN_LEFT_BUTTON.Contains(position))
+                        {
+                            movingLeft = true;
+                            movingDown = true;
+                        }
+                        else if (DOWN_RIGHT_BUTTON.Contains(position))
+                        {
+                            movingRight = true;
+                            movingDown = true;
+                        }
+                        //else if (RIGHT_BUTTON.Contains(position))
+                        //{
+                        //    movingRight = true;
+                        //}
 
                         previousPosition = position;
 
