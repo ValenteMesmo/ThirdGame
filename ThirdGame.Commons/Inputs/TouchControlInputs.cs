@@ -116,16 +116,16 @@ namespace Common
         public void Update()
         {
 
-            Game1.RectanglesToRenderUI.Enqueue(DOWN_LEFT_BUTTON);
-            Game1.RectanglesToRenderUI.Enqueue(DOWN_RIGHT_BUTTON);
-            Game1.RectanglesToRenderUI.Enqueue(UP_RIGHT_BUTTON);
-            Game1.RectanglesToRenderUI.Enqueue(UP_LEFT_BUTTON);
+            //Game1.RectanglesToRenderUI.Enqueue(DOWN_LEFT_BUTTON);
+            //Game1.RectanglesToRenderUI.Enqueue(DOWN_RIGHT_BUTTON);
+            //Game1.RectanglesToRenderUI.Enqueue(UP_RIGHT_BUTTON);
+            //Game1.RectanglesToRenderUI.Enqueue(UP_LEFT_BUTTON);
             //Game1.RectanglesToRenderUI.Enqueue(LEFT_BUTTON);
             //Game1.RectanglesToRenderUI.Enqueue(RIGHT_BUTTON);
             //Game1.RectanglesToRenderUI.Enqueue(TOP_BUTTON);
             //Game1.RectanglesToRenderUI.Enqueue(BOT_BUTTON);
             //Game1.RectanglesToRenderUI.Enqueue(ANY_BUTTON);
-            Game1.RectanglesToRenderUI.Enqueue(CENTER_BUTTON);
+            //Game1.RectanglesToRenderUI.Enqueue(CENTER_BUTTON);
 
             TouchInputs.Update();
             var touchCollection = TouchInputs.GetTouchCollection();
@@ -170,8 +170,6 @@ namespace Common
                         var fingerWentVeryDown = distanceYAbs > TouchControllerRenderer.BUTTON_HEIGHT
                           && distanceY > 0;
 
-
-                        //aqui
                         if (RIGHT_BUTTON.Contains(position))
                         {
                             movingRight = true;
@@ -208,10 +206,26 @@ namespace Common
                             movingRight = true;
                             movingDown = true;
                         }
-                        //else if (RIGHT_BUTTON.Contains(position))
-                        //{
-                        //    movingRight = true;
-                        //}
+                        else if (CENTER_BUTTON.Contains(position))
+                        {
+                            //parei aqui
+                            if (previousDirection == DpadDirection.Left && fingerWentRight)
+                                movingRight = true;
+                            else if (previousDirection == DpadDirection.Right && fingerWentLeft)
+                                movingLeft = true;
+                            else if (previousDirection == DpadDirection.Up && fingerWentDown)
+                                movingDown = true;
+                            else if (previousDirection == DpadDirection.Down && fingerWentUp)
+                                movingUp = true;
+                            else if (previousDirection == DpadDirection.DownLeft && fingerWentUp && fingerWentRight)
+                                movingRight = true;
+                            else if (previousDirection == DpadDirection.DownRight && fingerWentUp && fingerWentLeft)
+                                movingLeft = true;
+                            else if (previousDirection == DpadDirection.UpLeft && fingerWentDown && fingerWentRight)
+                                movingRight = true;
+                            else if (previousDirection == DpadDirection.UpRight && fingerWentDown && fingerWentLeft)
+                                movingLeft = true;                            
+                        }
 
                         previousPosition = position;
 

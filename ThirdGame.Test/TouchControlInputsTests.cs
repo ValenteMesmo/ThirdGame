@@ -68,6 +68,24 @@ namespace ThirdGame.Tests
         }
 
         [Theory, AutoMockData]
+        public void pressing_right_center_center(TouchControlInputs sut)
+        {
+            sut.TouchInputs.GetTouchCollection()
+                .Returns(sut.RIGHT_BUTTON.Center.ToVector2().Yield());
+
+            sut.Update();
+
+            sut.TouchInputs.GetTouchCollection()
+                .Returns(sut.CENTER_BUTTON.Center.ToVector2().Yield());
+
+            sut.Update();
+
+            sut.Update();
+
+            Assert.Equal(DpadDirection.Left, sut.Direction);
+        }
+
+        [Theory, AutoMockData]
         public void pressing_center_from_left(TouchControlInputs sut)
         {
             sut.TouchInputs.GetTouchCollection()
