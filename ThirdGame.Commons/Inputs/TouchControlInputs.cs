@@ -34,7 +34,7 @@ namespace Common
             TouchControllerRenderer.BUTTON_RIGHT_X,
             TouchControllerRenderer.BUTTON_TOP_Y - EXTRA_SIZE,
             TouchControllerRenderer.BUTTON_WIDTH + EXTRA_SIZE,
-            TouchControllerRenderer.BUTTON_HEIGHT+ EXTRA_SIZE
+            TouchControllerRenderer.BUTTON_HEIGHT + EXTRA_SIZE
         );
 
         public readonly Rectangle DOWN_RIGHT_BUTTON = new Rectangle(
@@ -45,23 +45,23 @@ namespace Common
         );
 
         public readonly Rectangle DOWN_LEFT_BUTTON = new Rectangle(
-            TouchControllerRenderer.BUTTON_LEFT_X- EXTRA_SIZE,
+            TouchControllerRenderer.BUTTON_LEFT_X - EXTRA_SIZE,
             TouchControllerRenderer.BUTTON_BOT_Y,
-            TouchControllerRenderer.BUTTON_WIDTH+ EXTRA_SIZE,
-            TouchControllerRenderer.BUTTON_HEIGHT+ EXTRA_SIZE
+            TouchControllerRenderer.BUTTON_WIDTH + EXTRA_SIZE,
+            TouchControllerRenderer.BUTTON_HEIGHT + EXTRA_SIZE
         );
 
         public readonly Rectangle LEFT_BUTTON = new Rectangle(
-            TouchControllerRenderer.BUTTON_LEFT_X- EXTRA_SIZE,
+            TouchControllerRenderer.BUTTON_LEFT_X - EXTRA_SIZE,
             TouchControllerRenderer.BUTTON_LEFT_Y,
-            TouchControllerRenderer.BUTTON_WIDTH+ EXTRA_SIZE,
+            TouchControllerRenderer.BUTTON_WIDTH + EXTRA_SIZE,
             TouchControllerRenderer.BUTTON_HEIGHT
         );
 
         public readonly Rectangle RIGHT_BUTTON = new Rectangle(
             TouchControllerRenderer.BUTTON_RIGHT_X,
             TouchControllerRenderer.BUTTON_RIGHT_Y,
-            TouchControllerRenderer.BUTTON_WIDTH+ EXTRA_SIZE,
+            TouchControllerRenderer.BUTTON_WIDTH + EXTRA_SIZE,
             TouchControllerRenderer.BUTTON_HEIGHT
         );
 
@@ -69,20 +69,20 @@ namespace Common
             TouchControllerRenderer.BUTTON_BOT_X,
             TouchControllerRenderer.BUTTON_BOT_Y,
             TouchControllerRenderer.BUTTON_WIDTH,
-            TouchControllerRenderer.BUTTON_HEIGHT+ EXTRA_SIZE
+            TouchControllerRenderer.BUTTON_HEIGHT + EXTRA_SIZE
         );
 
         public readonly Rectangle UP_BUTTON = new Rectangle(
             TouchControllerRenderer.BUTTON_TOP_X,
-            TouchControllerRenderer.BUTTON_TOP_Y- EXTRA_SIZE,
+            TouchControllerRenderer.BUTTON_TOP_Y - EXTRA_SIZE,
             TouchControllerRenderer.BUTTON_WIDTH,
-            TouchControllerRenderer.BUTTON_HEIGHT+ EXTRA_SIZE
+            TouchControllerRenderer.BUTTON_HEIGHT + EXTRA_SIZE
         );
 
         public readonly Rectangle ANY_BUTTON = new Rectangle(
            TouchControllerRenderer.BUTTON_LEFT_X - EXTRA_SIZE
             , TouchControllerRenderer.BUTTON_TOP_Y - EXTRA_SIZE
-            , TouchControllerRenderer.BUTTON_WIDTH * 3 + EXTRA_SIZE*2
+            , TouchControllerRenderer.BUTTON_WIDTH * 3 + EXTRA_SIZE * 2
             , TouchControllerRenderer.BUTTON_HEIGHT * 3 + EXTRA_SIZE * 2
         );
 
@@ -111,7 +111,6 @@ namespace Common
 
         public DpadDirection Direction { get; set; }
         public bool Jump { get; set; }
-        private DpadDirection previousDirection;
 
         public void Update()
         {
@@ -142,113 +141,71 @@ namespace Common
                     {
                         anyDpadPressed = true;
 
-                        var distanceX = position.X - previousPosition.X;
-                        var distanceY = position.Y - previousPosition.Y;
-                        var distanceXAbs = Math.Abs(distanceX);
-                        var distanceYAbs = Math.Abs(distanceY);
-
-                        var movingUp = false;
-                        var movingLeft = false;
-                        var movingRight = false;
-                        var movingDown = false;
-
-                        var fingerWentLeft = distanceXAbs > TouchControllerRenderer.BUTTON_WIDTH * 0.5f
-                            && distanceX < 0;
-
-                        var fingerWentRight = distanceXAbs > TouchControllerRenderer.BUTTON_WIDTH * 0.5f
-                            && distanceX > 0;
-
-                        var fingerWentUp = distanceYAbs > TouchControllerRenderer.BUTTON_HEIGHT * 0.5f
-                            && distanceY < 0;
-
-                        var fingerWentDown = distanceYAbs > TouchControllerRenderer.BUTTON_HEIGHT * 0.5f
-                          && distanceY > 0;
-
-                        var fingerWentVeryUp = distanceYAbs > TouchControllerRenderer.BUTTON_HEIGHT
-                            && distanceY < 0;
-
-                        var fingerWentVeryDown = distanceYAbs > TouchControllerRenderer.BUTTON_HEIGHT
-                          && distanceY > 0;
-
                         if (RIGHT_BUTTON.Contains(position))
                         {
-                            movingRight = true;
+                            Direction = DpadDirection.Right;
                         }
                         else if (LEFT_BUTTON.Contains(position))
                         {
-                            movingLeft = true;
+                            Direction = DpadDirection.Left;
                         }
                         else if (DOWN_BUTTON.Contains(position))
                         {
-                            movingDown = true;
+                            Direction = DpadDirection.Down;
                         }
                         else if (UP_BUTTON.Contains(position))
                         {
-                            movingUp = true;
+                            Direction = DpadDirection.Up;
                         }
                         else if (UP_RIGHT_BUTTON.Contains(position))
                         {
-                            movingRight = true;
-                            movingUp = true;
+                            if (RIGHT_BUTTON.Contains(previousPosition) || UP_RIGHT_BUTTON.Contains(previousPosition))
+                                Direction = DpadDirection.Up;
+                            else
+                                Direction = DpadDirection.Left;
                         }
                         else if (UP_LEFT_BUTTON.Contains(position))
                         {
-                            movingLeft = true;
-                            movingUp = true;
+                            if (LEFT_BUTTON.Contains(previousPosition) || UP_LEFT_BUTTON.Contains(previousPosition))
+                                Direction = DpadDirection.Up;
+                            else
+                                Direction = DpadDirection.Left;
                         }
                         else if (DOWN_LEFT_BUTTON.Contains(position))
                         {
-                            movingLeft = true;
-                            movingDown = true;
+                            if (LEFT_BUTTON.Contains(previousPosition) || DOWN_LEFT_BUTTON.Contains(previousPosition))
+                                Direction = DpadDirection.Down;
+                            else
+                                Direction = DpadDirection.Left;
                         }
                         else if (DOWN_RIGHT_BUTTON.Contains(position))
                         {
-                            movingRight = true;
-                            movingDown = true;
+                            if (RIGHT_BUTTON.Contains(previousPosition) || DOWN_RIGHT_BUTTON.Contains(previousPosition))
+                                Direction = DpadDirection.Down;
+                            else
+                                Direction = DpadDirection.Right;
                         }
                         else if (CENTER_BUTTON.Contains(position))
                         {
-                            //parei aqui
-                            if (previousDirection == DpadDirection.Left && fingerWentRight)
-                                movingRight = true;
-                            else if (previousDirection == DpadDirection.Right && fingerWentLeft)
-                                movingLeft = true;
-                            else if (previousDirection == DpadDirection.Up && fingerWentDown)
-                                movingDown = true;
-                            else if (previousDirection == DpadDirection.Down && fingerWentUp)
-                                movingUp = true;
-                            else if (previousDirection == DpadDirection.DownLeft && fingerWentUp && fingerWentRight)
-                                movingRight = true;
-                            else if (previousDirection == DpadDirection.DownRight && fingerWentUp && fingerWentLeft)
-                                movingLeft = true;
-                            else if (previousDirection == DpadDirection.UpLeft && fingerWentDown && fingerWentRight)
-                                movingRight = true;
-                            else if (previousDirection == DpadDirection.UpRight && fingerWentDown && fingerWentLeft)
-                                movingLeft = true;                            
+                            if (UP_BUTTON.Contains(previousPosition))
+                                Direction = DpadDirection.Down;
+                            else if (DOWN_BUTTON.Contains(previousPosition))
+                                Direction = DpadDirection.Up;
+                            else if (LEFT_BUTTON.Contains(previousPosition))
+                                Direction = DpadDirection.Right;
+                            else if (RIGHT_BUTTON.Contains(previousPosition))
+                                Direction = DpadDirection.Left;
+                            else if (UP_LEFT_BUTTON.Contains(previousPosition))
+                                Direction = DpadDirection.Right;
+                            else if (UP_RIGHT_BUTTON.Contains(previousPosition))
+                                Direction = DpadDirection.Left;
+                            else if (DOWN_RIGHT_BUTTON.Contains(previousPosition))
+                                Direction = DpadDirection.Left;
+                            else if (DOWN_LEFT_BUTTON.Contains(previousPosition))
+                                Direction = DpadDirection.Right;
                         }
 
                         previousPosition = position;
-
-                        if (movingRight && !movingUp && !movingDown)
-                            Direction = DpadDirection.Right;
-                        else if (movingLeft && !movingUp && !movingDown)
-                            Direction = DpadDirection.Left;
-                        else if (movingUp && !movingRight && !movingLeft)
-                            Direction = DpadDirection.Up;
-                        else if (movingDown && !movingRight && !movingLeft)
-                            Direction = DpadDirection.Down;
-                        else if (movingUp && movingRight)
-                            Direction = DpadDirection.UpRight;
-                        else if (movingUp && movingLeft)
-                            Direction = DpadDirection.UpLeft;
-                        else if (movingDown && movingRight)
-                            Direction = DpadDirection.DownRight;
-                        else if (movingDown && movingLeft)
-                            Direction = DpadDirection.DownLeft;
-                        else
-                            Direction = previousDirection;
-
-                        previousDirection = Direction;
                     }
 
                     if (ANY_BUTTON2.Contains(position))

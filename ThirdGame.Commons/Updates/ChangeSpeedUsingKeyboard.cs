@@ -15,13 +15,9 @@ namespace Common
 
         public void Update()
         {
-            if (Inputs.Direction == DpadDirection.Left 
-                || Inputs.Direction == DpadDirection.DownLeft
-                || Inputs.Direction == DpadDirection.UpLeft)
+            if (Inputs.Direction == DpadDirection.Left )
                 GameObject.Velocity.X -= 10;
-            else if (Inputs.Direction == DpadDirection.Right
-                || Inputs.Direction == DpadDirection.DownRight
-                || Inputs.Direction == DpadDirection.UpRight)
+            else if (Inputs.Direction == DpadDirection.Right)
                 GameObject.Velocity.X += 10;
             else if (GameObject.Velocity.X > 0)
                 GameObject.Velocity.X -= 10;

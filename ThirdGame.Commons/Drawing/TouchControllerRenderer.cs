@@ -41,7 +41,7 @@ namespace ThirdGame
         public TouchControllerRenderer(Camera2d camera, Inputs inputs) : base("Touch Controller Renderer")
         {
             Animation = new AnimationGroup(
-                new TogglableAnimation(() => inputs.Direction == DpadDirection.Up || inputs.Direction == DpadDirection.UpRight || inputs.Direction == DpadDirection.UpLeft,
+                new TogglableAnimation(() => inputs.Direction == DpadDirection.Up ,
                     new Animation(
                         new AnimationFrame(camera, "dpad", BUTTON_WIDTH, BUTTON_HEIGHT)
                         {
@@ -56,7 +56,7 @@ namespace ThirdGame
                             RotationAnchor = new Vector2(BUTTON_WIDTH / 2, BUTTON_HEIGHT / 2)
                         })
                 ),
-                new TogglableAnimation(() => inputs.Direction == DpadDirection.Down || inputs.Direction == DpadDirection.DownRight || inputs.Direction == DpadDirection.DownLeft
+                new TogglableAnimation(() => inputs.Direction == DpadDirection.Down 
                     , new Animation(new AnimationFrame(camera, "dpad", BUTTON_WIDTH, BUTTON_HEIGHT)
                     {
                         Offset = new Vector2(BUTTON_BOT_X + (BUTTON_WIDTH / 2), BUTTON_BOT_Y + (BUTTON_HEIGHT / 2)),
@@ -71,7 +71,7 @@ namespace ThirdGame
                         RotationAnchor = new Vector2(BUTTON_WIDTH / 2, BUTTON_HEIGHT / 2),
                         Rotation = DEGREE_180
                     })),
-                new TogglableAnimation(() => inputs.Direction == DpadDirection.Left || inputs.Direction == DpadDirection.DownLeft || inputs.Direction == DpadDirection.UpLeft
+                new TogglableAnimation(() => inputs.Direction == DpadDirection.Left 
                     , new Animation(new AnimationFrame(camera, "dpad", BUTTON_WIDTH, BUTTON_HEIGHT)
                     {
                         Offset = new Vector2(BUTTON_LEFT_X + (BUTTON_WIDTH / 2), BUTTON_LEFT_Y + (BUTTON_HEIGHT / 2)),
@@ -85,7 +85,7 @@ namespace ThirdGame
                         RotationAnchor = new Vector2(BUTTON_WIDTH / 2, BUTTON_HEIGHT / 2),
                         Rotation = DEGREE_270
                     })),
-                new TogglableAnimation(() => inputs.Direction == DpadDirection.Right || inputs.Direction == DpadDirection.DownRight || inputs.Direction == DpadDirection.UpRight
+                new TogglableAnimation(() => inputs.Direction == DpadDirection.Right 
                     , new Animation(new AnimationFrame(camera, "dpad", BUTTON_WIDTH, BUTTON_HEIGHT)
                     {
                         Offset = new Vector2(BUTTON_RIGHT_X + (BUTTON_WIDTH / 2), BUTTON_RIGHT_Y + (BUTTON_HEIGHT / 2)),

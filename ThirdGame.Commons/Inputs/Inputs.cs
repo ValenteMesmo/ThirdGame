@@ -13,10 +13,6 @@
         Up,
         Left,
         Right,
-        Down,
-        UpRight,
-        UpLeft,
-        DownRight,
-        DownLeft
+        Down
     }
 }
