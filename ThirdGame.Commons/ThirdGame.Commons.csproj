@@ -42,6 +42,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Inputs\DpadDirectionTouchDectector.cs" />
     <Compile Include="Physics\BlockCollisionHandler.cs" />
     <Compile Include="Drawing\Block.cs" />
     <Compile Include="Physics\CollisionHandlerAggregation.cs" />

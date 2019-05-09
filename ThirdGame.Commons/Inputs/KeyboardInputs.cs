@@ -5,13 +5,13 @@ namespace Common
     public class KeyboardInputs : Inputs
     {
         public DpadDirection Direction { get; set; }
-        public bool Jump { get; set; }
+        public DpadDirection Action { get; set; }
 
         public void Update()
         {
             var state = Keyboard.GetState();
 
-            Direction = DpadDirection.None;           
+            Direction = DpadDirection.None;
 
             if (state.IsKeyDown(Keys.A) || state.IsKeyDown(Keys.Left))
                 Direction = DpadDirection.Left;
@@ -22,7 +22,12 @@ namespace Common
             else if (state.IsKeyDown(Keys.W) || state.IsKeyDown(Keys.Up))
                 Direction = DpadDirection.Up;
 
-            Jump = (state.IsKeyDown(Keys.K) || state.IsKeyDown(Keys.Space));
+            if (state.IsKeyDown(Keys.K) || state.IsKeyDown(Keys.Space))
+            {
+                Action = DpadDirection.Down;
+            }
+            else
+                Action = DpadDirection.None;
         }
     }
 }

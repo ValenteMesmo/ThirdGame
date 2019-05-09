@@ -3,11 +3,7 @@
     public class NetworkInputs : Inputs
     {
         public DpadDirection Direction { get; set; }
-        public bool Jump { get; set; }
-        
-        public void AfterUpdate()
-        {
-        }
+        public DpadDirection Action { get; set; }        
 
         public void Update()
         {
