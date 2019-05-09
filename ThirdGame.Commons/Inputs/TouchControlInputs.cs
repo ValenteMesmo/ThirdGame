@@ -131,6 +131,7 @@ namespace Common
             anyDpadPressed = false;
             anyActionWasPressed = anyActionPressed;
             anyActionPressed = false;
+            var newDirection = Direction;
 
             if (touchCollection.Any())
             {
@@ -165,66 +166,66 @@ namespace Common
 
                         if (RIGHT_BUTTON.Contains(position))
                         {
-                            Direction = DpadDirection.Right;
+                            newDirection =DpadDirection.Right;
                         }
                         else if (LEFT_BUTTON.Contains(position))
                         {
-                            Direction = DpadDirection.Left;
+                            newDirection =DpadDirection.Left;
                         }
                         else if (DOWN_BUTTON.Contains(position))
                         {
-                            Direction = DpadDirection.Down;
+                            newDirection =DpadDirection.Down;
                         }
                         else if (UP_BUTTON.Contains(position))
                         {
-                            Direction = DpadDirection.Up;
+                            newDirection =DpadDirection.Up;
                         }
                         else if (UP_RIGHT_BUTTON.Contains(position))
                         {
                             if (fingerWentUp && (RIGHT_BUTTON.Contains(previousPosition) || UP_RIGHT_BUTTON.Contains(previousPosition) || DOWN_RIGHT_BUTTON.Contains(previousPosition)))
-                                Direction = DpadDirection.Up;
+                                newDirection =DpadDirection.Up;
                             else if (fingerWentRight)
-                                Direction = DpadDirection.Right;
+                                newDirection =DpadDirection.Right;
                         }
                         else if (UP_LEFT_BUTTON.Contains(position))
                         {
                             if (fingerWentUp && (LEFT_BUTTON.Contains(previousPosition) || UP_LEFT_BUTTON.Contains(previousPosition) || DOWN_LEFT_BUTTON.Contains(previousPosition)))
-                                Direction = DpadDirection.Up;
+                                newDirection =DpadDirection.Up;
                             else if (fingerWentLeft)
-                                Direction = DpadDirection.Left;
+                                newDirection =DpadDirection.Left;
                         }
                         else if (DOWN_LEFT_BUTTON.Contains(position))
                         {
                             if (fingerWentDown && (LEFT_BUTTON.Contains(previousPosition) || DOWN_LEFT_BUTTON.Contains(previousPosition) || UP_LEFT_BUTTON.Contains(previousPosition)))
-                                Direction = DpadDirection.Down;
+                                newDirection =DpadDirection.Down;
                             else if(fingerWentLeft)
-                                Direction = DpadDirection.Left;
+                                newDirection =DpadDirection.Left;
                         }
                         else if (DOWN_RIGHT_BUTTON.Contains(position))
                         {
                             if (fingerWentDown && (RIGHT_BUTTON.Contains(previousPosition) || DOWN_RIGHT_BUTTON.Contains(previousPosition) || UP_RIGHT_BUTTON.Contains(previousPosition)))
-                                Direction = DpadDirection.Down;
+                                newDirection =DpadDirection.Down;
                             else if (fingerWentRight)
-                                Direction = DpadDirection.Right;
+                                newDirection =DpadDirection.Right;
                         }
                         else if (CENTER_BUTTON.Contains(position))
                         {
                             if (UP_BUTTON.Contains(previousPosition))
-                                Direction = DpadDirection.Down;
+                                newDirection =DpadDirection.Down;
                             else if (DOWN_BUTTON.Contains(previousPosition))
-                                Direction = DpadDirection.Up;
+                                newDirection =DpadDirection.Up;
                             else if (LEFT_BUTTON.Contains(previousPosition))
-                                Direction = DpadDirection.Right;
+                                newDirection =DpadDirection.Right;
                             else if (RIGHT_BUTTON.Contains(previousPosition))
-                                Direction = DpadDirection.Left;
+                                newDirection =DpadDirection.Left;
                             else if (UP_LEFT_BUTTON.Contains(previousPosition))
-                                Direction = DpadDirection.Right;
+                                newDirection =DpadDirection.Right;
                             else if (UP_RIGHT_BUTTON.Contains(previousPosition))
-                                Direction = DpadDirection.Left;
+                                newDirection =DpadDirection.Left;
                             else if (DOWN_RIGHT_BUTTON.Contains(previousPosition))
-                                Direction = DpadDirection.Left;
+                                newDirection =DpadDirection.Left;
                             else if (DOWN_LEFT_BUTTON.Contains(previousPosition))
-                                Direction = DpadDirection.Right;
+                                newDirection =DpadDirection.Right;
                         }
 
                         previousPosition = position;
@@ -244,18 +245,20 @@ namespace Common
                 if (!anyActionPressed)
                     Jump = false;
                 if (!anyDpadPressed)
-                    Direction = DpadDirection.None;
+                    newDirection =DpadDirection.None;
             }
             else
             {
-                Direction = DpadDirection.None;
+                newDirection =DpadDirection.None;
                 Jump = false;
             }
 
-            if ((!anyActionWasPressed && anyActionPressed) || (!anyDpadWasPressed && anyDpadPressed))
-                Game1.AndroidVibrate(10);
+            if ((!anyActionWasPressed && anyActionPressed) || (!anyDpadWasPressed && anyDpadPressed) || (newDirection != Direction))
+                Game1.AndroidVibrate(9);
             else if ((anyActionWasPressed && !anyActionPressed) || (anyDpadWasPressed && !anyDpadPressed))
-                Game1.AndroidVibrate(5);
+                Game1.AndroidVibrate(6);
+
+            Direction = newDirection;
         }
     }
 }
