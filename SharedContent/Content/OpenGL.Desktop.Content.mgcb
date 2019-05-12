@@ -85,6 +85,18 @@
 /processorParam:TextureFormat=Color
 /build:dpad.bmp
 
+#begin freeze_0.bmp
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=0,0,0,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:freeze_0.bmp
+
 #begin SpriteFont.spritefont
 /importer:FontDescriptionImporter
 /processor:FontDescriptionProcessor

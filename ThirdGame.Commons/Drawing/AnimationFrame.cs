@@ -5,7 +5,13 @@ namespace ThirdGame
 {
     public class AnimationFrame
     {
-        public AnimationFrame(PositionComponent Anchor, string TextureName, int Width, int Height, Color? TextureColor = null)
+        public AnimationFrame(
+            PositionComponent Anchor
+            , string TextureName
+            , int Width
+            , int Height
+            , Color? TextureColor = null
+            , Rectangle? SourceRectangle = null)
         {
             if (TextureColor.HasValue)
                 Color = TextureColor.Value;
@@ -15,6 +21,7 @@ namespace ThirdGame
             this.Width = Width;
             this.Height = Height;
             this.Anchor = Anchor;
+            this.SourceRectangle = SourceRectangle;
             Texture = TextureName;
         }
 
@@ -28,5 +35,6 @@ namespace ThirdGame
         public Color Color { get; set; }
         public float Rotation { get; set; }
         public bool Flipped { get; set; }
+        public Rectangle? SourceRectangle { get;  set; }
     }
 }

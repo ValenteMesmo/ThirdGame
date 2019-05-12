@@ -76,6 +76,7 @@ namespace ThirdGame
         {
             spriteBatch = new SpriteBatch(GraphicsDevice);
             spriteBatchUi = new SpriteBatch(GraphicsDevice);
+            Sprites.Add("freeze_0", Content.Load<Texture2D>("freeze_0"));
             Sprites.Add("char", Content.Load<Texture2D>("char"));
             Sprites.Add("char_walk", Content.Load<Texture2D>("char_walk"));
             Sprites.Add("char_crouch", Content.Load<Texture2D>("char_crouch"));
@@ -165,7 +166,7 @@ LOG: {LOG}"
                             (frame.Anchor.Position + frame.Offset).ToPoint()
                             , new Point(frame.Width, frame.Height)
                         )
-                        , sourceRectangle: null
+                        , sourceRectangle: frame.SourceRectangle
                         , color: frame.Color
                         , rotation: frame.Rotation
                         , origin: frame.RotationAnchor
