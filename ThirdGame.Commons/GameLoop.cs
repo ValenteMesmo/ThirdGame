@@ -21,7 +21,7 @@ namespace ThirdGame
             PlayerInputs = new MultipleInputSource(new KeyboardInputs(), new TouchControlInputs(TouchWrapper));
             network = new NetworkHandler(UdpWrapper, PlayerInputs);
 
-            var Player = new Player("player", PlayerInputs, Camera, network);
+            var Player = new Player("player", PlayerInputs, Camera, network,false);
 
             GameObjects.Add(Player);
 
@@ -43,25 +43,34 @@ namespace ThirdGame
             {
                 network.MessageReceivedFromOtherClients += (ip, message) =>
                 {
-                    var p = GameObjects.FirstOrDefault(f => f.Id == ip) as NetworkPlayer;
+                    var p = GameObjects.FirstOrDefault(f => f.Id == ip) as Player;
                     if (p == null)
                     {
-                        network.PlayerConnected(ip);
+                        network.PlayerConnected(ip, message);
                         return;
                     }
-                    p.NetworkPosition.Position = new Vector2(message.X, message.Y);
+//                    p.Inputs.Position = new Vector2(message.X, message.Y);
                     if (message.Left)
-                        p.NetworkInputs.Direction = DpadDirection.Left;
+                        p.Inputs.Direction = DpadDirection.Left;
                     else if (message.Right)
-                        p.NetworkInputs.Direction = DpadDirection.Right;
+                        p.Inputs.Direction = DpadDirection.Right;
                     else if (message.Up)
-                        p.NetworkInputs.Direction = DpadDirection.Up;
+                        p.Inputs.Direction = DpadDirection.Up;
                     else if (message.Down)
-                        p.NetworkInputs.Direction = DpadDirection.Down;
+                        p.Inputs.Direction = DpadDirection.Down;
                     else
-                        p.NetworkInputs.Direction = DpadDirection.None;
+                        p.Inputs.Direction = DpadDirection.None;
 
-                    //p.NetworkInputs.IsPressingJump = message.A;
+                    if (message.ButtonLeft)
+                        p.Inputs.Action = DpadDirection.Left;
+                    else if (message.ButtonRight)
+                        p.Inputs.Action = DpadDirection.Right;
+                    else if (message.ButtonUp)
+                        p.Inputs.Action = DpadDirection.Up;
+                    else if (message.ButtonDown)
+                        p.Inputs.Action = DpadDirection.Down;
+                    else
+                        p.Inputs.Action = DpadDirection.None;
                 };
 
                 //TODO: atualmente nenhum player é identificado como server... 
@@ -74,13 +83,13 @@ namespace ThirdGame
                     //p.NetworkInputs.IsPressingJump = message.A;
                 };
 
-                network.PlayerConnected += (ip) =>
+                network.PlayerConnected += (ip, message) =>
                 {
                     if (GameObjects.Any(f => f.Id == ip))
                         return;
 
-                    var netPlayer = new NetworkPlayer(ip);
-                    netPlayer.Position = Player.Position;
+                    var netPlayer = new Player(ip,new NetworkInputs(),Camera,network,true);
+                    netPlayer.Position = new Vector2(message.X, message.Y);
                     GameObjects.Add(netPlayer);
                 };
 

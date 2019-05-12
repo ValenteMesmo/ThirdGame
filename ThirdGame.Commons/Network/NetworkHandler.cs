@@ -18,7 +18,7 @@ namespace ThirdGame
 
         public Action<string, Message> MessageReceivedFromOtherClients = (ip, message) => { };
         public Action<string, Message> MessageReceivedFromServer = (ip, message) => { };
-        public Action<string> PlayerConnected = (ip) => { };
+        public Action<string, Message> PlayerConnected = (ip, message) => { };
         public Action<string> PlayerDisconnected = (ip) => { };
 
         public NetworkHandler(UdpService UdpWrapper, Inputs Inputs)
@@ -76,7 +76,7 @@ namespace ThirdGame
                 socket = new NetworkUpdateTracker(ip, info.Time, 0);
 
                 Sockets.Add(socket);
-                PlayerConnected(ip);
+                PlayerConnected(ip,info);
                 serverIp = ServerIpFinder.FindIp(Sockets.Select(f=> f.IP), UdpWrapper.myIp);
             }
 
@@ -114,10 +114,10 @@ namespace ThirdGame
                         , Down: Inputs.Direction == DpadDirection.Down
                         , Left: Inputs.Direction == DpadDirection.Left
                         , Right: Inputs.Direction == DpadDirection.Right
-                        , A: false
-                        , B: false
-                        , C: false
-                        , D: false
+                        , ButtonUp: Inputs.Action == DpadDirection.Up
+                        , ButtonDown: Inputs.Action == DpadDirection.Down
+                        , ButtonLeft: Inputs.Action == DpadDirection.Left
+                        , ButtonRight: Inputs.Action == DpadDirection.Right
                     )
                 )
             );

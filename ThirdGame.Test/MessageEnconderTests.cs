@@ -19,10 +19,10 @@ namespace ThirdGame.Tests
             Assert.Equal(expected.Down, actual.Down);
             Assert.Equal(expected.Left, actual.Left);
             Assert.Equal(expected.Right, actual.Right);
-            Assert.Equal(expected.A, actual.A);
-            Assert.Equal(expected.B, actual.B);
-            Assert.Equal(expected.C, actual.C);
-            Assert.Equal(expected.D, actual.D);
+            Assert.Equal(expected.ButtonUp, actual.ButtonUp);
+            Assert.Equal(expected.ButtonDown, actual.ButtonDown);
+            Assert.Equal(expected.ButtonLeft, actual.ButtonLeft);
+            Assert.Equal(expected.ButtonRight, actual.ButtonRight);
         }
 
         [Theory, AutoMockData]
@@ -39,10 +39,10 @@ namespace ThirdGame.Tests
                 Assert.Equal(expected.Down, actual.Down);
                 Assert.Equal(expected.Left, actual.Left);
                 Assert.Equal(expected.Right, actual.Right);
-                Assert.Equal(expected.A, actual.A);
-                Assert.Equal(expected.B, actual.B);
-                Assert.Equal(expected.C, actual.C);
-                Assert.Equal(expected.D, actual.D);
+                Assert.Equal(expected.ButtonUp, actual.ButtonUp);
+                Assert.Equal(expected.ButtonDown, actual.ButtonDown);
+                Assert.Equal(expected.ButtonLeft, actual.ButtonLeft);
+                Assert.Equal(expected.ButtonRight, actual.ButtonRight);
             }
         }
 
@@ -60,10 +60,10 @@ namespace ThirdGame.Tests
                 Assert.Equal(expected.Down, actual.Down);
                 Assert.Equal(expected.Left, actual.Left);
                 Assert.Equal(expected.Right, actual.Right);
-                Assert.Equal(expected.A, actual.A);
-                Assert.Equal(expected.B, actual.B);
-                Assert.Equal(expected.C, actual.C);
-                Assert.Equal(expected.D, actual.D);
+                Assert.Equal(expected.ButtonUp, actual.ButtonUp);
+                Assert.Equal(expected.ButtonDown, actual.ButtonDown);
+                Assert.Equal(expected.ButtonLeft, actual.ButtonLeft);
+                Assert.Equal(expected.ButtonRight, actual.ButtonRight);
             }
         }
     }

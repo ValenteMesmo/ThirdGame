@@ -13,10 +13,10 @@ namespace ThirdGame
             , bool Down
             , bool Left
             , bool Right
-            , bool A
-            , bool B
-            , bool C
-            , bool D)
+            , bool ButtonUp
+            , bool ButtonDown
+            , bool ButtonLeft
+            , bool ButtonRight)
         {
             this.X = X;
             this.Y = Y;
@@ -24,10 +24,10 @@ namespace ThirdGame
             this.Down = Down;
             this.Left = Left;
             this.Right = Right;
-            this.A = A;
-            this.B = B;
-            this.C = C;
-            this.D = D;
+            this.ButtonUp = ButtonUp;
+            this.ButtonDown = ButtonDown;
+            this.ButtonLeft = ButtonLeft;
+            this.ButtonRight = ButtonRight;
 
             this.Time = Time;
         }
@@ -42,10 +42,10 @@ namespace ThirdGame
         public bool Left { get; }
         public bool Right { get; }
 
-        public bool A { get; }
-        public bool B { get; }
-        public bool C { get; }
-        public bool D { get; }
+        public bool ButtonUp { get; }
+        public bool ButtonDown { get; }
+        public bool ButtonLeft { get; }
+        public bool ButtonRight { get; }
     }
 
     public class MyMessageEncoder
@@ -55,7 +55,7 @@ namespace ThirdGame
         public string Encode(Message Message)
         {
             //3+4+4+4+4
-            return $"{Message.Time.ToString("000")}{(Message.Up ? "1" : "0")}{(Message.Down ? "1" : "0")}{(Message.Left ? "1" : "0")}{(Message.Right ? "1" : "0")}{(Message.A ? "1" : "0")}{(Message.B ? "1" : "0")}{(Message.C ? "1" : "0")}{(Message.D ? "1" : "0")}{(Message.X >=0 ? "+" : "-")}{Math.Abs(Message.X).ToString("00000")}{(Message.Y >= 0 ? "+" : "-")}{Math.Abs(Message.Y).ToString("00000")}";
+            return $"{Message.Time.ToString("000")}{(Message.Up ? "1" : "0")}{(Message.Down ? "1" : "0")}{(Message.Left ? "1" : "0")}{(Message.Right ? "1" : "0")}{(Message.ButtonUp ? "1" : "0")}{(Message.ButtonDown ? "1" : "0")}{(Message.ButtonLeft ? "1" : "0")}{(Message.ButtonRight ? "1" : "0")}{(Message.X >=0 ? "+" : "-")}{Math.Abs(Message.X).ToString("00000")}{(Message.Y >= 0 ? "+" : "-")}{Math.Abs(Message.Y).ToString("00000")}";
         }
 
         public IEnumerable<Message> Decode(string message)

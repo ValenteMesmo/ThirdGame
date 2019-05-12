@@ -38,16 +38,26 @@ namespace ThirdGame
     public class Player : GameObject
     {
         public bool Grounded { get; set; }
+        public readonly Inputs Inputs;
 
-        public Player(string Id, Inputs Inputs, Camera2d Camera, NetworkHandler network) : base(Id)
+        public Player(string Id, Inputs Inputs, Camera2d Camera, NetworkHandler network, bool remote) : base(Id)
         {
-            var playerUpdateHandler = new UpdateAggregation(
-                 new ChangeSpeedUsingKeyboard(Inputs, this)
-                 , new AffectedByGravity(this)
-                 , new Jump(this, Inputs)
-                 , new BroadCastState(Camera, this, network)
-            );
-
+            this.Inputs = Inputs;
+            UpdateAggregation playerUpdateHandler;
+            if (remote)
+                playerUpdateHandler = new UpdateAggregation(
+                     new ChangeSpeedUsingKeyboard(Inputs, this)
+                     , new AffectedByGravity(this)
+                     , new Jump(this, Inputs)
+                     //, new BroadCastState(Camera, this, network)
+                );
+            else
+                playerUpdateHandler = new UpdateAggregation(
+                new ChangeSpeedUsingKeyboard(Inputs, this)
+                , new AffectedByGravity(this)
+                , new Jump(this, Inputs)
+                , new BroadCastState(Camera, this, network)
+           );
             Colliders = new Collider[] {
                 new Collider(this) {
                     X = 0,
