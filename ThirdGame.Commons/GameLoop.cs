@@ -49,7 +49,10 @@ namespace ThirdGame
                         network.PlayerConnected(ip, message);
                         return;
                     }
-//                    p.Inputs.Position = new Vector2(message.X, message.Y);
+
+                    p.Position = new Vector2(message.X, message.Y);
+                    p.Position.X = MathHelper.Lerp(p.Position.X, message.X, 0.01f);
+                    
                     if (message.Left)
                         p.Inputs.Direction = DpadDirection.Left;
                     else if (message.Right)
