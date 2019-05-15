@@ -4,8 +4,7 @@ namespace Common
 {
     public class GameObject : PositionComponent
     {
-        public string Id { get; }
-        public Vector2 Velocity;
+        public string Id { get; }        
         public IHandleUpdates Update { get; set; } = NoUpdate.Instance;
         public AnimationHandler Animation { get; set; } = NoAnimation.Instance;
         public Collider[] Colliders { get; set; } = NoCollision.Empty;

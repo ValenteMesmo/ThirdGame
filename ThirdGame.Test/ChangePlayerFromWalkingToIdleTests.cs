@@ -1,0 +1,55 @@
+﻿using Common;
+using Xunit;
+using NSubstitute;
+
+namespace ThirdGame.Tests
+{
+    public class ChangePlayerFromWalkingToIdleTests
+    {
+        [Theory, AutoMockPlayerData]
+        public void Falling_to_idle_right(ChangePlayerFromWalkingToIdle sut)
+        {
+            sut.Player.State = PlayerState.WALKING_RIGHT;
+            sut.Player.Grounded = true;
+
+            sut.Update();
+            Assert.Equal(PlayerState.IDLE_RIGHT, sut.Player.State);
+        }
+
+        [Theory, AutoMockPlayerData]
+        public void Falling_to_idle_left(ChangePlayerFromWalkingToIdle sut)
+        {
+            sut.Player.State = PlayerState.WALKING_LEFT;
+            sut.Player.Grounded = true;
+
+            sut.Update();
+            Assert.Equal(PlayerState.IDLE_LEFT, sut.Player.State);
+        }
+    }
+
+    public class IncreaseHorizontalVelocityTests
+    {
+        [Theory, AutoMockData]
+        public void Positive_speed_test(IncreaseHorizontalVelocity sut)
+        {
+            var initialSpeed = sut.Target.Velocity.X;
+            sut.Update();
+
+            Assert.Equal(initialSpeed, sut.Target.Velocity.X - sut.Speed);
+        }
+    }
+
+    public class LimitHorizontalVelocityTests
+    {
+        [Theory, AutoMockData]
+        public void Positive_limit(PositionComponent position)
+        {
+            var sut = new LimitHorizontalVelocity(position, 100);
+            sut.Target.Velocity.X = 200;
+
+            sut.Update();
+
+            Assert.Equal(100, sut.Target.Velocity.X);
+        }
+    }
+}

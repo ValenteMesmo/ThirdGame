@@ -3,11 +3,11 @@ using Microsoft.Xna.Framework;
 
 namespace ThirdGame
 {
-    public class AffectedByGravity : IHandleUpdates
+    public class GravityChangesVerticalSpeed : IHandleUpdates
     {
         private readonly GameObject GameObject;
 
-        public AffectedByGravity(GameObject GameObject)
+        public GravityChangesVerticalSpeed(GameObject GameObject)
         {
             this.GameObject = GameObject;
         }
@@ -20,12 +20,12 @@ namespace ThirdGame
         }
     }
 
-    public class Jump : IHandleUpdates
+    public class JumpCommandChangesVerticalSpeed : IHandleUpdates
     {
         private readonly Player GameObject;
         private readonly Inputs Inputs;
 
-        public Jump(Player GameObject, Inputs Inputs)
+        public JumpCommandChangesVerticalSpeed(Player GameObject, Inputs Inputs)
         {
             this.GameObject = GameObject;
             this.Inputs = Inputs;

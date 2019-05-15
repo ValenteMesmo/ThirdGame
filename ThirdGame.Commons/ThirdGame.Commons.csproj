@@ -43,6 +43,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Drawing\TogglableAnimation.cs" />
+    <Compile Include="GameObjects\FlagAsGrounded.cs" />
     <Compile Include="Inputs\DpadDirectionTouchDectector.cs" />
     <Compile Include="Physics\BlockCollisionHandler.cs" />
     <Compile Include="Drawing\Block.cs" />

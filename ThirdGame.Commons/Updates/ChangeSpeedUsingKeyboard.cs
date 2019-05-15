@@ -2,33 +2,66 @@
 
 namespace Common
 {
-    public class ChangeSpeedUsingKeyboard : IHandleUpdates
+    public class IncreaseHorizontalVelocity : IHandleUpdates
     {
-        private readonly Inputs Inputs;
-        private readonly GameObject GameObject;
+        public readonly int Speed;
+        public readonly PositionComponent Target;
 
-        public ChangeSpeedUsingKeyboard(Inputs Inputs, GameObject GameObject)
+        public IncreaseHorizontalVelocity(PositionComponent Target, int Speed)
         {
-            this.Inputs = Inputs;
-            this.GameObject = GameObject;
+            this.Speed = Speed;
+            this.Target = Target;
         }
 
         public void Update()
         {
-            if (Inputs.Direction == DpadDirection.Left )
-                GameObject.Velocity.X -= 10;
-            else if (Inputs.Direction == DpadDirection.Right)
-                GameObject.Velocity.X += 10;
-            else if (GameObject.Velocity.X > 0)
-                GameObject.Velocity.X -= 10;
-            else if (GameObject.Velocity.X < 0)
-                GameObject.Velocity.X += 10;
+            Target.Velocity.X += Speed;
+        }
+    }
 
-            if (GameObject.Velocity.X > 100)
-                GameObject.Velocity.X = 100;
+    public class LimitHorizontalVelocity : IHandleUpdates
+    {
+        public readonly int Limit;
+        public readonly PositionComponent Target;
 
-            if (GameObject.Velocity.X < -100)
-                GameObject.Velocity.X = -100;
+        public LimitHorizontalVelocity(PositionComponent Target, int Limit)
+        {
+            if (Limit <= 0)
+                throw new System.Exception("Limit must be positive!");
+
+            this.Limit = Limit;
+            this.Target = Target;
+        }
+
+        public void Update()
+        {
+            if (Target.Velocity.X > Limit)
+                Target.Velocity.X = Limit;
+            else if (Target.Velocity.X < -Limit)
+                Target.Velocity.X = -Limit;
+        }
+    }
+
+    public class DecreaseHorizontalVelocity : IHandleUpdates
+    {
+        private readonly int Speed;
+        private readonly GameObject Target;
+
+        public DecreaseHorizontalVelocity(GameObject Target, int Speed)
+        {
+            if (Speed <= 0)
+                throw new System.Exception("Speed must be positive!");
+
+            this.Speed = Speed;
+            this.Target = Target;
+        }
+
+        public void Update()
+        {
+            if (Target.Velocity.X > 0)
+                Target.Velocity.X -= Speed;
+            else if (Target.Velocity.X < 0)
+                Target.Velocity.X += Speed;
         }
     }
 }

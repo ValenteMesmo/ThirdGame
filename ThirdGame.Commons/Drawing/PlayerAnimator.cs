@@ -7,7 +7,9 @@ namespace Common
     public class PositionComponent
     {
         public Vector2 Position;
+        public Vector2 Velocity;
     }
+
 
     public class PlayerAnimator : AnimationHandler
     {
