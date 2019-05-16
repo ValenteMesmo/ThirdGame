@@ -4,6 +4,49 @@ using System.Collections.Generic;
 
 namespace ThirdGame
 {
+    public struct StateTransition
+    {
+        public StateTransition(int From, int To)
+        {
+            this.From = From;
+            this.To = To;
+        }
+
+        public int From { get; }
+        public int To { get; }
+    }
+
+    public class State
+    {
+        private Dictionary<int, List<StateTransition>> Transitions = new Dictionary<int, List<StateTransition>>();
+
+        public int Value { get; private set; }
+
+        public void AddTransition(int From, int To, int When)
+        {
+            var transition = new StateTransition(From, To);
+
+            if (!Transitions.ContainsKey(From))
+                Transitions.Add(When, new List<StateTransition>());
+
+            if (Transitions[When].Contains(transition))
+                throw new Exception("Transition already added!");
+
+            Transitions[When].Add(transition);
+        }
+
+        public void Update(int command)
+        {
+            foreach (var transition in Transitions[command])
+                if (transition.From == Value)
+                {
+                    Value = transition.To;
+                    break;
+                }
+        }
+    }
+
+
     public interface IHaveState
     {
         int State { get; set; }
@@ -104,8 +147,12 @@ namespace ThirdGame
         public UpdateByState(IHaveState gameOjbect) =>
             this.gameOjbect = gameOjbect;
 
-        public void Update() =>
+        public void Update()
+        {
+            Game1.LOG += $@"
+STATE: {gameOjbect.State}";
             Options[gameOjbect.State].Update();
+        }
 
         public void Add(int state, IHandleUpdates updateHandler)
         {
