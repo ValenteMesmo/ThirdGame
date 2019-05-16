@@ -44,10 +44,10 @@ namespace Common
 
     public class DecreaseHorizontalVelocity : IHandleUpdates
     {
-        private readonly int Speed;
-        private readonly GameObject Target;
+        public readonly int Speed;
+        public readonly PositionComponent Target;
 
-        public DecreaseHorizontalVelocity(GameObject Target, int Speed)
+        public DecreaseHorizontalVelocity(PositionComponent Target, int Speed)
         {
             if (Speed <= 0)
                 throw new System.Exception("Speed must be positive!");

@@ -42,7 +42,7 @@ namespace ThirdGame.Tests
     public class LimitHorizontalVelocityTests
     {
         [Theory, AutoMockData]
-        public void Positive_limit(PositionComponent position)
+        public void Limit_Positive(PositionComponent position)
         {
             var sut = new LimitHorizontalVelocity(position, 100);
             sut.Target.Velocity.X = 200;
@@ -51,5 +51,42 @@ namespace ThirdGame.Tests
 
             Assert.Equal(100, sut.Target.Velocity.X);
         }
+
+        [Theory, AutoMockData]
+        public void Limit_negative(PositionComponent position)
+        {
+            var sut = new LimitHorizontalVelocity(position, 100);
+            sut.Target.Velocity.X = -200;
+
+            sut.Update();
+
+            Assert.Equal(-100, sut.Target.Velocity.X);
+        }
     }
+
+    public class DecreaseHorizontalVelocityTests
+    {
+        [Theory, AutoMockData]
+        public void Decrease_Positive(PositionComponent position)
+        {
+            var sut = new DecreaseHorizontalVelocity(position, 10);
+            sut.Target.Velocity.X = 100;
+
+            sut.Update();
+
+            Assert.Equal(90, sut.Target.Velocity.X);
+        }
+
+        [Theory, AutoMockData]
+        public void Decrease_Negative(PositionComponent position)
+        {
+            var sut = new DecreaseHorizontalVelocity(position, 10);
+            sut.Target.Velocity.X = -100;
+
+            sut.Update();
+
+            Assert.Equal(-90, sut.Target.Velocity.X);
+        }
+    }
+    
 }
