@@ -210,6 +210,7 @@ namespace ThirdGame
                 gravityChangesVerticalSpeed
                 , changePlayerToWalking
                 , changePlayerToIdle
+                , changePlayerStateToCrouch
             ));
 
             updateByState.Add(PlayerState.WALKING, new UpdateAggregation(
