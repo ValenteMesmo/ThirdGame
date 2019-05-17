@@ -56,11 +56,13 @@ namespace ThirdGame
                 //TODO: alt enter toggle fullscreen
                 graphics.IsFullScreen = false;
                 graphics.PreferredBackBufferWidth =
-                    1176;
+                1176;
                 //1366;
+                //320;
                 graphics.PreferredBackBufferHeight =
-                    664;
+                664;
                 //768;
+                //240;
                 graphics.SynchronizeWithVerticalRetrace = true;
             }
 
@@ -107,7 +109,7 @@ namespace ThirdGame
                 Camera.Update();
                 GameLoop.Update(gameTime.ElapsedGameTime.Milliseconds * 0.05f);
             }
-            catch //(System.Exception ex)
+            catch (System.Exception ex)
             {
 
             }

@@ -15,7 +15,10 @@ namespace Common
 
         public void Update()
         {
-            Target.Velocity.X += Speed;
+            if (Target.FacingRight)
+                Target.Velocity.X += Speed;
+            else
+                Target.Velocity.X -= Speed;
         }
     }
 

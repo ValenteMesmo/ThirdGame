@@ -8,60 +8,75 @@ namespace Common
     {
         public Vector2 Position;
         public Vector2 Velocity;
+        public bool FacingRight;
     }
-
 
     public class PlayerAnimator : AnimationHandler
     {
-        private readonly PositionComponent playerPosition;
-        private readonly Inputs Inputs;
+        private readonly Player Player;
+
         private readonly Animation IdleAnimation;
+        private readonly Animation IdleLeftAnimation;
         private readonly Animation WalkRightAnimation;
         private readonly Animation WalkLeftAnimation;
         private readonly Animation CrouchAnimation;
+        private readonly Animation CrouchLeftAnimation;
         private readonly Animation UpAnimation;
+        private readonly Animation UpLeftAnimation;
+
         private Animation CurremtAnimation;
+
         public const int SIZE = 1800;
         public const int CENTER = 50;
 
-        public PlayerAnimator(PositionComponent playerPosition, Inputs Inputs)
+        public PlayerAnimator(Player Player)
         {
-            this.playerPosition = playerPosition;
-            this.Inputs = Inputs;
+            this.Player = Player;
 
             IdleAnimation = new Animation(
-                new AnimationFrame(playerPosition, "freeze_0", SIZE, SIZE, SourceRectangle: new Rectangle(0, 0, 80, 80)) { DurationInUpdateCount = 5 }
-                , new AnimationFrame(playerPosition, "freeze_0", SIZE, SIZE, SourceRectangle: new Rectangle(80, 0, 80, 80)) { DurationInUpdateCount = 5 }
-                , new AnimationFrame(playerPosition, "freeze_0", SIZE, SIZE, SourceRectangle: new Rectangle(80 * 2, 0, 80, 80)) { DurationInUpdateCount = 5 }
-                , new AnimationFrame(playerPosition, "freeze_0", SIZE, SIZE, SourceRectangle: new Rectangle(80 * 3, 0, 80, 80)) { DurationInUpdateCount = 5 }
+                new AnimationFrame(Player, "freeze_0", SIZE, SIZE, SourceRectangle: new Rectangle(0, 0, 80, 80)) { DurationInUpdateCount = 5 }
+                , new AnimationFrame(Player, "freeze_0", SIZE, SIZE, SourceRectangle: new Rectangle(80, 0, 80, 80)) { DurationInUpdateCount = 5 }
+                , new AnimationFrame(Player, "freeze_0", SIZE, SIZE, SourceRectangle: new Rectangle(80 * 2, 0, 80, 80)) { DurationInUpdateCount = 5 }
+                , new AnimationFrame(Player, "freeze_0", SIZE, SIZE, SourceRectangle: new Rectangle(80 * 3, 0, 80, 80)) { DurationInUpdateCount = 5 }
+            );
 
-
+            IdleLeftAnimation = new Animation(
+                new AnimationFrame(Player, "freeze_0", SIZE, SIZE, SourceRectangle: new Rectangle(0, 0, 80, 80)) { DurationInUpdateCount = 5, Flipped = true }
+                , new AnimationFrame(Player, "freeze_0", SIZE, SIZE, SourceRectangle: new Rectangle(80, 0, 80, 80)) { DurationInUpdateCount = 5, Flipped = true }
+                , new AnimationFrame(Player, "freeze_0", SIZE, SIZE, SourceRectangle: new Rectangle(80 * 2, 0, 80, 80)) { DurationInUpdateCount = 5, Flipped = true }
+                , new AnimationFrame(Player, "freeze_0", SIZE, SIZE, SourceRectangle: new Rectangle(80 * 3, 0, 80, 80)) { DurationInUpdateCount = 5, Flipped = true }
             );
 
             CrouchAnimation = new Animation(
-                 new AnimationFrame(playerPosition, "freeze_0", SIZE, SIZE, SourceRectangle: new Rectangle(0, 80 * 6, 80, 80)) { DurationInUpdateCount = 5 }
+                 new AnimationFrame(Player, "freeze_0", SIZE, SIZE, SourceRectangle: new Rectangle(0, 80 * 6, 80, 80)) { DurationInUpdateCount = 5 }
+            );
+            CrouchLeftAnimation = new Animation(
+                          new AnimationFrame(Player, "freeze_0", SIZE, SIZE, SourceRectangle: new Rectangle(0, 80 * 6, 80, 80)) { DurationInUpdateCount = 5, Flipped = true }
             );
 
             UpAnimation = new Animation(
-                 new AnimationFrame(playerPosition, "freeze_0", SIZE, SIZE, SourceRectangle: new Rectangle(80*4, 80*2, 80, 80)) { DurationInUpdateCount = 5 }
+                 new AnimationFrame(Player, "freeze_0", SIZE, SIZE, SourceRectangle: new Rectangle(80 * 4, 80 * 2, 80, 80)) { DurationInUpdateCount = 5 }
+            );
+            UpLeftAnimation = new Animation(
+                new AnimationFrame(Player, "freeze_0", SIZE, SIZE, SourceRectangle: new Rectangle(80 * 4, 80 * 2, 80, 80)) { DurationInUpdateCount = 5, Flipped = true }
             );
 
             WalkRightAnimation = new Animation(
-                 new AnimationFrame(playerPosition, "freeze_0", SIZE, SIZE, SourceRectangle: new Rectangle(80 * 4, 0, 80, 80)) { DurationInUpdateCount = 5 }
-                , new AnimationFrame(playerPosition, "freeze_0", SIZE, SIZE, SourceRectangle: new Rectangle(80 * 5, 0, 80, 80)) { DurationInUpdateCount = 5 }
-                , new AnimationFrame(playerPosition, "freeze_0", SIZE, SIZE, SourceRectangle: new Rectangle(80 * 6, 0, 80, 80)) { DurationInUpdateCount = 5 }
-                , new AnimationFrame(playerPosition, "freeze_0", SIZE, SIZE, SourceRectangle: new Rectangle(80 * 7, 0, 80, 80)) { DurationInUpdateCount = 5 }
-                , new AnimationFrame(playerPosition, "freeze_0", SIZE, SIZE, SourceRectangle: new Rectangle(80 * 6, 0, 80, 80)) { DurationInUpdateCount = 5 }
-                , new AnimationFrame(playerPosition, "freeze_0", SIZE, SIZE, SourceRectangle: new Rectangle(80 * 5, 0, 80, 80)) { DurationInUpdateCount = 5 }
+                 new AnimationFrame(Player, "freeze_0", SIZE, SIZE, SourceRectangle: new Rectangle(80 * 4, 0, 80, 80)) { DurationInUpdateCount = 5 }
+                , new AnimationFrame(Player, "freeze_0", SIZE, SIZE, SourceRectangle: new Rectangle(80 * 5, 0, 80, 80)) { DurationInUpdateCount = 5 }
+                , new AnimationFrame(Player, "freeze_0", SIZE, SIZE, SourceRectangle: new Rectangle(80 * 6, 0, 80, 80)) { DurationInUpdateCount = 5 }
+                , new AnimationFrame(Player, "freeze_0", SIZE, SIZE, SourceRectangle: new Rectangle(80 * 7, 0, 80, 80)) { DurationInUpdateCount = 5 }
+                , new AnimationFrame(Player, "freeze_0", SIZE, SIZE, SourceRectangle: new Rectangle(80 * 6, 0, 80, 80)) { DurationInUpdateCount = 5 }
+                , new AnimationFrame(Player, "freeze_0", SIZE, SIZE, SourceRectangle: new Rectangle(80 * 5, 0, 80, 80)) { DurationInUpdateCount = 5 }
             );
 
             WalkLeftAnimation = new Animation(
-                 new AnimationFrame(playerPosition, "freeze_0", SIZE, SIZE, SourceRectangle: new Rectangle(80 * 4, 0, 80, 80)) { DurationInUpdateCount = 5, Flipped = true }
-                , new AnimationFrame(playerPosition, "freeze_0", SIZE, SIZE, SourceRectangle: new Rectangle(80 * 5, 0, 80, 80)) { DurationInUpdateCount = 5, Flipped = true }
-                , new AnimationFrame(playerPosition, "freeze_0", SIZE, SIZE, SourceRectangle: new Rectangle(80 * 6, 0, 80, 80)) { DurationInUpdateCount = 5, Flipped = true }
-                , new AnimationFrame(playerPosition, "freeze_0", SIZE, SIZE, SourceRectangle: new Rectangle(80 * 7, 0, 80, 80)) { DurationInUpdateCount = 5, Flipped = true }
-                , new AnimationFrame(playerPosition, "freeze_0", SIZE, SIZE, SourceRectangle: new Rectangle(80 * 6, 0, 80, 80)) { DurationInUpdateCount = 5, Flipped = true }
-                , new AnimationFrame(playerPosition, "freeze_0", SIZE, SIZE, SourceRectangle: new Rectangle(80 * 5, 0, 80, 80)) { DurationInUpdateCount = 5, Flipped = true }
+                 new AnimationFrame(Player, "freeze_0", SIZE, SIZE, SourceRectangle: new Rectangle(80 * 4, 0, 80, 80)) { DurationInUpdateCount = 5, Flipped = true }
+                , new AnimationFrame(Player, "freeze_0", SIZE, SIZE, SourceRectangle: new Rectangle(80 * 5, 0, 80, 80)) { DurationInUpdateCount = 5, Flipped = true }
+                , new AnimationFrame(Player, "freeze_0", SIZE, SIZE, SourceRectangle: new Rectangle(80 * 6, 0, 80, 80)) { DurationInUpdateCount = 5, Flipped = true }
+                , new AnimationFrame(Player, "freeze_0", SIZE, SIZE, SourceRectangle: new Rectangle(80 * 7, 0, 80, 80)) { DurationInUpdateCount = 5, Flipped = true }
+                , new AnimationFrame(Player, "freeze_0", SIZE, SIZE, SourceRectangle: new Rectangle(80 * 6, 0, 80, 80)) { DurationInUpdateCount = 5, Flipped = true }
+                , new AnimationFrame(Player, "freeze_0", SIZE, SIZE, SourceRectangle: new Rectangle(80 * 5, 0, 80, 80)) { DurationInUpdateCount = 5, Flipped = true }
             );
 
             CurremtAnimation = IdleAnimation;
@@ -69,16 +84,28 @@ namespace Common
 
         public void Update()
         {
-            if (Inputs.Direction == DpadDirection.Right)
-                CurremtAnimation = WalkRightAnimation;
-            else if (Inputs.Direction == DpadDirection.Left)
-                CurremtAnimation = WalkLeftAnimation;
-            else if (Inputs.Direction == DpadDirection.Down)
-                CurremtAnimation = CrouchAnimation;
-            else if (Inputs.Direction == DpadDirection.Up)
-                CurremtAnimation = UpAnimation;
+            if (Player.State == PlayerState.WALKING)
+                if (Player.FacingRight)
+                    CurremtAnimation = WalkRightAnimation;
+                else
+                    CurremtAnimation = WalkLeftAnimation;
+            else if (Player.State == PlayerState.CROUCH)
+                if (Player.FacingRight)
+                    CurremtAnimation = CrouchAnimation;
+                else
+                    CurremtAnimation = CrouchLeftAnimation;
+            else if (Player.State == PlayerState.JUMP)
+                if (Player.FacingRight)
+                    CurremtAnimation = UpAnimation;
+                else
+                    CurremtAnimation = UpLeftAnimation;
             else
-                CurremtAnimation = IdleAnimation;
+            {
+                if (Player.FacingRight)
+                    CurremtAnimation = IdleAnimation;
+                else
+                    CurremtAnimation = IdleLeftAnimation;
+            }
 
             CurremtAnimation.Update();
         }

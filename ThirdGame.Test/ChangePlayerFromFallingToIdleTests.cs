@@ -5,41 +5,45 @@ namespace ThirdGame.Tests
     public class ChangePlayerFromFallingToIdleTests
     {
         [Theory, AutoMockPlayerData]
-        public void Falling_to_idle_right(ChangePlayerFromFallingToIdle sut)
+        public void Falling_to_idle_right(ChangePlayerStateToIdle sut)
         {
-            sut.Player.State = PlayerState.FALLING_RIGHT;
+            sut.Player.State = PlayerState.FALLING;
+            sut.Player.FacingRight = true;
             sut.Player.Grounded = true;
 
             sut.Update();
-            Assert.Equal(PlayerState.IDLE_RIGHT, sut.Player.State);
+            Assert.Equal(PlayerState.IDLE, sut.Player.State);
         }
 
         [Theory, AutoMockPlayerData]
-        public void Falling_to_idle_left(ChangePlayerFromFallingToIdle sut)
+        public void Falling_to_idle_left(ChangePlayerStateToIdle sut)
         {
-            sut.Player.State = PlayerState.FALLING_LEFT;
+            sut.Player.State = PlayerState.FALLING;
+            sut.Player.FacingRight = false;
             sut.Player.Grounded = true;
 
             sut.Update();
-            Assert.Equal(PlayerState.IDLE_LEFT, sut.Player.State);
+            Assert.Equal(PlayerState.IDLE, sut.Player.State);
         }
 
         [Theory, AutoMockPlayerData]
-        public void Falling_to_falling_left(ChangePlayerFromFallingToIdle sut)
+        public void Falling_to_falling_left(ChangePlayerStateToIdle sut)
         {
-            sut.Player.State = PlayerState.FALLING_LEFT;
+            sut.Player.State = PlayerState.FALLING;
+            sut.Player.FacingRight = false;
 
             sut.Update();
-            Assert.Equal(PlayerState.FALLING_LEFT, sut.Player.State);
+            Assert.Equal(PlayerState.FALLING, sut.Player.State);
         }
 
         [Theory, AutoMockPlayerData]
-        public void Falling_to_falling_right(ChangePlayerFromFallingToIdle sut)
+        public void Falling_to_falling_right(ChangePlayerStateToIdle sut)
         {
-            sut.Player.State = PlayerState.FALLING_RIGHT;
+            sut.Player.State = PlayerState.FALLING;
+            sut.Player.FacingRight = true;
 
             sut.Update();
-            Assert.Equal(PlayerState.FALLING_RIGHT, sut.Player.State);
+            Assert.Equal(PlayerState.FALLING, sut.Player.State);
         }
     }
 }

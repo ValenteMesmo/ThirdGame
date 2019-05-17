@@ -7,23 +7,15 @@ namespace ThirdGame.Tests
     public class ChangePlayerFromWalkingToIdleTests
     {
         [Theory, AutoMockPlayerData]
-        public void Falling_to_idle_right(ChangePlayerFromWalkingToIdle sut)
+        public void Falling_to_idle(ChangePlayerStateToIdle sut)
         {
-            sut.Player.State = PlayerState.WALKING_RIGHT;
+            sut.Player.State = PlayerState.WALKING;
+            sut.Player.FacingRight = true;
             sut.Player.Grounded = true;
 
             sut.Update();
-            Assert.Equal(PlayerState.IDLE_RIGHT, sut.Player.State);
-        }
-
-        [Theory, AutoMockPlayerData]
-        public void Falling_to_idle_left(ChangePlayerFromWalkingToIdle sut)
-        {
-            sut.Player.State = PlayerState.WALKING_LEFT;
-            sut.Player.Grounded = true;
-
-            sut.Update();
-            Assert.Equal(PlayerState.IDLE_LEFT, sut.Player.State);
+            Assert.Equal(PlayerState.IDLE, sut.Player.State);
+            Assert.True(sut.Player.FacingRight);
         }
     }
 

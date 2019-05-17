@@ -4,80 +4,56 @@ using System.Collections.Generic;
 
 namespace ThirdGame
 {
-    public struct StateTransition
-    {
-        public StateTransition(int From, int To)
-        {
-            this.From = From;
-            this.To = To;
-        }
-
-        public int From { get; }
-        public int To { get; }
-    }
-
-    public class State
-    {
-        private Dictionary<int, List<StateTransition>> Transitions = new Dictionary<int, List<StateTransition>>();
-
-        public int Value { get; private set; }
-
-        public void AddTransition(int From, int To, int When)
-        {
-            var transition = new StateTransition(From, To);
-
-            if (!Transitions.ContainsKey(From))
-                Transitions.Add(When, new List<StateTransition>());
-
-            if (Transitions[When].Contains(transition))
-                throw new Exception("Transition already added!");
-
-            Transitions[When].Add(transition);
-        }
-
-        public void Update(int command)
-        {
-            foreach (var transition in Transitions[command])
-                if (transition.From == Value)
-                {
-                    Value = transition.To;
-                    break;
-                }
-        }
-    }
-
-
     public interface IHaveState
     {
         int State { get; set; }
     }
 
-    public class ChangePlayerFromIdleToFalling : IHandleUpdates
+    public class ChangePlayerStateToJumping : IHandleUpdates
     {
         public readonly Player Player;
 
-        public ChangePlayerFromIdleToFalling(Player Player)
+        public ChangePlayerStateToJumping(Player Player)
         {
             this.Player = Player;
         }
 
         public void Update()
         {
-            if (!Player.Grounded)
+            if (Player.Grounded && Player.Inputs.Action == DpadDirection.Down)
             {
-                if (Player.State == PlayerState.IDLE_LEFT)
-                    Player.State = PlayerState.FALLING_LEFT;
-                else if (Player.State == PlayerState.IDLE_RIGHT)
-                    Player.State = PlayerState.FALLING_RIGHT;
+                if (Player.State == PlayerState.IDLE || Player.State == PlayerState.WALKING)
+                {
+                    Player.Velocity.Y = -200;
+                    Player.State = PlayerState.JUMP;
+                }
             }
         }
     }
 
-    public class ChangePlayerFromIdleToWalking : IHandleUpdates
+    public class ChangePlayerStateToFalling : IHandleUpdates
     {
         public readonly Player Player;
 
-        public ChangePlayerFromIdleToWalking(Player Player)
+        public ChangePlayerStateToFalling(Player Player)
+        {
+            this.Player = Player;
+        }
+
+        public void Update()
+        {
+            if (!Player.Grounded && Player.Velocity.Y > 0)
+            {
+                Player.State = PlayerState.FALLING;
+            }
+        }
+    }
+
+    public class ChangePlayerStateToWalking : IHandleUpdates
+    {
+        public readonly Player Player;
+
+        public ChangePlayerStateToWalking(Player Player)
         {
             this.Player = Player;
         }
@@ -87,55 +63,48 @@ namespace ThirdGame
             if (Player.Grounded)
             {
                 if (Player.Inputs.Direction == DpadDirection.Left)
-                    Player.State = PlayerState.WALKING_LEFT;
-                else if (Player.Inputs.Direction == DpadDirection.Right)
-                    Player.State = PlayerState.WALKING_RIGHT;
-            }
-        }
-    }
-
-    public class ChangePlayerFromWalkingToIdle : IHandleUpdates
-    {
-        public readonly Player Player;
-
-        public ChangePlayerFromWalkingToIdle(Player Player)
-        {
-            this.Player = Player;
-        }
-
-        public void Update()
-        {
-            if (Player.Grounded)
-            {
-                if (Player.Inputs.Direction == DpadDirection.None)
                 {
-                    if (Player.State == PlayerState.WALKING_LEFT)
-                        Player.State = PlayerState.IDLE_LEFT;
-                    else if (Player.State == PlayerState.WALKING_RIGHT)
-                        Player.State = PlayerState.IDLE_RIGHT;
+                    Player.State = PlayerState.WALKING;
+                    Player.FacingRight = false;
+                }
+                else if (Player.Inputs.Direction == DpadDirection.Right)
+                {
+                    Player.State = PlayerState.WALKING;
+                    Player.FacingRight = true;
                 }
             }
         }
     }
 
-    public class ChangePlayerFromFallingToIdle : IHandleUpdates
+    public class ChangePlayerStateToIdle : IHandleUpdates
     {
         public readonly Player Player;
 
-        public ChangePlayerFromFallingToIdle(Player Player)
+        public ChangePlayerStateToIdle(Player Player)
         {
             this.Player = Player;
         }
 
         public void Update()
         {
-            if (Player.Grounded)
-            {
-                if (Player.State == PlayerState.FALLING_LEFT)
-                    Player.State = PlayerState.IDLE_LEFT;
-                else if (Player.State == PlayerState.FALLING_RIGHT)
-                    Player.State = PlayerState.IDLE_RIGHT;
-            }
+            if (Player.Grounded && Player.Inputs.Direction == DpadDirection.None)
+                Player.State = PlayerState.IDLE;
+        }
+    }
+
+    public class ChangePlayerStateToCrouch : IHandleUpdates
+    {
+        public readonly Player Player;
+
+        public ChangePlayerStateToCrouch(Player Player)
+        {
+            this.Player = Player;
+        }
+
+        public void Update()
+        {
+            if (Player.Grounded && Player.Inputs.Direction == DpadDirection.Down)
+                Player.State = PlayerState.CROUCH;
         }
     }
 
@@ -149,8 +118,6 @@ namespace ThirdGame
 
         public void Update()
         {
-            Game1.LOG += $@"
-STATE: {gameOjbect.State}";
             Options[gameOjbect.State].Update();
         }
 
@@ -165,20 +132,18 @@ STATE: {gameOjbect.State}";
 
     public static class PlayerState
     {
-        public const int IDLE_RIGHT = 0;
-        public const int IDLE_LEFT = 1;
-        public const int WALKING_RIGHT = 2;
-        public const int WALKING_LEFT = 3;
-        public const int FALLING_LEFT = 4;
-        public const int FALLING_RIGHT = 5;
-        public const int CROUCH_LEFT = 6;
-        public const int CROUCH_RIGHT = 7;
+        public const int IDLE = 0;
+        public const int WALKING = 1;
+        public const int FALLING = 2;
+        public const int CROUCH = 3;
+        public const int JUMP = 4;
     }
 
     public class Player : GameObject, IHaveState
     {
         public bool Grounded { get; set; }
         public int State { get; set; }
+
         public readonly Inputs Inputs;
 
         public Player(string Id, Inputs Inputs, Camera2d Camera, NetworkHandler network, bool remote) : base(Id)
@@ -205,68 +170,70 @@ STATE: {gameOjbect.State}";
                 }
             };
 
-            Animation = new PlayerAnimator(this, Inputs);
+            Animation = new PlayerAnimator(this);
 
             if (remote)
                 Update = CreateUpdatesByState(Inputs);
             else
                 Update = new UpdateAggregation(
-                    CreateUpdatesByState(Inputs),
-                    new BroadCastState(Camera, this, network)
+                    CreateUpdatesByState(Inputs)
+                , new BroadCastState(Camera, this, network)
                 );
         }
 
         private UpdateByState CreateUpdatesByState(Inputs Inputs)
         {
-            var jumpCommandChangesVerticalSpeed = new JumpCommandChangesVerticalSpeed(this, Inputs);
-            var changesSpeedRight = new IncreaseHorizontalVelocity(this, 10);
-            var changesSpeedLeft = new IncreaseHorizontalVelocity(this, -10);
-            var decreaseVelocity = new DecreaseHorizontalVelocity(this, 10);
+            //var jumpCommandChangesVerticalSpeed = new JumpCommandChangesVerticalSpeed(this, Inputs);
+            var changesSpeed = new IncreaseHorizontalVelocity(this, 10);
+            var decreaseVelocity = new DecreaseHorizontalVelocity(this, 5);
             var limitHorizontalVelocity = new LimitHorizontalVelocity(this, 100);
             var gravityChangesVerticalSpeed = new GravityChangesVerticalSpeed(this);
-            var changePlayerFromIdleToFalling = new ChangePlayerFromIdleToFalling(this);
-            var changePlayerFromFallingToIdle = new ChangePlayerFromFallingToIdle(this);
-            var changePlayerFromIdleToWalking = new ChangePlayerFromIdleToWalking(this);
-            var changePlayerFromWalkingToIdle = new ChangePlayerFromWalkingToIdle(this);
+
+            var changePlayerToFalling = new ChangePlayerStateToFalling(this);
+            var changePlayerToIdle = new ChangePlayerStateToIdle(this);
+            var changePlayerToWalking = new ChangePlayerStateToWalking(this);
+            var ChangePlayerToJumpingState = new ChangePlayerStateToJumping(this);
+            var changePlayerStateToCrouch = new ChangePlayerStateToCrouch(this);
 
             var updateByState = new UpdateByState(this);
 
-            updateByState.Add(PlayerState.IDLE_LEFT, new UpdateAggregation(
-                changePlayerFromIdleToFalling
-                , changePlayerFromIdleToWalking
-                , gravityChangesVerticalSpeed
-            ));
-
-            updateByState.Add(PlayerState.IDLE_RIGHT, new UpdateAggregation(
-                changePlayerFromIdleToFalling
-                 , changePlayerFromIdleToWalking
-                 , gravityChangesVerticalSpeed
-            ));
-
-            updateByState.Add(PlayerState.FALLING_LEFT, new UpdateAggregation(
-                changePlayerFromFallingToIdle
-                , gravityChangesVerticalSpeed
-            ));
-
-            updateByState.Add(PlayerState.FALLING_RIGHT, new UpdateAggregation(
-                changePlayerFromFallingToIdle
-                , gravityChangesVerticalSpeed
-            ));
-
-            updateByState.Add(PlayerState.WALKING_LEFT, new UpdateAggregation(
-                changePlayerFromWalkingToIdle
-                , gravityChangesVerticalSpeed
-                , changesSpeedLeft
+            updateByState.Add(PlayerState.IDLE, new UpdateAggregation(
+                gravityChangesVerticalSpeed
                 , decreaseVelocity
-                , limitHorizontalVelocity
+                , changePlayerToFalling
+                , changePlayerToWalking
+                , ChangePlayerToJumpingState
+                , changePlayerStateToCrouch
             ));
 
-            updateByState.Add(PlayerState.WALKING_RIGHT, new UpdateAggregation(
-                changePlayerFromWalkingToIdle
-                , gravityChangesVerticalSpeed
-                , changesSpeedRight
-                , decreaseVelocity
+            updateByState.Add(PlayerState.FALLING, new UpdateAggregation(
+                gravityChangesVerticalSpeed
+                , changePlayerToWalking
+                , changePlayerToIdle
+            ));
+
+            updateByState.Add(PlayerState.WALKING, new UpdateAggregation(
+                gravityChangesVerticalSpeed
                 , limitHorizontalVelocity
+                , changesSpeed
+                , changePlayerToWalking
+                , ChangePlayerToJumpingState
+                , changePlayerToFalling
+                , changePlayerToIdle
+                , changePlayerStateToCrouch
+            ));
+
+            updateByState.Add(PlayerState.JUMP, new UpdateAggregation(
+                gravityChangesVerticalSpeed
+                , changePlayerToFalling
+            ));
+
+            updateByState.Add(PlayerState.CROUCH, new UpdateAggregation(
+                gravityChangesVerticalSpeed
+                , decreaseVelocity
+                , changePlayerToWalking
+                , changePlayerToIdle
+                , changePlayerToFalling
             ));
 
             return updateByState;

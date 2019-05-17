@@ -20,24 +20,6 @@ namespace ThirdGame
         }
     }
 
-    public class JumpCommandChangesVerticalSpeed : IHandleUpdates
-    {
-        private readonly Player GameObject;
-        private readonly Inputs Inputs;
-
-        public JumpCommandChangesVerticalSpeed(Player GameObject, Inputs Inputs)
-        {
-            this.GameObject = GameObject;
-            this.Inputs = Inputs;
-        }
-
-        public void Update()
-        {
-            if (Inputs.Action == DpadDirection.Down && GameObject.Grounded)
-                GameObject.Velocity.Y = -200;
-        }
-    }
-
     public class BlockCollisionHandler : CollisionHandler
     {
         public void BeforeCollisions() { }
