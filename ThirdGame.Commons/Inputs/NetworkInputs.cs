@@ -2,8 +2,8 @@
 {
     public class NetworkInputs : Inputs
     {
-        public DpadDirection Direction { get; set; }
-        public DpadDirection Action { get; set; }        
+        public int Direction { get; set; }
+        public int Action { get; set; }        
 
         public void Update()
         {

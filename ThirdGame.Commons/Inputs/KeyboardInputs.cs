@@ -4,8 +4,8 @@ namespace Common
 {
     public class KeyboardInputs : Inputs
     {
-        public DpadDirection Direction { get; set; }
-        public DpadDirection Action { get; set; }
+        public int Direction { get; set; }
+        public int Action { get; set; }
 
         public void Update()
         {
@@ -24,7 +24,7 @@ namespace Common
 
             if (state.IsKeyDown(Keys.K) || state.IsKeyDown(Keys.Space))
             {
-                Action = DpadDirection.Down;
+                Action = DpadDirection.Jump;
             }
             else
                 Action = DpadDirection.None;

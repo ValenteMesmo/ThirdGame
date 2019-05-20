@@ -63,15 +63,9 @@ namespace ThirdGame
                         p.Inputs.Direction = DpadDirection.Down;
                     else
                         p.Inputs.Direction = DpadDirection.None;
-
-                    if (message.ButtonLeft)
-                        p.Inputs.Action = DpadDirection.Left;
-                    else if (message.ButtonRight)
-                        p.Inputs.Action = DpadDirection.Right;
-                    else if (message.ButtonUp)
-                        p.Inputs.Action = DpadDirection.Up;
-                    else if (message.ButtonDown)
-                        p.Inputs.Action = DpadDirection.Down;
+                                        
+                    if (message.ButtonDown)
+                        p.Inputs.Action = DpadDirection.Jump;
                     else
                         p.Inputs.Action = DpadDirection.None;
                 };

@@ -20,8 +20,8 @@ namespace Common
         bool WasPressingAnyDirection;
         bool IsPressingAnyDirection;
         Vector2 previousPosition;
-        public DpadDirection Direction;
-        DpadDirection newDirection;
+        public int Direction;
+        int newDirection;
 
         public DpadDirectionTouchDectector(
             int TOP_X

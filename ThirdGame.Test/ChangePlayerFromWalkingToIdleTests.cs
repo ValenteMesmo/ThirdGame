@@ -80,5 +80,14 @@ namespace ThirdGame.Tests
             Assert.Equal(-90, sut.Target.Velocity.X);
         }
     }
-    
+
+    public class InputCircularBufferTests
+    {
+        [Theory, AutoMockData]
+        public void aaa(InputCircularBuffer sut)
+        {
+            sut.Main();
+        }
+    }
+
 }

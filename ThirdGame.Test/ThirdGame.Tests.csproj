@@ -90,6 +90,7 @@
     <Compile Include="ChangePlayerFromIdleToFallingTests.cs" />
     <Compile Include="ChangePlayerFromIdleToWalkingTests.cs" />
     <Compile Include="ChangePlayerFromWalkingToIdleTests.cs" />
+    <Compile Include="CircularBufferTeste.cs" />
     <Compile Include="MessageEnconderTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ServerIpFinderTests.cs" />
