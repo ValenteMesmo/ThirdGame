@@ -23,6 +23,11 @@ namespace Common
         private readonly Animation CrouchLeftAnimation;
         private readonly Animation UpAnimation;
         private readonly Animation UpLeftAnimation;
+        private readonly Animation FallAnimation;
+        private readonly Animation FallLeftAnimation;
+        private readonly Animation JumpAnimation;
+        private readonly Animation JumpLeftAnimation;
+
 
         private Animation CurremtAnimation;
 
@@ -51,7 +56,7 @@ namespace Common
                  new AnimationFrame(Player, "freeze_0", SIZE, SIZE, SourceRectangle: new Rectangle(0, 80 * 6, 80, 80)) { DurationInUpdateCount = 5 }
             );
             CrouchLeftAnimation = new Animation(
-                          new AnimationFrame(Player, "freeze_0", SIZE, SIZE, SourceRectangle: new Rectangle(0, 80 * 6, 80, 80)) { DurationInUpdateCount = 5, Flipped = true }
+                 new AnimationFrame(Player, "freeze_0", SIZE, SIZE, SourceRectangle: new Rectangle(0, 80 * 6, 80, 80)) { DurationInUpdateCount = 5, Flipped = true }
             );
 
             UpAnimation = new Animation(
@@ -59,6 +64,20 @@ namespace Common
             );
             UpLeftAnimation = new Animation(
                 new AnimationFrame(Player, "freeze_0", SIZE, SIZE, SourceRectangle: new Rectangle(80 * 4, 80 * 2, 80, 80)) { DurationInUpdateCount = 5, Flipped = true }
+            );
+
+            JumpAnimation = new Animation(
+               new AnimationFrame(Player, "freeze_0", SIZE, SIZE, SourceRectangle: new Rectangle(80 * 3, 80 * 6, 80, 80)) { DurationInUpdateCount = 5 }
+            );
+            JumpLeftAnimation = new Animation(
+                new AnimationFrame(Player, "freeze_0", SIZE, SIZE, SourceRectangle: new Rectangle(80 * 3, 80 * 6, 80, 80)) { DurationInUpdateCount = 5, Flipped = true }
+            );
+
+            FallAnimation = new Animation(
+                 new AnimationFrame(Player, "freeze_0", SIZE, SIZE, SourceRectangle: new Rectangle(80 * 2, 80 * 6, 80, 80)) { DurationInUpdateCount = 5 }
+            );
+            FallLeftAnimation = new Animation(
+                new AnimationFrame(Player, "freeze_0", SIZE, SIZE, SourceRectangle: new Rectangle(80 * 2, 80 * 6, 80, 80)) { DurationInUpdateCount = 5, Flipped = true }
             );
 
             WalkRightAnimation = new Animation(
@@ -95,6 +114,16 @@ namespace Common
                 else
                     CurremtAnimation = CrouchLeftAnimation;
             else if (Player.State == PlayerState.JUMP)
+                if (Player.FacingRight)
+                    CurremtAnimation = JumpAnimation;
+                else
+                    CurremtAnimation = JumpLeftAnimation;
+            else if (Player.State == PlayerState.FALLING)
+                if (Player.FacingRight)
+                    CurremtAnimation = FallAnimation;
+                else
+                    CurremtAnimation = FallLeftAnimation;
+            else if (Player.State == PlayerState.LOOKING_UP)
                 if (Player.FacingRight)
                     CurremtAnimation = UpAnimation;
                 else

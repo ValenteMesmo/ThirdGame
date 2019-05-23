@@ -98,6 +98,24 @@ namespace ThirdGame
         }
     }
 
+    public class ChangePlayerStateToLookingUp : IHandleUpdates
+    {
+        public readonly Player Player;
+
+        public ChangePlayerStateToLookingUp(Player Player)
+        {
+            this.Player = Player;
+        }
+
+        public void Update()
+        {
+            if (Player.Grounded && Player.Inputs.Direction == DpadDirection.Up)
+            {
+                Player.State = PlayerState.LOOKING_UP;
+            }
+        }
+    }
+
     public class ChangePlayerStateToFalling : IHandleUpdates
     {
         public readonly Player Player;
@@ -154,8 +172,7 @@ namespace ThirdGame
 
         public void Update()
         {
-            if (Player.Grounded
-                && (Player.Inputs.Direction == DpadDirection.None || Player.Inputs.Direction == DpadDirection.Up))
+            if (Player.Grounded && Player.Inputs.Direction == DpadDirection.None)
                 Player.State = PlayerState.IDLE;
         }
     }
@@ -205,6 +222,7 @@ namespace ThirdGame
         public const int FALLING = 2;
         public const int CROUCH = 3;
         public const int JUMP = 4;
+        public const int LOOKING_UP = 5;
     }
 
     public class Player : GameObject, IHaveState
@@ -262,6 +280,7 @@ namespace ThirdGame
             var changePlayerToWalking = new ChangePlayerStateToWalking(this);
             var ChangePlayerToJumpingState = new ChangePlayerStateToJumping(this);
             var changePlayerStateToCrouch = new ChangePlayerStateToCrouch(this);
+            var changePlayerStateToLookingUp = new ChangePlayerStateToLookingUp(this);
 
             var updateByState = new UpdateByState(this);
 
@@ -272,6 +291,7 @@ namespace ThirdGame
                 , changePlayerToWalking
                 , ChangePlayerToJumpingState
                 , changePlayerStateToCrouch
+                , changePlayerStateToLookingUp
             ));
 
             updateByState.Add(PlayerState.FALLING, new UpdateAggregation(
@@ -279,6 +299,7 @@ namespace ThirdGame
                 , changePlayerToWalking
                 , changePlayerToIdle
                 , changePlayerStateToCrouch
+                , changePlayerStateToLookingUp
             ));
 
             updateByState.Add(PlayerState.WALKING, new UpdateAggregation(
@@ -290,6 +311,7 @@ namespace ThirdGame
                 , changePlayerToFalling
                 , changePlayerToIdle
                 , changePlayerStateToCrouch
+                , changePlayerStateToLookingUp
             ));
 
             updateByState.Add(PlayerState.JUMP, new UpdateAggregation(
@@ -303,6 +325,16 @@ namespace ThirdGame
                 , changePlayerToWalking
                 , changePlayerToIdle
                 , changePlayerToFalling
+                , changePlayerStateToLookingUp
+            ));
+
+            updateByState.Add(PlayerState.LOOKING_UP, new UpdateAggregation(
+                gravityChangesVerticalSpeed
+                , decreaseVelocity
+                , changePlayerToWalking
+                , changePlayerToIdle
+                , changePlayerToFalling
+                , changePlayerStateToCrouch
             ));
 
             return updateByState;
