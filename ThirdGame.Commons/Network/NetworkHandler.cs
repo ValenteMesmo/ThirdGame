@@ -114,10 +114,10 @@ namespace ThirdGame
                         , Down: Inputs.Direction == DpadDirection.Down
                         , Left: Inputs.Direction == DpadDirection.Left
                         , Right: Inputs.Direction == DpadDirection.Right
-                        , ButtonUp: Inputs.Action == DpadDirection.Special
-                        , ButtonDown: Inputs.Action == DpadDirection.Jump
-                        , ButtonLeft: Inputs.Action == DpadDirection.Attack
-                        , ButtonRight: Inputs.Action == DpadDirection.Defense
+                        , ButtonUp: Inputs.Action == DpadAction.Special
+                        , ButtonDown: Inputs.Action == DpadAction.Jump
+                        , ButtonLeft: Inputs.Action == DpadAction.Attack
+                        , ButtonRight: Inputs.Action == DpadAction.Defense
                     )
                 )
             );

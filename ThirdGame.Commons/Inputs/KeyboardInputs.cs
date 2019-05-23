@@ -24,10 +24,10 @@ namespace Common
 
             if (state.IsKeyDown(Keys.K) || state.IsKeyDown(Keys.Space))
             {
-                Action = DpadDirection.Jump;
+                Action = DpadAction.Jump;
             }
             else
-                Action = DpadDirection.None;
+                Action = DpadAction.None;
         }
     }
 }

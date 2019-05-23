@@ -6,23 +6,32 @@ namespace ThirdGame
 {
     public class InputCircularBuffer
     {
-        private readonly CircularBuffer CircularBuffer;
-        private readonly Inputs Inputs;
+        public readonly CircularBuffer CircularBuffer;
+        public readonly Inputs Inputs;
+        private int previousDirection;
+        private int previousAction;
 
-        public InputCircularBuffer(CircularBuffer CircularBuffer, Inputs Inputs)
+        public InputCircularBuffer(Inputs Inputs)
         {
-            this.CircularBuffer = CircularBuffer;
+            CircularBuffer = new CircularBuffer(3);
             this.Inputs = Inputs;
         }
 
-        public void Main()
+        public void Update()
         {
-            var current = CircularBuffer.GetCurrent();
-
-            if (current != Inputs.Direction)
+            if (previousDirection != Inputs.Direction && Inputs.Direction > 0)
                 CircularBuffer.Add(Inputs.Direction);
-            if (current != Inputs.Action)
+
+            if (previousAction != Inputs.Action && Inputs.Action > 0)
                 CircularBuffer.Add(Inputs.Action);
+
+            previousDirection = Inputs.Direction;
+            previousAction = Inputs.Action;
+        }
+
+        public IEnumerable<int> Get()
+        {
+            return CircularBuffer.Get();
         }
     }
 
@@ -81,7 +90,7 @@ namespace ThirdGame
 
         public void Update()
         {
-            if (Player.Grounded && Player.Inputs.Action == DpadDirection.Jump)
+            if (Player.Grounded && Player.Inputs.Action == DpadAction.Jump)
             {
                 Player.Velocity.Y = -200;
                 Player.State = PlayerState.JUMP;

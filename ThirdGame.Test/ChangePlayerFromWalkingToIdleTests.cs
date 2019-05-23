@@ -1,6 +1,7 @@
 ﻿using Common;
 using Xunit;
 using NSubstitute;
+using System.Linq;
 
 namespace ThirdGame.Tests
 {
@@ -84,9 +85,31 @@ namespace ThirdGame.Tests
     public class InputCircularBufferTests
     {
         [Theory, AutoMockData]
-        public void aaa(InputCircularBuffer sut)
+        public void down_down_punch(InputCircularBuffer sut)
         {
-            sut.Main();
+            
+            sut.Inputs.Direction.Returns(DpadDirection.Down);
+            sut.Inputs.Action.Returns(DpadAction.None);
+
+            sut.Update();
+
+            sut.Inputs.Direction.Returns(DpadDirection.None);
+
+            sut.Update();
+
+            sut.Inputs.Direction.Returns(DpadDirection.Down);
+
+            sut.Update();
+
+            sut.Inputs.Direction.Returns(DpadDirection.None);
+            sut.Inputs.Action.Returns(DpadAction.Attack);
+
+            sut.Update();
+
+            var actual = sut.Get().ToArray();
+            Assert.Equal(DpadDirection.Down, actual[0]);
+            Assert.Equal(DpadDirection.Down, actual[1]);
+            Assert.Equal(DpadAction.Attack, actual[2]);
         }
     }
 

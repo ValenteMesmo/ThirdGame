@@ -65,9 +65,9 @@ namespace ThirdGame
                         p.Inputs.Direction = DpadDirection.None;
                                         
                     if (message.ButtonDown)
-                        p.Inputs.Action = DpadDirection.Jump;
+                        p.Inputs.Action = DpadAction.Jump;
                     else
-                        p.Inputs.Action = DpadDirection.None;
+                        p.Inputs.Action = DpadAction.None;
                 };
 
                 //TODO: atualmente nenhum player é identificado como server... 
