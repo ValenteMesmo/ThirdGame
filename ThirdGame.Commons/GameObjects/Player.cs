@@ -263,13 +263,12 @@ namespace ThirdGame
             else
                 Update = new UpdateAggregation(
                     CreateUpdatesByState(Inputs)
-                , new BroadCastState(Camera, this, network)
+                    , new BroadCastState(Camera, this, network)
                 );
         }
 
         private UpdateByState CreateUpdatesByState(Inputs Inputs)
         {
-            //var jumpCommandChangesVerticalSpeed = new JumpCommandChangesVerticalSpeed(this, Inputs);
             var changesSpeed = new IncreaseHorizontalVelocity(this, 10);
             var decreaseVelocity = new DecreaseHorizontalVelocity(this, 5);
             var limitHorizontalVelocity = new LimitHorizontalVelocity(this, 100);

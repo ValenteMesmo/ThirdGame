@@ -12,8 +12,35 @@ namespace Common
         public TouchControlInputs(TouchInputs TouchInputs)
         {
             this.TouchInputs = TouchInputs;
-            Dpad = new DpadDirectionTouchDectector(TouchControllerRenderer.BUTTON_TOP_X, TouchControllerRenderer.BUTTON_TOP_Y, TouchControllerRenderer.BUTTON_BOT_X, TouchControllerRenderer.BUTTON_BOT_Y, TouchControllerRenderer.BUTTON_LEFT_X, TouchControllerRenderer.BUTTON_LEFT_Y, TouchControllerRenderer.BUTTON_RIGHT_X, TouchControllerRenderer.BUTTON_RIGHT_Y, TouchControllerRenderer.BUTTON_WIDTH, TouchControllerRenderer.BUTTON_HEIGHT);
-            Actions = new DpadDirectionTouchDectector(TouchControllerRenderer.BUTTON2_TOP_X, TouchControllerRenderer.BUTTON2_TOP_Y, TouchControllerRenderer.BUTTON2_BOT_X, TouchControllerRenderer.BUTTON2_BOT_Y, TouchControllerRenderer.BUTTON2_LEFT_X, TouchControllerRenderer.BUTTON2_LEFT_Y, TouchControllerRenderer.BUTTON2_RIGHT_X, TouchControllerRenderer.BUTTON2_RIGHT_Y, TouchControllerRenderer.BUTTON_WIDTH, TouchControllerRenderer.BUTTON_HEIGHT);
+            Dpad = new DpadDirectionTouchDectector(
+                TouchControllerRenderer.BUTTON_TOP_X
+                , TouchControllerRenderer.BUTTON_TOP_Y
+                , TouchControllerRenderer.BUTTON_BOT_X
+                , TouchControllerRenderer.BUTTON_BOT_Y
+                , TouchControllerRenderer.BUTTON_LEFT_X
+                , TouchControllerRenderer.BUTTON_LEFT_Y
+                , TouchControllerRenderer.BUTTON_RIGHT_X
+                , TouchControllerRenderer.BUTTON_RIGHT_Y
+                , DpadDirection.Up
+                , DpadDirection.Down
+                , DpadDirection.Left
+                , DpadDirection.Right
+            );
+
+            Actions = new DpadDirectionTouchDectector(
+                TouchControllerRenderer.BUTTON2_TOP_X
+                , TouchControllerRenderer.BUTTON2_TOP_Y
+                , TouchControllerRenderer.BUTTON2_BOT_X
+                , TouchControllerRenderer.BUTTON2_BOT_Y
+                , TouchControllerRenderer.BUTTON2_LEFT_X
+                , TouchControllerRenderer.BUTTON2_LEFT_Y
+                , TouchControllerRenderer.BUTTON2_RIGHT_X
+                , TouchControllerRenderer.BUTTON2_RIGHT_Y
+                , DpadAction.Special
+                , DpadAction.Jump
+                , DpadAction.Attack
+                , DpadAction.Defense
+            );
         }
 
         public int Direction { get => Dpad.Direction; set { } }
