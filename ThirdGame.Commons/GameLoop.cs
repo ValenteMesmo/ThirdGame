@@ -66,6 +66,8 @@ namespace ThirdGame
                                         
                     if (message.ButtonDown)
                         p.Inputs.Action = DpadAction.Jump;
+                    else if (message.ButtonLeft)
+                        p.Inputs.Action = DpadAction.Attack;
                     else
                         p.Inputs.Action = DpadAction.None;
                 };

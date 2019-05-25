@@ -43,7 +43,18 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Drawing\TogglableAnimation.cs" />
+    <Compile Include="GameObjects\StateTransitions\ChangePlayerStateToCrouch.cs" />
+    <Compile Include="GameObjects\StateTransitions\ChangePlayerStateToFalling.cs" />
+    <Compile Include="GameObjects\StateTransitions\ChangePlayerStateToIdle.cs" />
+    <Compile Include="GameObjects\StateTransitions\ChangePlayerStateToJumping.cs" />
+    <Compile Include="GameObjects\StateTransitions\ChangePlayerStateToLookingUp.cs" />
+    <Compile Include="GameObjects\StateTransitions\ChangePlayerStateToWalking.cs" />
+    <Compile Include="GameObjects\IHaveState.cs" />
+    <Compile Include="GameObjects\PlayerState.cs" />
+    <Compile Include="Updates\UpdateByState.cs" />
+    <Compile Include="Inputs\CircularBuffer.cs" />
     <Compile Include="GameObjects\FlagAsGrounded.cs" />
+    <Compile Include="Inputs\InputCircularBuffer.cs" />
     <Compile Include="Inputs\DpadDirectionTouchDectector.cs" />
     <Compile Include="Physics\BlockCollisionHandler.cs" />
     <Compile Include="Drawing\Block.cs" />

@@ -26,6 +26,8 @@ namespace Common
             {
                 Action = DpadAction.Jump;
             }
+            else if (state.IsKeyDown(Keys.J) || state.IsKeyDown(Keys.LeftControl))
+                Action = DpadAction.Attack;
             else
                 Action = DpadAction.None;
         }

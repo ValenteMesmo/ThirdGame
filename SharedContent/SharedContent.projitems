@@ -14,6 +14,12 @@
     <None Include="$(MSBuildThisFileDirectory)Content\SpriteFont.spritefont" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="$(MSBuildThisFileDirectory)Content\block.bmp" />
     <Content Include="$(MSBuildThisFileDirectory)Content\char.bmp" />
+    <Content Include="$(MSBuildThisFileDirectory)Content\char_crouch.bmp" />
+    <Content Include="$(MSBuildThisFileDirectory)Content\char_up.bmp" />
+    <Content Include="$(MSBuildThisFileDirectory)Content\char_walk.bmp" />
+    <Content Include="$(MSBuildThisFileDirectory)Content\dpad.bmp" />
+    <Content Include="$(MSBuildThisFileDirectory)Content\freeze_0.bmp" />
   </ItemGroup>
 </Project>

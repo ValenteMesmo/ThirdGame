@@ -1,11 +1,13 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using ThirdGame;
 
 namespace Common
-{    
+{
     public class Animation : AnimationHandler
     {
         private readonly AnimationFrame[] Frames;
+        public bool Loop { get; set; } = true;
 
         public Animation(params AnimationFrame[] Frames)
         {
@@ -23,19 +25,29 @@ namespace Common
 
         private int currentFrame = 0;
         private int currentFrameDuration = 0;
-               
+
         public void Update()
         {
             if (currentFrameDuration > 0)
                 currentFrameDuration--;
             else
             {
-                currentFrame++;
-                if (currentFrame > Frames.Length - 1)
-                    currentFrame = 0;
+                if (currentFrame + 1 > Frames.Length - 1)
+                {
+                    if (Loop)
+                        currentFrame = 0;
+                }
+                else
+                    currentFrame++;
 
                 currentFrameDuration = Frames[currentFrame].DurationInUpdateCount;
             }
+        }
+
+        internal void Reset()
+        {
+            currentFrame = 0;
+            currentFrameDuration = Frames[currentFrame].DurationInUpdateCount;
         }
     }
 }
