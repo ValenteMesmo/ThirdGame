@@ -20,10 +20,10 @@ namespace ThirdGame
             Root.Add(item);
         }
 
-        public void AddRange(Collider[] itens)
+        public void AddRange(IEnumerable<Collider> itens)
         {
-            for (int i = 0; i < itens.Length; i++)
-                Root.Add(itens[i]);
+            foreach (var item in itens)
+                Root.Add(item);
         }
 
         public Collider[] Get(Collider item)

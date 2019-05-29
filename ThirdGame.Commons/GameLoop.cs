@@ -109,25 +109,26 @@ namespace ThirdGame
 
             for (int i = 0; i < GameObjects.Count; i++)
             {
-                quadtree.AddRange(GameObjects[i].Colliders);
+                quadtree.AddRange(GameObjects[i].Colliders.GetColliders());
             }
 
-            for (int i = 0; i < GameObjects.Count; i++)
+            foreach (var GameObject in GameObjects)
             {
-                GameObjects[i].Update.Update();
+                GameObject.Update.Update();
 
-                GameObjects[i].Position.Y += GameObjects[i].Velocity.Y * elapsed;
-                for (int j = 0; j < GameObjects[i].Colliders.Length; j++)
+                GameObject.Position.Y += GameObject.Velocity.Y * elapsed;
+                var colliders = GameObject.Colliders.GetColliders();
+                foreach(var collider in colliders)
                 {
-                    GameObjects[i].Colliders[j].Collision.BeforeCollisions();
-                    CheckCollisions(CollisionDirection.Vertical, GameObjects[i].Colliders[j]);
+                    collider.Collision.BeforeCollisions();
+                    CheckCollisions(CollisionDirection.Vertical, collider);
                 }
 
-                GameObjects[i].Position.X += GameObjects[i].Velocity.X * elapsed;
-                for (int j = 0; j < GameObjects[i].Colliders.Length; j++)
-                    CheckCollisions(CollisionDirection.Horizontal, GameObjects[i].Colliders[j]);
+                GameObject.Position.X += GameObject.Velocity.X * elapsed;
+                foreach (var collider in colliders)
+                    CheckCollisions(CollisionDirection.Horizontal, collider);
 
-                GameObjects[i].Animation.Update();
+                GameObject.Animation.Update();
             }
 
             //quadtree.DrawDebug();

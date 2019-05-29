@@ -36,5 +36,7 @@ namespace ThirdGame
         public float Rotation { get; set; }
         public bool Flipped { get; set; }
         public Rectangle? SourceRectangle { get;  set; }
+
+        public IHaveColliders Colliders { get; set; } = NoCollision.Instance;
     }
 }

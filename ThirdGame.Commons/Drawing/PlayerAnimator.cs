@@ -11,7 +11,7 @@ namespace Common
         public bool FacingRight;
     }
 
-    public class PlayerAnimator : AnimationHandler
+    public class PlayerAnimator : AnimationHandler, IHaveColliders
     {
         private readonly Player Player;
 
@@ -29,7 +29,7 @@ namespace Common
         private readonly Animation JumpLeftAnimation;
         private readonly Animation AttackAnimation;
         private readonly Animation AttackLeftAnimation;
-        
+
         private Animation CurremtAnimation;
 
         public const int SIZE = 1800;
@@ -68,7 +68,7 @@ namespace Common
             { Loop = false };
 
             AttackLeftAnimation = new Animation(
-               new AnimationFrame(Player, "freeze_0", SIZE, SIZE, SourceRectangle: new Rectangle(80 * 0, 80 * 1, 80, 80)) { DurationInUpdateCount = 5 , Flipped = true}
+               new AnimationFrame(Player, "freeze_0", SIZE, SIZE, SourceRectangle: new Rectangle(80 * 0, 80 * 1, 80, 80)) { DurationInUpdateCount = 5, Flipped = true }
                , new AnimationFrame(Player, "freeze_0", SIZE, SIZE, SourceRectangle: new Rectangle(80 * 1, 80 * 1, 80, 80)) { DurationInUpdateCount = 5, Flipped = true }
                , new AnimationFrame(Player, "freeze_0", SIZE, SIZE, SourceRectangle: new Rectangle(80 * 2, 80 * 1, 80, 80)) { DurationInUpdateCount = 5, Flipped = true }
            //, new AnimationFrame(Player, "freeze_0", SIZE, SIZE, SourceRectangle: new Rectangle(80 * 3, 80 * 1, 80, 80)) { DurationInUpdateCount = 5, Flipped = true }
@@ -178,6 +178,13 @@ namespace Common
         }
 
         public IEnumerable<AnimationFrame> GetFrame() => CurremtAnimation.GetFrame();
+
+        public IEnumerable<Collider> GetColliders()
+        {
+            foreach (var frame in GetFrame())
+                foreach (var collider in frame.Colliders.GetColliders())
+                    yield return collider;
+        }
 
         public bool RenderOnUiLayer => false;
     }

@@ -13,8 +13,9 @@ namespace ThirdGame
         {
             this.Inputs = Inputs;
 
-            Colliders = new Collider[] {
-                new Collider(this) {
+            Colliders = new CollisionComponent(
+                new Collider(this)
+                {
                     X = 0,
                     Y = 0,
                     Width = PlayerAnimator.SIZE,
@@ -24,16 +25,19 @@ namespace ThirdGame
                         , new BlockCollisionHandler()
                     )
                 }
-                , new Collider(this){
+                , new Collider(this)
+                {
                     X = 0,
                     Y = 0,
                     Width = PlayerAnimator.SIZE,
                     Height = PlayerAnimator.SIZE + 1,
                     Collision = new FlagAsGrounded(this)
                 }
-            };
+            );
 
-            Animation = new PlayerAnimator(this);
+            var animator = new PlayerAnimator(this);
+            //Colliders = animator;
+            Animation = animator;
 
             if (remote)
                 Update = CreateUpdatesByState(Inputs);
