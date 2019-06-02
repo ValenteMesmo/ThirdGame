@@ -4,16 +4,6 @@ using Microsoft.Xna.Framework;
 
 namespace Common
 {
-    public class CollisionComponent : IHaveColliders
-    {
-        private readonly Collider[] Colliders;
-
-        public CollisionComponent(params Collider[] Colliders) =>
-            this.Colliders = Colliders;
-
-        public IEnumerable<Collider> GetColliders() => Colliders;
-    }
-
     public class Collider
     {
         private float OffsetX;

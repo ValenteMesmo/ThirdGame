@@ -1,4 +1,5 @@
-﻿using Common;
+﻿using System.Collections.Generic;
+using Common;
 
 namespace ThirdGame
 {
@@ -8,35 +9,19 @@ namespace ThirdGame
         public int State { get; set; }
 
         public readonly Inputs Inputs;
+        private readonly PlayerAnimator animator;
 
         public Player(string Id, Inputs Inputs, Camera2d Camera, NetworkHandler network, bool remote) : base(Id)
         {
             this.Inputs = Inputs;
 
-            Colliders = new CollisionComponent(
-                new Collider(this)
-                {
-                    X = 0,
-                    Y = 0,
-                    Width = PlayerAnimator.SIZE,
-                    Height = PlayerAnimator.SIZE,
-                    Collision = new CollisionHandlerAggregation(
-                        new LogCollision()
-                        , new BlockCollisionHandler()
-                    )
-                }
-                , new Collider(this)
-                {
-                    X = 0,
-                    Y = 0,
-                    Width = PlayerAnimator.SIZE,
-                    Height = PlayerAnimator.SIZE + 1,
-                    Collision = new FlagAsGrounded(this)
-                }
+            animator = new PlayerAnimator(this);
+            animator.mainCollider.Collision = new CollisionHandlerAggregation(
+                new LogCollision()
+                , new BlockCollisionHandler()
             );
+            animator.groundDetection.Collision = new FlagAsGrounded(this);
 
-            var animator = new PlayerAnimator(this);
-            //Colliders = animator;
             Animation = animator;
 
             if (remote)
@@ -46,6 +31,11 @@ namespace ThirdGame
                     CreateUpdatesByState(Inputs)
                     , new BroadCastState(Camera, this, network)
                 );
+        }
+
+        public override IEnumerable<Collider> GetColliders()
+        {
+            return animator.GetColliders();
         }
 
         private UpdateByState CreateUpdatesByState(Inputs Inputs)

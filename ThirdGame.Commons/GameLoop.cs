@@ -109,15 +109,15 @@ namespace ThirdGame
 
             for (int i = 0; i < GameObjects.Count; i++)
             {
-                quadtree.AddRange(GameObjects[i].Colliders.GetColliders());
+                quadtree.AddRange(GameObjects[i].GetColliders());
             }
 
-            foreach (var GameObject in GameObjects)
+            foreach (var GameObject in GameObjects.ToList())
             {
                 GameObject.Update.Update();
 
                 GameObject.Position.Y += GameObject.Velocity.Y * elapsed;
-                var colliders = GameObject.Colliders.GetColliders();
+                var colliders = GameObject.GetColliders();
                 foreach(var collider in colliders)
                 {
                     collider.Collision.BeforeCollisions();
