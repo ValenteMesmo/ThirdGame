@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Common;
+using System;
 using System.Collections.Generic;
 
 namespace ThirdGame
@@ -50,17 +51,15 @@ namespace ThirdGame
 
     public class MyMessageEncoder
     {
-        public const int PACKAGE_SIZE = 23;
-
         public string Encode(Message Message)
         {
             //3+4+4+4+4
-            return $"{Message.Time.ToString("000")}{(Message.Up ? "1" : "0")}{(Message.Down ? "1" : "0")}{(Message.Left ? "1" : "0")}{(Message.Right ? "1" : "0")}{(Message.ButtonUp ? "1" : "0")}{(Message.ButtonDown ? "1" : "0")}{(Message.ButtonLeft ? "1" : "0")}{(Message.ButtonRight ? "1" : "0")}{(Message.X >=0 ? "+" : "-")}{Math.Abs(Message.X).ToString("00000")}{(Message.Y >= 0 ? "+" : "-")}{Math.Abs(Message.Y).ToString("00000")}";
+            return $"{Message.Time.ToString("000")}{(Message.Up ? "1" : "0")}{(Message.Down ? "1" : "0")}{(Message.Left ? "1" : "0")}{(Message.Right ? "1" : "0")}{(Message.ButtonUp ? "1" : "0")}{(Message.ButtonDown ? "1" : "0")}{(Message.ButtonLeft ? "1" : "0")}{(Message.ButtonRight ? "1" : "0")}{(Message.X >= 0 ? "+" : "-")}{Math.Abs(Message.X).ToString("00000")}{(Message.Y >= 0 ? "+" : "-")}{Math.Abs(Message.Y).ToString("00000")}";
         }
 
         public IEnumerable<Message> Decode(string message)
         {
-            if (message.Length == PACKAGE_SIZE)
+            if (message.Length == UdpConfig.PACKAGE_SIZE)
                 yield return new Message(
                      int.Parse(message.Substring(12, 5)) * (message[11] == '-' ? -1 : 1)
                     , int.Parse(message.Substring(18, 5)) * (message[17] == '-' ? -1 : 1)

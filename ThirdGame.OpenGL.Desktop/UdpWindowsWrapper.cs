@@ -7,8 +7,7 @@ using System.Threading.Tasks;
 namespace WindowsDesktop
 {
     public class UdpWindowsWrapper : IDisposable, UdpService
-    {
-        private const int PORT = 17111;
+    {        
         private readonly UdpClient udpClient;
         private Action<string, string> MessageReceived;
         private IPEndPoint send_endpoint;
@@ -18,11 +17,11 @@ namespace WindowsDesktop
 
         public UdpWindowsWrapper()
         {
-            udpClient = new UdpClient(PORT);
+            udpClient = new UdpClient(UdpConfig.PORT);
             udpClient.Client.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
-            IPAddress multicastaddress = IPAddress.Parse("224.0.0.0");
+            IPAddress multicastaddress = IPAddress.Parse(UdpConfig.multicastaddress);
             udpClient.JoinMulticastGroup(multicastaddress);
-            send_endpoint = new IPEndPoint(multicastaddress, PORT);
+            send_endpoint = new IPEndPoint(multicastaddress, UdpConfig.PORT);
 
             myIp = GetLocalIPAddress();
 

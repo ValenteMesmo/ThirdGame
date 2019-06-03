@@ -10,9 +10,8 @@ namespace ThirdGame
     public class UdpAndroidWrapper : IDisposable, UdpService
     {
         private Action<string, string> MessageReceived;
-        private int PORT = 17111;
         private bool NotDisposed = true;
-        private InetAddress ip = InetAddress.GetByName("224.0.0.0");
+        private InetAddress ip = InetAddress.GetByName(UdpConfig.multicastaddress);
 
         //TODO: This NEEDs to change when network change
         public string myIp { get; set; }
@@ -40,7 +39,7 @@ namespace ThirdGame
                                 var msg = System.Text.Encoding.ASCII.GetBytes(output);
                                 output = "";
 
-                                using (DatagramPacket packet = new DatagramPacket(msg, msg.Length, ip, PORT))
+                                using (DatagramPacket packet = new DatagramPacket(msg, msg.Length, ip, UdpConfig.PORT))
                                     await socket.SendAsync(packet);
                             }
                             catch //(Exception ex)
@@ -93,10 +92,10 @@ namespace ThirdGame
                 while (NotDisposed)
                     try
                     {
-                        using (MulticastSocket socket = new MulticastSocket(PORT))
+                        using (MulticastSocket socket = new MulticastSocket(UdpConfig.PORT))
                         {
                             socket.JoinGroup(ip);
-                            byte[] data = new byte[MyMessageEncoder.PACKAGE_SIZE];
+                            byte[] data = new byte[UdpConfig.PACKAGE_SIZE];
                             var failCount = 0;
                             while (NotDisposed)
                             {
