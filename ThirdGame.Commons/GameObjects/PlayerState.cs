@@ -10,6 +10,8 @@
         public const int LOOKING_UP = 5;
 
         public const int ATTACK = 6;
-        public const int AFTER_ATTACK = 7;
+        public const int AFTER_ATTACK = 7;        
+        public const int HURT = 8;
+        public const int AFTER_HURT = 9;
     }
 }

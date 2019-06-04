@@ -21,7 +21,7 @@ namespace ThirdGame
             PlayerInputs = new MultipleInputSource(new KeyboardInputs(), new TouchControlInputs(TouchWrapper));
             network = new NetworkHandler(UdpWrapper, PlayerInputs);
 
-            var Player = new Player("player", PlayerInputs, Camera, network,false);
+            var Player = new Player("player", PlayerInputs, Camera, network, false);
 
             GameObjects.Add(Player);
 
@@ -35,70 +35,73 @@ namespace ThirdGame
                 GameObjects.Add(new Block { Position = new Vector2(1000 * i, 6000) });
                 GameObjects.Add(new Block { Position = new Vector2(1000 * i, -6000) });
 
-                GameObjects.Add(new Block { Position = new Vector2(1000 * 10, 1000*i) });
+                GameObjects.Add(new Block { Position = new Vector2(1000 * 10, 1000 * i) });
                 GameObjects.Add(new Block { Position = new Vector2(1000 * -10, 1000 * i) });
             }
 
             //TODO: move to other class
+            CreateNetworkHandlers(Camera);
+        }
+
+        private void CreateNetworkHandlers(Camera2d Camera)
+        {
+            network.MessageReceivedFromOtherClients += (ip, message) =>
             {
-                network.MessageReceivedFromOtherClients += (ip, message) =>
+                var p = GameObjects.FirstOrDefault(f => f.Id == ip) as Player;
+                if (p == null)
                 {
-                    var p = GameObjects.FirstOrDefault(f => f.Id == ip) as Player;
-                    if (p == null)
-                    {
-                        network.PlayerConnected(ip, message);
-                        return;
-                    }
+                    network.PlayerConnected(ip, message);
+                    return;
+                }
 
-                    p.Position = new Vector2(message.X, message.Y);
-                    p.Position.X = MathHelper.Lerp(p.Position.X, message.X, 0.01f);
-                    
-                    if (message.Left)
-                        p.Inputs.Direction = DpadDirection.Left;
-                    else if (message.Right)
-                        p.Inputs.Direction = DpadDirection.Right;
-                    else if (message.Up)
-                        p.Inputs.Direction = DpadDirection.Up;
-                    else if (message.Down)
-                        p.Inputs.Direction = DpadDirection.Down;
-                    else
-                        p.Inputs.Direction = DpadDirection.None;
-                                        
-                    if (message.ButtonDown)
-                        p.Inputs.Action = DpadAction.Jump;
-                    else if (message.ButtonLeft)
-                        p.Inputs.Action = DpadAction.Attack;
-                    else
-                        p.Inputs.Action = DpadAction.None;
-                };
+                p.Position = new Vector2(message.X, message.Y);
+                p.Position.X = MathHelper.Lerp(p.Position.X, message.X, 0.01f);
 
-                //TODO: atualmente nenhum player é identificado como server... 
-                network.MessageReceivedFromServer += (ip, message) =>
-                {
-                    //var p = GameObjects.FirstOrDefault(f => f.Id == ip) as NetworkPlayer;
-                    //p.Position.Current = new Point(message.X, message.Y);
-                    //p.NetworkInputs.IsPressingLeft = message.Left;
-                    //p.NetworkInputs.IsPressingRight = message.Right;
-                    //p.NetworkInputs.IsPressingJump = message.A;
-                };
+                if (message.Left)
+                    p.Inputs.Direction = DpadDirection.Left;
+                else if (message.Right)
+                    p.Inputs.Direction = DpadDirection.Right;
+                else if (message.Up)
+                    p.Inputs.Direction = DpadDirection.Up;
+                else if (message.Down)
+                    p.Inputs.Direction = DpadDirection.Down;
+                else
+                    p.Inputs.Direction = DpadDirection.None;
 
-                network.PlayerConnected += (ip, message) =>
-                {
-                    if (GameObjects.Any(f => f.Id == ip))
-                        return;
+                if (message.ButtonDown)
+                    p.Inputs.Action = DpadAction.Jump;
+                else if (message.ButtonLeft)
+                    p.Inputs.Action = DpadAction.Attack;
+                else
+                    p.Inputs.Action = DpadAction.None;
+            };
 
-                    var netPlayer = new Player(ip,new NetworkInputs(),Camera,network,true);
-                    netPlayer.Position = new Vector2(message.X, message.Y);
-                    GameObjects.Add(netPlayer);
-                };
+            //TODO: atualmente nenhum player é identificado como server... 
+            network.MessageReceivedFromServer += (ip, message) =>
+            {
+                //var p = GameObjects.FirstOrDefault(f => f.Id == ip) as NetworkPlayer;
+                //p.Position.Current = new Point(message.X, message.Y);
+                //p.NetworkInputs.IsPressingLeft = message.Left;
+                //p.NetworkInputs.IsPressingRight = message.Right;
+                //p.NetworkInputs.IsPressingJump = message.A;
+            };
 
-                network.PlayerDisconnected += (ip) =>
-                {
-                    var obj = GameObjects.FirstOrDefault(f => f.Id == ip);
-                    if (obj != null)
-                        GameObjects.Remove(obj);
-                };
-            }
+            network.PlayerConnected += (ip, message) =>
+            {
+                if (GameObjects.Any(f => f.Id == ip))
+                    return;
+
+                var netPlayer = new Player(ip, new NetworkInputs(), Camera, network, true);
+                netPlayer.Position = new Vector2(message.X, message.Y);
+                GameObjects.Add(netPlayer);
+            };
+
+            network.PlayerDisconnected += (ip) =>
+            {
+                var obj = GameObjects.FirstOrDefault(f => f.Id == ip);
+                if (obj != null)
+                    GameObjects.Remove(obj);
+            };
         }
 
         public void Update(float elapsed)
@@ -118,7 +121,7 @@ namespace ThirdGame
 
                 GameObject.Position.Y += GameObject.Velocity.Y * elapsed;
                 var colliders = GameObject.GetColliders();
-                foreach(var collider in colliders)
+                foreach (var collider in colliders)
                 {
                     collider.Collision.BeforeCollisions();
                     CheckCollisions(CollisionDirection.Vertical, collider);
@@ -131,7 +134,7 @@ namespace ThirdGame
                 GameObject.Animation.Update();
             }
 
-            quadtree.DrawDebug();
+            //quadtree.DrawDebug();
         }
 
         private void CheckCollisions(CollisionDirection direction, Collider source)

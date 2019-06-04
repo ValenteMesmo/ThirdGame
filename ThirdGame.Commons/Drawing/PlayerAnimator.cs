@@ -16,6 +16,8 @@ namespace Common
         private readonly Player Player;
         public readonly Collider mainCollider;
         public readonly Collider groundDetection;
+        public readonly AttackCollider attackRightCollider;
+        public readonly AttackCollider attackLeftCollider;
         private readonly Animation IdleAnimation;
         private readonly Animation IdleLeftAnimation;
         private readonly Animation WalkRightAnimation;
@@ -30,14 +32,16 @@ namespace Common
         private readonly Animation JumpLeftAnimation;
         private readonly Animation AttackAnimation;
         private readonly Animation AttackLeftAnimation;
-
+        private readonly Animation HurtAnimation;
+        private readonly Animation HurtLeftAnimation;
+        
         private Animation CurremtAnimation;
 
         public const int SIZE = 1800;
         public const int CENTER = 50;
 
         public const int COLLIDER_SIZE = 600;
-        public const int COLLIDER_OFFSET = 600; 
+        public const int COLLIDER_OFFSET = 600;
 
         public PlayerAnimator(Player Player)
         {
@@ -57,6 +61,20 @@ namespace Common
                 Width = COLLIDER_SIZE,
                 Height = SIZE + 1
             };
+            attackRightCollider = new AttackCollider(Player)
+            {
+                OffsetX = 0,
+                OffsetY = 500,
+                Width = 500,
+                Height = 500
+            };
+            attackLeftCollider = new AttackCollider(Player)
+            {
+                OffsetX = +COLLIDER_OFFSET +700,
+                OffsetY = 500,
+                Width = 500,
+                Height = 500
+            };
 
             IdleAnimation = new Animation(
                 addDefaultColliders(new AnimationFrame(Player, "freeze_0", SIZE, SIZE, SourceRectangle: new Rectangle(0, 0, 80, 80)) { DurationInUpdateCount = 5 })
@@ -74,7 +92,7 @@ namespace Common
 
             AttackAnimation = new Animation(
                 addDefaultColliders(new AnimationFrame(Player, "freeze_0", SIZE, SIZE, SourceRectangle: new Rectangle(80 * 0, 80 * 1, 80, 80)) { DurationInUpdateCount = 5 })
-                , addDefaultColliders(new AnimationFrame(Player, "freeze_0", SIZE, SIZE, SourceRectangle: new Rectangle(80 * 1, 80 * 1, 80, 80)) { DurationInUpdateCount = 5 })
+                , addAttackColliders(new AnimationFrame(Player, "freeze_0", SIZE, SIZE, SourceRectangle: new Rectangle(80 * 1, 80 * 1, 80, 80)) { DurationInUpdateCount = 5 })
                 , addDefaultColliders(new AnimationFrame(Player, "freeze_0", SIZE, SIZE, SourceRectangle: new Rectangle(80 * 2, 80 * 1, 80, 80)) { DurationInUpdateCount = 5 })
             //, addDefaultColliders(new AnimationFrame(Player, "freeze_0", SIZE, SIZE, SourceRectangle: new Rectangle(80 * 3, 80 * 1, 80, 80)) { DurationInUpdateCount = 5 })
             //, addDefaultColliders(new AnimationFrame(Player, "freeze_0", SIZE, SIZE, SourceRectangle: new Rectangle(80 * 4, 80 * 1, 80, 80)) { DurationInUpdateCount = 5 })
@@ -88,7 +106,7 @@ namespace Common
 
             AttackLeftAnimation = new Animation(
                addDefaultColliders(new AnimationFrame(Player, "freeze_0", SIZE, SIZE, SourceRectangle: new Rectangle(80 * 0, 80 * 1, 80, 80)) { DurationInUpdateCount = 5, Flipped = true })
-               , addDefaultColliders(new AnimationFrame(Player, "freeze_0", SIZE, SIZE, SourceRectangle: new Rectangle(80 * 1, 80 * 1, 80, 80)) { DurationInUpdateCount = 5, Flipped = true })
+               , addAttackCollidersLeft(new AnimationFrame(Player, "freeze_0", SIZE, SIZE, SourceRectangle: new Rectangle(80 * 1, 80 * 1, 80, 80)) { DurationInUpdateCount = 5, Flipped = true })
                , addDefaultColliders(new AnimationFrame(Player, "freeze_0", SIZE, SIZE, SourceRectangle: new Rectangle(80 * 2, 80 * 1, 80, 80)) { DurationInUpdateCount = 5, Flipped = true })
            //, addDefaultColliders(new AnimationFrame(Player, "freeze_0", SIZE, SIZE, SourceRectangle: new Rectangle(80 * 3, 80 * 1, 80, 80)) { DurationInUpdateCount = 5, Flipped = true })
            //, addDefaultColliders(new AnimationFrame(Player, "freeze_0", SIZE, SIZE, SourceRectangle: new Rectangle(80 * 4, 80 * 1, 80, 80)) { DurationInUpdateCount = 5, Flipped = true })
@@ -146,7 +164,26 @@ namespace Common
                 , addDefaultColliders(new AnimationFrame(Player, "freeze_0", SIZE, SIZE, SourceRectangle: new Rectangle(80 * 5, 0, 80, 80)) { DurationInUpdateCount = 5, Flipped = true })
             );
 
+            HurtAnimation = new Animation(
+                 addDefaultColliders(new AnimationFrame(Player, "freeze_0", SIZE, SIZE, SourceRectangle: new Rectangle(80*5, 80 * 5, 80, 80)) { DurationInUpdateCount = 5 })
+            );
+            HurtLeftAnimation = new Animation(
+                 addDefaultColliders(new AnimationFrame(Player, "freeze_0", SIZE, SIZE, SourceRectangle: new Rectangle(80 * 5, 80 * 5, 80, 80)) { DurationInUpdateCount = 5, Flipped = true })
+            );
+
             CurremtAnimation = IdleAnimation;
+        }
+
+        private AnimationFrame addAttackCollidersLeft(AnimationFrame AnimationFrame)
+        {
+            AnimationFrame.Colliders = new[] { mainCollider, groundDetection, attackRightCollider };
+            return AnimationFrame;
+        }
+
+        private AnimationFrame addAttackColliders(AnimationFrame AnimationFrame)
+        {
+            AnimationFrame.Colliders = new[] { mainCollider, groundDetection, attackLeftCollider };
+            return AnimationFrame;
         }
 
         private AnimationFrame addDefaultColliders(AnimationFrame AnimationFrame)
@@ -188,6 +225,11 @@ namespace Common
                     CurremtAnimation = AttackAnimation;
                 else
                     CurremtAnimation = AttackLeftAnimation;
+            else if (Player.State == PlayerState.HURT)
+                if (Player.FacingRight)
+                    CurremtAnimation = HurtAnimation;
+                else
+                    CurremtAnimation = HurtLeftAnimation;
             else
             {
                 if (Player.FacingRight)

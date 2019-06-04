@@ -7,6 +7,7 @@ namespace ThirdGame
     {
         public bool Grounded { get; set; }
         public int State { get; set; }
+        public bool Hit { get; set; }
 
         public readonly Inputs Inputs;
         private readonly PlayerAnimator animator;
@@ -19,6 +20,7 @@ namespace ThirdGame
             animator.mainCollider.Collision = new CollisionHandlerAggregation(
                 new LogCollision()
                 , new BlockCollisionHandler()
+                , new FlagAsHit(this)
             );
             animator.groundDetection.Collision = new FlagAsGrounded(this);
 
@@ -41,6 +43,7 @@ namespace ThirdGame
         private UpdateByState CreateUpdatesByState(Inputs Inputs)
         {
             var attackCooldwon = new CooldownTracker(20);
+            var HurtCooldwon = new CooldownTracker(10);
 
             var changesSpeed = new IncreaseHorizontalVelocity(this, 10);
             var decreaseVelocity = new DecreaseHorizontalVelocity(this, 5);
@@ -55,6 +58,8 @@ namespace ThirdGame
             var changePlayerStateToLookingUp = new ChangePlayerStateToLookingUp(this);
             var ChangePlayerStateToAttack = new ChangePlayerStateToAttack(this, attackCooldwon);
             var ChangePlayerStateToAfterAttack = new ChangePlayerStateToAfterAttack(this, attackCooldwon);
+            var ChangePlayerStateToHurt = new ChangePlayerStateToHurt(this, HurtCooldwon);
+            var ChangePlayerStateToAfterHurt = new ChangePlayerStateToAfterHurt(this, HurtCooldwon);
 
             var updateByState = new UpdateByState(this);
 
@@ -67,6 +72,7 @@ namespace ThirdGame
                 , changePlayerStateToCrouch
                 , changePlayerStateToLookingUp
                 , ChangePlayerStateToAttack
+                , ChangePlayerStateToHurt
             ));
 
             updateByState.Add(PlayerState.FALLING, new UpdateAggregation(
@@ -75,6 +81,7 @@ namespace ThirdGame
                 , changePlayerToIdle
                 , changePlayerStateToCrouch
                 , changePlayerStateToLookingUp
+                , ChangePlayerStateToHurt
             ));
 
             updateByState.Add(PlayerState.WALKING, new UpdateAggregation(
@@ -88,11 +95,13 @@ namespace ThirdGame
                 , changePlayerStateToCrouch
                 , changePlayerStateToLookingUp
                 , ChangePlayerStateToAttack
+                , ChangePlayerStateToHurt
             ));
 
             updateByState.Add(PlayerState.JUMP, new UpdateAggregation(
                 gravityChangesVerticalSpeed
                 , ChangePlayerStateToFalling
+                , ChangePlayerStateToHurt
             ));
 
             updateByState.Add(PlayerState.CROUCH, new UpdateAggregation(
@@ -102,6 +111,7 @@ namespace ThirdGame
                 , changePlayerToIdle
                 , ChangePlayerStateToFalling
                 , changePlayerStateToLookingUp
+                , ChangePlayerStateToHurt
             ));
 
             updateByState.Add(PlayerState.LOOKING_UP, new UpdateAggregation(
@@ -111,12 +121,14 @@ namespace ThirdGame
                 , changePlayerToIdle
                 , ChangePlayerStateToFalling
                 , changePlayerStateToCrouch
+                , ChangePlayerStateToHurt
             ));
 
             updateByState.Add(PlayerState.ATTACK, new UpdateAggregation(
                 gravityChangesVerticalSpeed
                 , decreaseVelocity
                 , ChangePlayerStateToAfterAttack
+                , ChangePlayerStateToHurt
             ));
 
             updateByState.Add(PlayerState.AFTER_ATTACK, new UpdateAggregation(
@@ -126,6 +138,23 @@ namespace ThirdGame
                 , changePlayerToWalking
                 , ChangePlayerStateToFalling
                 , changePlayerStateToCrouch
+                , ChangePlayerStateToHurt
+            ));
+
+            updateByState.Add(PlayerState.HURT, new UpdateAggregation(
+                gravityChangesVerticalSpeed
+                , decreaseVelocity
+                , ChangePlayerStateToAfterHurt
+            ));
+
+            updateByState.Add(PlayerState.AFTER_HURT, new UpdateAggregation(
+                gravityChangesVerticalSpeed
+                , decreaseVelocity
+                , changePlayerToIdle
+                , changePlayerToWalking
+                , ChangePlayerStateToFalling
+                , changePlayerStateToCrouch
+                , ChangePlayerStateToHurt
             ));
 
             return updateByState;
