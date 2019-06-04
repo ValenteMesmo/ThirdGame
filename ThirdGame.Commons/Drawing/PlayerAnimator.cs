@@ -36,57 +36,58 @@ namespace Common
         public const int SIZE = 1800;
         public const int CENTER = 50;
 
+        public const int COLLIDER_SIZE = 600;
+        public const int COLLIDER_OFFSET = 600; 
+
         public PlayerAnimator(Player Player)
         {
             this.Player = Player;
 
-
             mainCollider = new Collider(Player)
             {
-                X = 0,
-                Y = 0,
-                Width = PlayerAnimator.SIZE,
-                Height = PlayerAnimator.SIZE
-
+                OffsetX = COLLIDER_OFFSET,
+                OffsetY = 0,
+                Width = COLLIDER_SIZE,
+                Height = SIZE
             };
             groundDetection = new Collider(Player)
             {
-                X = 0,
-                Y = 0,
-                Width = PlayerAnimator.SIZE,
-                Height = PlayerAnimator.SIZE + 1
+                OffsetX = COLLIDER_OFFSET,
+                OffsetY = 0,
+                Width = COLLIDER_SIZE,
+                Height = SIZE + 1
             };
 
             IdleAnimation = new Animation(
-                addDefaultColliders(new AnimationFrame(Player, "freeze_0", SIZE, SIZE, SourceRectangle: new Rectangle(0, 0, 80, 80)) { DurationInUpdateCount = 5 }        )
-                , addDefaultColliders(new AnimationFrame(Player, "freeze_0", SIZE, SIZE, SourceRectangle: new Rectangle(80, 0, 80, 80)) { DurationInUpdateCount = 5 }     )
-                , addDefaultColliders(new AnimationFrame(Player, "freeze_0", SIZE, SIZE, SourceRectangle: new Rectangle(80 * 2, 0, 80, 80)) { DurationInUpdateCount = 5 } )
-                , addDefaultColliders(new AnimationFrame(Player, "freeze_0", SIZE, SIZE, SourceRectangle: new Rectangle(80 * 3, 0, 80, 80)) { DurationInUpdateCount = 5 } )
+                addDefaultColliders(new AnimationFrame(Player, "freeze_0", SIZE, SIZE, SourceRectangle: new Rectangle(0, 0, 80, 80)) { DurationInUpdateCount = 5 })
+                , addDefaultColliders(new AnimationFrame(Player, "freeze_0", SIZE, SIZE, SourceRectangle: new Rectangle(80, 0, 80, 80)) { DurationInUpdateCount = 5 })
+                , addDefaultColliders(new AnimationFrame(Player, "freeze_0", SIZE, SIZE, SourceRectangle: new Rectangle(80 * 2, 0, 80, 80)) { DurationInUpdateCount = 5 })
+                , addDefaultColliders(new AnimationFrame(Player, "freeze_0", SIZE, SIZE, SourceRectangle: new Rectangle(80 * 3, 0, 80, 80)) { DurationInUpdateCount = 5 })
             );
 
             IdleLeftAnimation = new Animation(
-                addDefaultColliders(new AnimationFrame(Player, "freeze_0", SIZE, SIZE, SourceRectangle: new Rectangle(0, 0, 80, 80)) { DurationInUpdateCount = 5, Flipped = true }       )
-                , addDefaultColliders(new AnimationFrame(Player, "freeze_0", SIZE, SIZE, SourceRectangle: new Rectangle(80, 0, 80, 80)) { DurationInUpdateCount = 5, Flipped = true }    )
+                addDefaultColliders(new AnimationFrame(Player, "freeze_0", SIZE, SIZE, SourceRectangle: new Rectangle(0, 0, 80, 80)) { DurationInUpdateCount = 5, Flipped = true })
+                , addDefaultColliders(new AnimationFrame(Player, "freeze_0", SIZE, SIZE, SourceRectangle: new Rectangle(80, 0, 80, 80)) { DurationInUpdateCount = 5, Flipped = true })
                 , addDefaultColliders(new AnimationFrame(Player, "freeze_0", SIZE, SIZE, SourceRectangle: new Rectangle(80 * 2, 0, 80, 80)) { DurationInUpdateCount = 5, Flipped = true })
                 , addDefaultColliders(new AnimationFrame(Player, "freeze_0", SIZE, SIZE, SourceRectangle: new Rectangle(80 * 3, 0, 80, 80)) { DurationInUpdateCount = 5, Flipped = true })
             );
 
             AttackAnimation = new Animation(
-                addDefaultColliders(new AnimationFrame(Player, "freeze_0", SIZE, SIZE, SourceRectangle: new Rectangle(80 * 0, 80 * 1, 80, 80)) { DurationInUpdateCount = 5 }     )
-                , addDefaultColliders(new AnimationFrame(Player, "freeze_0", SIZE, SIZE, SourceRectangle: new Rectangle(80 * 1, 80 * 1, 80, 80)) { DurationInUpdateCount = 5 }   )
-                , addDefaultColliders(new AnimationFrame(Player, "freeze_0", SIZE, SIZE, SourceRectangle: new Rectangle(80 * 2, 80 * 1, 80, 80)) { DurationInUpdateCount = 5 }   )
-                //, addDefaultColliders(new AnimationFrame(Player, "freeze_0", SIZE, SIZE, SourceRectangle: new Rectangle(80 * 3, 80 * 1, 80, 80)) { DurationInUpdateCount = 5 })
-                //, addDefaultColliders(new AnimationFrame(Player, "freeze_0", SIZE, SIZE, SourceRectangle: new Rectangle(80 * 4, 80 * 1, 80, 80)) { DurationInUpdateCount = 5 })
-                //, addDefaultColliders(new AnimationFrame(Player, "freeze_0", SIZE, SIZE, SourceRectangle: new Rectangle(80 * 5, 80 * 1, 80, 80)) { DurationInUpdateCount = 5 })
-                //, addDefaultColliders(new AnimationFrame(Player, "freeze_0", SIZE, SIZE, SourceRectangle: new Rectangle(80 * 6, 80 * 1, 80, 80)) { DurationInUpdateCount = 5 })
-                //, addDefaultColliders(new AnimationFrame(Player, "freeze_0", SIZE, SIZE, SourceRectangle: new Rectangle(80 * 7, 80 * 1, 80, 80)) { DurationInUpdateCount = 5 })
-                //, addDefaultColliders(new AnimationFrame(Player, "freeze_0", SIZE, SIZE, SourceRectangle: new Rectangle(80 * 8, 80 * 1, 80, 80)) { DurationInUpdateCount = 5 })
-                //, addDefaultColliders(new AnimationFrame(Player, "freeze_0", SIZE, SIZE, SourceRectangle: new Rectangle(80 * 9, 80 * 1, 80, 80)) { DurationInUpdateCount = 5 })
+                addDefaultColliders(new AnimationFrame(Player, "freeze_0", SIZE, SIZE, SourceRectangle: new Rectangle(80 * 0, 80 * 1, 80, 80)) { DurationInUpdateCount = 5 })
+                , addDefaultColliders(new AnimationFrame(Player, "freeze_0", SIZE, SIZE, SourceRectangle: new Rectangle(80 * 1, 80 * 1, 80, 80)) { DurationInUpdateCount = 5 })
+                , addDefaultColliders(new AnimationFrame(Player, "freeze_0", SIZE, SIZE, SourceRectangle: new Rectangle(80 * 2, 80 * 1, 80, 80)) { DurationInUpdateCount = 5 })
+            //, addDefaultColliders(new AnimationFrame(Player, "freeze_0", SIZE, SIZE, SourceRectangle: new Rectangle(80 * 3, 80 * 1, 80, 80)) { DurationInUpdateCount = 5 })
+            //, addDefaultColliders(new AnimationFrame(Player, "freeze_0", SIZE, SIZE, SourceRectangle: new Rectangle(80 * 4, 80 * 1, 80, 80)) { DurationInUpdateCount = 5 })
+            //, addDefaultColliders(new AnimationFrame(Player, "freeze_0", SIZE, SIZE, SourceRectangle: new Rectangle(80 * 5, 80 * 1, 80, 80)) { DurationInUpdateCount = 5 })
+            //, addDefaultColliders(new AnimationFrame(Player, "freeze_0", SIZE, SIZE, SourceRectangle: new Rectangle(80 * 6, 80 * 1, 80, 80)) { DurationInUpdateCount = 5 })
+            //, addDefaultColliders(new AnimationFrame(Player, "freeze_0", SIZE, SIZE, SourceRectangle: new Rectangle(80 * 7, 80 * 1, 80, 80)) { DurationInUpdateCount = 5 })
+            //, addDefaultColliders(new AnimationFrame(Player, "freeze_0", SIZE, SIZE, SourceRectangle: new Rectangle(80 * 8, 80 * 1, 80, 80)) { DurationInUpdateCount = 5 })
+            //, addDefaultColliders(new AnimationFrame(Player, "freeze_0", SIZE, SIZE, SourceRectangle: new Rectangle(80 * 9, 80 * 1, 80, 80)) { DurationInUpdateCount = 5 })
             )
             { Loop = false };
 
             AttackLeftAnimation = new Animation(
-               addDefaultColliders(new AnimationFrame(Player, "freeze_0", SIZE, SIZE, SourceRectangle: new Rectangle(80 * 0, 80 * 1, 80, 80)) { DurationInUpdateCount = 5, Flipped = true }  )
+               addDefaultColliders(new AnimationFrame(Player, "freeze_0", SIZE, SIZE, SourceRectangle: new Rectangle(80 * 0, 80 * 1, 80, 80)) { DurationInUpdateCount = 5, Flipped = true })
                , addDefaultColliders(new AnimationFrame(Player, "freeze_0", SIZE, SIZE, SourceRectangle: new Rectangle(80 * 1, 80 * 1, 80, 80)) { DurationInUpdateCount = 5, Flipped = true })
                , addDefaultColliders(new AnimationFrame(Player, "freeze_0", SIZE, SIZE, SourceRectangle: new Rectangle(80 * 2, 80 * 1, 80, 80)) { DurationInUpdateCount = 5, Flipped = true })
            //, addDefaultColliders(new AnimationFrame(Player, "freeze_0", SIZE, SIZE, SourceRectangle: new Rectangle(80 * 3, 80 * 1, 80, 80)) { DurationInUpdateCount = 5, Flipped = true })
@@ -128,7 +129,7 @@ namespace Common
             );
 
             WalkRightAnimation = new Animation(
-                 addDefaultColliders(new AnimationFrame(Player, "freeze_0", SIZE, SIZE, SourceRectangle: new Rectangle(80 * 4, 0, 80, 80)) { DurationInUpdateCount = 5 } )
+                 addDefaultColliders(new AnimationFrame(Player, "freeze_0", SIZE, SIZE, SourceRectangle: new Rectangle(80 * 4, 0, 80, 80)) { DurationInUpdateCount = 5 })
                 , addDefaultColliders(new AnimationFrame(Player, "freeze_0", SIZE, SIZE, SourceRectangle: new Rectangle(80 * 5, 0, 80, 80)) { DurationInUpdateCount = 5 })
                 , addDefaultColliders(new AnimationFrame(Player, "freeze_0", SIZE, SIZE, SourceRectangle: new Rectangle(80 * 6, 0, 80, 80)) { DurationInUpdateCount = 5 })
                 , addDefaultColliders(new AnimationFrame(Player, "freeze_0", SIZE, SIZE, SourceRectangle: new Rectangle(80 * 7, 0, 80, 80)) { DurationInUpdateCount = 5 })
@@ -137,7 +138,7 @@ namespace Common
             );
 
             WalkLeftAnimation = new Animation(
-                 addDefaultColliders(new AnimationFrame(Player, "freeze_0", SIZE, SIZE, SourceRectangle: new Rectangle(80 * 4, 0, 80, 80)) { DurationInUpdateCount = 5, Flipped = true } )
+                 addDefaultColliders(new AnimationFrame(Player, "freeze_0", SIZE, SIZE, SourceRectangle: new Rectangle(80 * 4, 0, 80, 80)) { DurationInUpdateCount = 5, Flipped = true })
                 , addDefaultColliders(new AnimationFrame(Player, "freeze_0", SIZE, SIZE, SourceRectangle: new Rectangle(80 * 5, 0, 80, 80)) { DurationInUpdateCount = 5, Flipped = true })
                 , addDefaultColliders(new AnimationFrame(Player, "freeze_0", SIZE, SIZE, SourceRectangle: new Rectangle(80 * 6, 0, 80, 80)) { DurationInUpdateCount = 5, Flipped = true })
                 , addDefaultColliders(new AnimationFrame(Player, "freeze_0", SIZE, SIZE, SourceRectangle: new Rectangle(80 * 7, 0, 80, 80)) { DurationInUpdateCount = 5, Flipped = true })

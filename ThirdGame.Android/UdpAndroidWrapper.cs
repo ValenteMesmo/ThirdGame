@@ -27,7 +27,6 @@ namespace ThirdGame
 
         private async Task SendMessages()
         {
-
             try
             {
                 using (DatagramSocket socket = new DatagramSocket())

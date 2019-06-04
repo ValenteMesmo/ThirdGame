@@ -28,7 +28,8 @@ namespace ThirdGame
         {
             if (target.Parent is Block)
             {
-                Source.Parent.Position.Y = target.Y - Source.Height - 1;
+                //TODO: - offsetY
+                Source.Parent.Position.Y = target.Top() - Source.Height - 1;
                 Source.Parent.Velocity.Y = 0;
             }
         }
@@ -37,7 +38,7 @@ namespace ThirdGame
         {
             if (target.Parent is Block)
             {
-                Source.Parent.Position.X = target.X + target.Width + 1;
+                Source.Parent.Position.X = target.Right()  + 1 - Source.OffsetX;
                 Source.Parent.Velocity.X = 0;
             }
         }
@@ -46,7 +47,7 @@ namespace ThirdGame
         {
             if (target.Parent is Block)
             {
-                Source.Parent.Position.X = target.X - Source.Width - 1;
+                Source.Parent.Position.X = target.Left() - Source.OffsetX - Source.Width - 1;
                 Source.Parent.Velocity.X = 0;
             }
         }
@@ -55,7 +56,8 @@ namespace ThirdGame
         {
             if (target.Parent is Block)
             {
-                Source.Parent.Position.Y = target.Y + target.Height + 1;
+                //TODO: - offsetY
+                Source.Parent.Position.Y = target.Bottom() + target.Height + 1;
                 Source.Parent.Velocity.Y = 0;
             }
         }

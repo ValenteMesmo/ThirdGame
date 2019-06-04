@@ -1,15 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
+using ThirdGame;
 
 namespace Common
 {
     public class Collider
     {
-        private float OffsetX;
-        private float OffsetY;
-        public float X { get => Parent.Position.X + OffsetX; set => OffsetX = value; }
-        public float Y { get => Parent.Position.Y + OffsetY; set => OffsetY = value; }
+        public float OffsetX;
+        public float OffsetY;
         public float Width { get; set; }
         public float Height { get; set; }
         public bool Disabled { get; set; }
@@ -21,7 +20,7 @@ namespace Common
             this.Parent = Parent;
         }
 
-        public Rectangle AsRectangle() => new Rectangle((int)X, (int)Y, (int)Width, (int)Height);
+        public Rectangle AsRectangle() => new Rectangle((int)this.RelativeX(), (int)this.RelativeY(), (int)Width, (int)Height);
 
         public override string ToString() => $"{nameof(Collider)} ({Parent})";
     }

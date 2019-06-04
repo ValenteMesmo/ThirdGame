@@ -74,10 +74,10 @@ namespace ThirdGame
                 var index = FindIndex(item);
                 var node = Nodes[index];
 
-                if (item.X >= node.Bounds.X
-                    && item.X + item.Width <= node.Bounds.X + node.Bounds.Width
-                    && item.Y >= node.Bounds.Y
-                    && item.Y + item.Height <= node.Bounds.Y + node.Bounds.Height)
+                if (item.RelativeX() >= node.Bounds.X
+                    && item.RelativeX() + item.Width <= node.Bounds.X + node.Bounds.Width
+                    && item.RelativeY() >= node.Bounds.Y
+                    && item.RelativeY() + item.Height <= node.Bounds.Y + node.Bounds.Height)
                     Nodes[index].Add(item);
                 else
                     StuckChildren.Add(item);
@@ -135,37 +135,37 @@ namespace ThirdGame
         public Collider[] Get(Collider item)
         {
             var Out = new List<Collider>();
-            
+
             if (Nodes.Any())
             {
                 var index = FindIndex(item);
                 var node = Nodes[index];
 
-                if (item.X >= node.Bounds.X
-                    && item.X + item.Width <= node.Bounds.X + node.Bounds.Width
-                    && item.Y >= node.Bounds.Y
-                    && item.Y + item.Height <= node.Bounds.Y + node.Bounds.Height)
+                if (item.RelativeX() >= node.Bounds.X
+                    && item.RelativeX() + item.Width <= node.Bounds.X + node.Bounds.Width
+                    && item.RelativeY() >= node.Bounds.Y
+                    && item.RelativeY() + item.Height <= node.Bounds.Y + node.Bounds.Height)
                 {
                     Out.AddRange(Nodes[index].Get(item));
                 }
                 else
                 {
                     //Part of the item are overlapping multiple child nodes. For each of the overlapping nodes, return all containing objects.
-                    if (item.X <= Nodes[TOP_RIGHT].Bounds.X)
+                    if (item.RelativeX() <= Nodes[TOP_RIGHT].Bounds.X)
                     {
-                        if (item.Y <= Nodes[BOTTOM_LEFT].Bounds.Y)
+                        if (item.RelativeY() <= Nodes[BOTTOM_LEFT].Bounds.Y)
                             Out.AddRange(Nodes[TOP_LEFT].GetAllContent());
 
-                        if (item.Y + item.Height > Nodes[BOTTOM_LEFT].Bounds.Y)
+                        if (item.RelativeY() + item.Height > Nodes[BOTTOM_LEFT].Bounds.Y)
                             Out.AddRange(Nodes[BOTTOM_LEFT].GetAllContent());
                     }
 
-                    if (item.X + item.Width > Nodes[TOP_RIGHT].Bounds.X)
+                    if (item.RelativeX() + item.Width > Nodes[TOP_RIGHT].Bounds.X)
                     {//position+width bigger than middle x
-                        if (item.Y <= Nodes[BOTTOM_RIGHT].Bounds.Y)
+                        if (item.RelativeY() <= Nodes[BOTTOM_RIGHT].Bounds.Y)
                             Out.AddRange(Nodes[TOP_RIGHT].GetAllContent());
 
-                        if (item.Y + item.Height > Nodes[BOTTOM_RIGHT].Bounds.Y)
+                        if (item.RelativeY() + item.Height > Nodes[BOTTOM_RIGHT].Bounds.Y)
                             Out.AddRange(Nodes[BOTTOM_RIGHT].GetAllContent());
                     }
                 }
@@ -180,8 +180,8 @@ namespace ThirdGame
         private int FindIndex(Collider item)
         {
             var b = Bounds;
-            var left = (item.X > b.X + b.Width / 2) ? false : true;
-            var top = (item.Y > b.Y + b.Height / 2) ? false : true;
+            var left = (item.RelativeX() > b.X + b.Width / 2) ? false : true;
+            var top = (item.RelativeY() > b.Y + b.Height / 2) ? false : true;
 
             //top left
             var index = TOP_LEFT;
@@ -280,10 +280,10 @@ namespace ThirdGame
             for (int i = 0; i < Nodes.Count; i++)
                 Nodes[i].DrawDebug();
 
-            //var currentContent = GetAllContent();
+            var currentContent = GetAllContent();
 
-            //for (int i = 0; i < currentContent.Length; i++)
-            //    Game1.RectanglesToRender.Enqueue(currentContent[i].AsRectangle());
+            for (int i = 0; i < currentContent.Length; i++)
+                Game1.RectanglesToRender.Enqueue(currentContent[i].AsRectangle());
         }
     }
 }

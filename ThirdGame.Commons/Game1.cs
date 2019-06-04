@@ -163,18 +163,18 @@ LOG: {LOG}"
                     foreach (var frame in obj.Animation.GetFrame())
                     {
                         (obj.Animation.RenderOnUiLayer ? spriteBatchUi : spriteBatch).Draw(
-                        texture: Sprites[frame.Texture]
-                        , destinationRectangle: new Rectangle(
-                            (frame.Anchor.Position + frame.Offset).ToPoint()
-                            , new Point(frame.Width, frame.Height)
-                        )
-                        , sourceRectangle: frame.SourceRectangle
-                        , color: frame.Color
-                        , rotation: frame.Rotation
-                        , origin: frame.RotationAnchor
-                        , effects: frame.Flipped ? SpriteEffects.FlipHorizontally : SpriteEffects.None
-                        , layerDepth: 0f
-                    );
+                            texture: Sprites[frame.Texture]
+                            , destinationRectangle: new Rectangle(
+                                (frame.Anchor.Position + frame.Offset).ToPoint()
+                                , new Point(frame.Width, frame.Height)
+                            )
+                            , sourceRectangle: frame.SourceRectangle
+                            , color: frame.Color
+                            , rotation: frame.Rotation
+                            , origin: frame.RotationAnchor
+                            , effects: frame.Flipped ? SpriteEffects.FlipHorizontally : SpriteEffects.None
+                            , layerDepth: 0f
+                        );
                     }
 
                 }
@@ -185,6 +185,12 @@ LOG: {LOG}"
                     DrawBorder(rectangle, 2, Color.Red, spriteBatchUi);
                 }
 
+                while (RectanglesToRender.Count > 0)
+                {
+                    var rectangle = RectanglesToRender.Dequeue();
+                    DrawBorder(rectangle, 50, Color.Green, spriteBatch);
+                }
+
                 spriteBatch.End();
                 spriteBatchUi.End();
             }
@@ -192,6 +198,7 @@ LOG: {LOG}"
             {
 
             }
+
             base.Draw(gameTime);
         }
 

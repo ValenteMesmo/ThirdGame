@@ -15,12 +15,12 @@ namespace ThirdGame
             {
                 if (a.Right() - b.Right() > 0)
                 {
-                    a.Collision.Left(a,b);
+                    a.Collision.Left(a, b);
                     //b.Collision.Right(b,a);
                 }
                 else if (a.Right() - b.Right() < 0)
                 {
-                    a.Collision.Right(a,b);
+                    a.Collision.Right(a, b);
                     //b.Collision.Left(b,a);
                 }
             }
@@ -38,12 +38,12 @@ namespace ThirdGame
             {
                 if (a.Bottom() - b.Bottom() > 0)
                 {
-                    a.Collision.Top(a,b);
+                    a.Collision.Top(a, b);
                     //b.Collision.Bot(b,a);
                 }
                 else if (a.Bottom() - b.Bottom() < 0)
                 {
-                    a.Collision.Bot(a,b);
+                    a.Collision.Bot(a, b);
                     //b.Collision.Top(b,a);
                 }
             }
@@ -51,22 +51,22 @@ namespace ThirdGame
 
         public static float Left(this Collider a)
         {
-            return a.X;
+            return a.RelativeX();
         }
 
         public static float Right(this Collider a)
         {
-            return a.X + a.Width;
+            return a.RelativeX() + a.Width;
         }
 
         public static float Top(this Collider a)
         {
-            return a.Y;
+            return a.RelativeY();
         }
 
         public static float Bottom(this Collider a)
         {
-            return a.Y + a.Height;
+            return a.RelativeY() + a.Height;
         }
 
         public static float CenterX(this Collider collider)
@@ -77,6 +77,16 @@ namespace ThirdGame
         public static float CenterY(this Collider collider)
         {
             return (collider.Top() + collider.Bottom()) * 0.5f;
+        }
+
+        public static float RelativeX(this Collider collider)
+        {
+            return collider.Parent.Position.X + collider.OffsetX;
+        }
+
+        public static float RelativeY(this Collider collider)
+        {
+            return collider.Parent.Position.Y + collider.OffsetY;
         }
     }
 }
