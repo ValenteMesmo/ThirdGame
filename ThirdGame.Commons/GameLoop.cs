@@ -123,13 +123,19 @@ namespace ThirdGame
                 var colliders = GameObject.GetColliders();
                 foreach (var collider in colliders)
                 {
-                    collider.Collision.BeforeCollisions();
+                    if (collider.Collision == NoCollision.Instance)
+                        continue;
+                    collider.Collision.BeforeCollisions();                    
                     CheckCollisions(CollisionDirection.Vertical, collider);
                 }
 
                 GameObject.Position.X += GameObject.Velocity.X * elapsed;
                 foreach (var collider in colliders)
+                {
+                    if (collider.Collision == NoCollision.Instance)
+                        continue;
                     CheckCollisions(CollisionDirection.Horizontal, collider);
+                }
 
                 GameObject.Animation.Update();
             }

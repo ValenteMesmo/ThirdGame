@@ -31,20 +31,27 @@ namespace ThirdGame
         protected override void OnCreate(Bundle bundle)
         {
             base.OnCreate(bundle);
-            var WifiManager = (WifiManager)GetSystemService(WifiService);
+            var wifi = (WifiManager)GetSystemService(WifiService);
 
             //var WifiLock = WifiManager.CreateWifiLock(WifiMode.FullHighPerf, "WifiLock");
             //WifiLock.Acquire();
 
-            Vibrator vibrator = (Vibrator)GetSystemService(VibratorService);
-            game = new Game1(new UdpAndroidWrapper(), true);
-            Game1.AndroidVibrate = f => vibrator.Vibrate(VibrationEffect.CreateOneShot(f, VibrationEffect.DefaultAmplitude));
+            game = new Game1(new UdpAndroidWrapper(wifi), true);
+            if ((int)Build.VERSION.SdkInt >= (int)BuildVersionCodes.O)
+            {
+                Vibrator vibrator = (Vibrator)GetSystemService(VibratorService);
+                Game1.AndroidVibrate = f => vibrator.Vibrate(VibrationEffect.CreateOneShot(f, VibrationEffect.DefaultAmplitude));
+            }
+            else
+            {
+                //TODO:   
+            }
 
             SetViewFullScreen();
-            //SetContentView((View)game.Services.GetService(typeof(View)));
-            PowerManager pm = (PowerManager)GetSystemService(PowerService);
-            this.mWakeLock = pm.NewWakeLock(WakeLockFlags.ScreenDim, "My Tag");
-            this.mWakeLock.Acquire();
+            
+            //PowerManager pm = (PowerManager)GetSystemService(PowerService);
+            //this.mWakeLock = pm.NewWakeLock(WakeLockFlags.ScreenDim, "My Tag");
+            //this.mWakeLock.Acquire();
             game.Run();
         }
 
