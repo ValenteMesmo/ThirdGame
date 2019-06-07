@@ -21,9 +21,9 @@ namespace Common
 
         public void Update()
         {
+            Game1.LOG.Add($"X = {Something.Position.X}");
+            Game1.LOG.Add($"Y = {Something.Position.Y}");
             NetworkHandler.Send(Something.Position.ToPoint());
-            Game1.LOG = $@"X = {Something.Position.X}
-Y = {Something.Position.Y}";
         }
     }
 }

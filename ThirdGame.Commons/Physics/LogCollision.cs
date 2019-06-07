@@ -6,28 +6,16 @@ namespace ThirdGame
     {
         public void BeforeCollisions() { }
 
-        public void Bot(Collider Source, Collider Target)
-        {
-            Game1.LOG += $@"
-BOT   CollidingWith {Target.Parent}";
-        }
+        public void Bot(Collider Source, Collider Target) =>
+            Game1.LOG.Add($"BOT   CollidingWith {Target.Parent}");
 
-        public void Left(Collider Source, Collider Target)
-        {
-            Game1.LOG += $@"
-LEFT  CollidingWith {Target.Parent}";
-        }
+        public void Left(Collider Source, Collider Target) =>
+            Game1.LOG.Add($"LEFT  CollidingWith {Target.Parent}");
 
-        public void Right(Collider Source, Collider Target)
-        {
-            Game1.LOG += $@"
-RIGHT CollidingWith {Target.Parent}";
-        }
+        public void Right(Collider Source, Collider Target) =>
+            Game1.LOG.Add($"RIGHT CollidingWith {Target.Parent}");
 
-        public void Top(Collider Source, Collider Target)
-        {
-            Game1.LOG += $@"
-TOP   CollidingWith {Target.Parent}";
-        }
+        public void Top(Collider Source, Collider Target) =>
+            Game1.LOG.Add($"TOP   CollidingWith {Target.Parent}");
     }
 }

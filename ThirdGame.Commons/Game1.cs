@@ -10,7 +10,7 @@ namespace ThirdGame
     {
         public static Queue<Rectangle> RectanglesToRender = new Queue<Rectangle>();
         public static Queue<Rectangle> RectanglesToRenderUI = new Queue<Rectangle>();
-        public static string LOG;
+        public static List<string> LOG = new List<string>();
         private GraphicsDeviceManager graphics;
         private SpriteBatch spriteBatch;
         private SpriteBatch spriteBatchUi;
@@ -105,7 +105,7 @@ namespace ThirdGame
             //{
             try
             {
-
+                LOG.Clear();
                 Camera.Update();
                 GameLoop.Update(gameTime.ElapsedGameTime.Milliseconds * 0.05f);
             }
@@ -149,7 +149,7 @@ namespace ThirdGame
                 spriteBatch.DrawString(
                     SpriteFont
                     , $@"FPS: {smartFPS.AverageFramesPerSecond}
-LOG: {LOG}"
+LOG: {string.Join("\n", LOG)}"
                     , new Vector2(500, 2000)
                     , Color.Black
                     , 0
@@ -158,8 +158,9 @@ LOG: {LOG}"
                     , SpriteEffects.None
                     , 0);
 
-                foreach (var obj in GameLoop.GameObjects)
+                for (var i=0;i<GameLoop.GameObjects.Count;i++)
                 {
+                    var obj = GameLoop.GameObjects[i];
                     foreach (var frame in obj.Animation.GetFrame())
                     {
                         (obj.Animation.RenderOnUiLayer ? spriteBatchUi : spriteBatch).Draw(

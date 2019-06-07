@@ -4,6 +4,7 @@ using Android.OS;
 using Common;
 using Java.Net;
 using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading.Tasks;
@@ -14,6 +15,7 @@ namespace ThirdGame
     {
         private bool NotDisposed = true;
         private readonly WifiManager wifi;
+        private readonly ConnectivityManager ConnectivityManager;
 
         //TODO: This NEEDs to change when network change
         public string myIp { get; set; }
@@ -21,9 +23,10 @@ namespace ThirdGame
         //TODO: queue
         private string output = "";
 
-        public UdpAndroidWrapper(WifiManager wifi)
+        public UdpAndroidWrapper(WifiManager wifi, ConnectivityManager ConnectivityManager)
         {
             this.wifi = wifi;
+            this.ConnectivityManager = ConnectivityManager;
 
             //TODO: get elsewhere.... to cover the case where wifi change in runtime
             myIp = "/" + GetLocalIPAddress();
@@ -35,42 +38,56 @@ namespace ThirdGame
             StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().PermitAll().Build();
             StrictMode.SetThreadPolicy(policy);
 
+            DatagramSocket socket = new DatagramSocket();
+            socket.Broadcast = true;
+
+            var broadcastIps = getBroadcastAddress();
+
             while (NotDisposed)
                 if (output != "")
                 {
                     try
                     {
-                        DatagramSocket socket = new DatagramSocket();
-                        socket.Broadcast = true;
                         byte[] sendData = System.Text.Encoding.ASCII.GetBytes(output);
                         output = "";
 
-                        DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.Length, getBroadcastAddress(), UdpConfig.PORT);
-                        await socket.SendAsync(sendPacket);
+                        foreach (var broadcastIp in broadcastIps)
+                        {
+                            DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.Length, broadcastIp, UdpConfig.PORT);
+                            await socket.SendAsync(sendPacket);
+                        }
+
                     }
                     catch (Exception e)
                     {
-                        await Task.Delay(100);
+                        // await Task.Delay(100);
                     }
                 }
         }
 
-        private InetAddress getBroadcastAddress()
+        private IEnumerable<InetAddress> getBroadcastAddress(bool listen = false)
         {
             DhcpInfo dhcp = wifi.DhcpInfo;
 
-            if (wifi == null || !wifi.IsWifiEnabled)
-                return InetAddress.GetByName("192.168.43.255");
-
-            int broadcast = (dhcp.IpAddress & dhcp.Netmask) | ~dhcp.Netmask;
-            byte[] quads = new byte[4];
-            for (int k = 0; k < 4; k++)
-                quads[k] = (byte)((broadcast >> k * 8) & 0xFF);
-            return InetAddress.GetByAddress(quads);
+            //TODO: min api level                      Added in API level 16 (Jelly Bean)
+            if (wifi == null || !wifi.IsWifiEnabled || ConnectivityManager.IsActiveNetworkMetered)
+            {
+                //yield return InetAddress.GetByName("192.168.42.255");
+                yield return InetAddress.GetByName("192.168.43.255");
+            }
+            else
+            {
+                int broadcast = (dhcp.IpAddress & dhcp.Netmask) | ~dhcp.Netmask;
+                byte[] quads = new byte[4];
+                for (int k = 0; k < 4; k++)
+                    quads[k] = (byte)((broadcast >> k * 8) & 0xFF);
+                yield return InetAddress.GetByAddress(quads);
+            }
         }
 
         public void Send(string message)
         {
+            Game1.LOG.Add($"{myIp}");
             output = message;
         }
 
@@ -96,34 +113,42 @@ namespace ThirdGame
 
         public void Listen(Action<string, string> messageReceivedHandler)
         {
-            Task.Factory.StartNew(async () =>
-            {
-                while (NotDisposed)
-                    try
+            foreach (var broadcastIp in getBroadcastAddress(true))
+                Task.Factory.StartNew(async () => await Listen(messageReceivedHandler, broadcastIp));
+        }
+
+        private async Task Listen(Action<string, string> messageReceivedHandler, InetAddress broadcastIp)
+        {
+            var socket = new DatagramSocket(UdpConfig.PORT, broadcastIp);
+            socket.SoTimeout = 500;
+
+            byte[] recvBuf = new byte[UdpConfig.PACKAGE_SIZE];
+
+            while (NotDisposed)
+                try
+                {
+                    while (NotDisposed)
                     {
-                        //Keep a socket open to listen to all the UDP trafic that is destined for this port
-                        var socket = new DatagramSocket(UdpConfig.PORT, InetAddress.GetByName("0.0.0.0"));
-                        socket.Broadcast = true;
 
-                        while (NotDisposed)
-                        {
-                            byte[] recvBuf = new byte[UdpConfig.PACKAGE_SIZE];
-                            DatagramPacket packet = new DatagramPacket(recvBuf, recvBuf.Length);
-                            await socket.ReceiveAsync(packet);
+                        DatagramPacket packet = new DatagramPacket(recvBuf, recvBuf.Length);
+                        await socket.ReceiveAsync(packet);
 
-                            var ip = packet.Address.ToString();
-                            if (myIp == ip)
-                                continue;
+                        var ip = packet.Address.ToString();
+                        if (myIp == ip)
+                            continue;
 
-                            var message = System.Text.Encoding.ASCII.GetString(packet.GetData());
-                            messageReceivedHandler(ip, message);
-                        }
+                        var message = System.Text.Encoding.ASCII.GetString(packet.GetData());
+                        messageReceivedHandler(ip, message);
                     }
-                    catch (Exception ex)
-                    {
-                        await Task.Delay(100);
-                    }
-            });
+                }
+                catch (Java.Net.SocketTimeoutException ex)
+                {
+                }
+                catch (Exception ex)
+                {
+                    //await Task.Delay(100);
+                }
+
         }
     }
 }

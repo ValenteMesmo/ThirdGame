@@ -4,6 +4,7 @@ using Android.Net;
 using Android.Net.Wifi;
 using Android.OS;
 using Android.Views;
+using static Android.Net.Wifi.WifiManager;
 
 namespace ThirdGame
 {
@@ -26,17 +27,19 @@ namespace ThirdGame
     public class Activity1 : Microsoft.Xna.Framework.AndroidGameActivity
     {
         private Game1 game;
-        private PowerManager.WakeLock mWakeLock;
+        private WifiLock wifilock;
 
         protected override void OnCreate(Bundle bundle)
         {
             base.OnCreate(bundle);
             var wifi = (WifiManager)GetSystemService(WifiService);
+            var ConnectivityManager = (ConnectivityManager)GetSystemService(ConnectivityService);
 
-            //var WifiLock = WifiManager.CreateWifiLock(WifiMode.FullHighPerf, "WifiLock");
-            //WifiLock.Acquire();
+            wifilock = wifi.CreateWifiLock(WifiMode.FullHighPerf, "WifiLock");
+            wifilock.Acquire();
 
-            game = new Game1(new UdpAndroidWrapper(wifi), true);
+
+            game = new Game1(new UdpAndroidWrapper(wifi, ConnectivityManager), true);
             if ((int)Build.VERSION.SdkInt >= (int)BuildVersionCodes.O)
             {
                 Vibrator vibrator = (Vibrator)GetSystemService(VibratorService);
@@ -48,7 +51,7 @@ namespace ThirdGame
             }
 
             SetViewFullScreen();
-            
+
             //PowerManager pm = (PowerManager)GetSystemService(PowerService);
             //this.mWakeLock = pm.NewWakeLock(WakeLockFlags.ScreenDim, "My Tag");
             //this.mWakeLock.Acquire();
@@ -89,7 +92,7 @@ namespace ThirdGame
 
         protected override void OnDestroy()
         {
-            this.mWakeLock.Release();
+            wifilock.Release();
             base.OnDestroy();
         }
     }
