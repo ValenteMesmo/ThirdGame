@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace WindowsDesktop
 {
     public class UdpWindowsWrapper : IDisposable, UdpService
-    {        
+    {
         private readonly UdpClient udpClient;
         private Action<string, string> MessageReceived;
         private IPEndPoint send_endpoint;
@@ -21,7 +21,12 @@ namespace WindowsDesktop
             udpClient.Client.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
             IPAddress multicastaddress = IPAddress.Parse(UdpConfig.multicastaddress);
             udpClient.JoinMulticastGroup(multicastaddress);
-            send_endpoint = new IPEndPoint(multicastaddress, UdpConfig.PORT);
+
+            //obs: o ip do desktop no hotspot é diferente de 43....
+            if (true)//TODO: check 
+                send_endpoint = new IPEndPoint(multicastaddress, UdpConfig.PORT);
+            else//if hotspot 
+                send_endpoint = new IPEndPoint(IPAddress.Parse("192.168.43.255"), UdpConfig.PORT);
 
             myIp = GetLocalIPAddress();
 
@@ -37,7 +42,7 @@ namespace WindowsDesktop
                             output = "";
                             await udpClient.SendAsync(bytes, bytes.Length, send_endpoint);
                         }
-                        catch 
+                        catch
                         {
                         }
                     }
@@ -69,7 +74,7 @@ namespace WindowsDesktop
         }
 
         bool runnning;
-        public void Listen(Action<string,string> messageReceivedHandler)
+        public void Listen(Action<string, string> messageReceivedHandler)
         {
             this.MessageReceived = messageReceivedHandler;
             if (runnning)
