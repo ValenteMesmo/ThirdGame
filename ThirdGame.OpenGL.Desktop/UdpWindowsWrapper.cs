@@ -1,6 +1,7 @@
 ﻿using Common;
 using System;
 using System.Net;
+using System.Net.NetworkInformation;
 using System.Net.Sockets;
 using System.Threading.Tasks;
 
@@ -23,10 +24,10 @@ namespace WindowsDesktop
             udpClient.JoinMulticastGroup(multicastaddress);
 
             //obs: o ip do desktop no hotspot é diferente de 43....
-            if (true)//TODO: check 
-                send_endpoint = new IPEndPoint(multicastaddress, UdpConfig.PORT);
-            else//if hotspot 
+            if (IsMetered())//if hotspot
                 send_endpoint = new IPEndPoint(IPAddress.Parse("192.168.43.255"), UdpConfig.PORT);
+            else 
+                send_endpoint = new IPEndPoint(multicastaddress, UdpConfig.PORT);
 
             myIp = GetLocalIPAddress();
 
@@ -48,6 +49,28 @@ namespace WindowsDesktop
                     }
                 }
             });
+        }
+
+        public bool IsMetered()
+        {
+            NetworkInterface[] interfaces = NetworkInterface.GetAllNetworkInterfaces();
+            foreach (NetworkInterface adapter in interfaces)
+            {
+                //Check if it's connected
+                if (adapter.OperationalStatus == OperationalStatus.Up
+                    //The network interface uses a mobile broadband interface for WiMax devices.
+                    && (adapter.NetworkInterfaceType == NetworkInterfaceType.Wman
+                        //The network interface uses a mobile broadband interface for GSM-based devices.
+                        || adapter.NetworkInterfaceType == NetworkInterfaceType.Wwanpp
+                        //The network interface uses a mobile broadband interface for CDMA-based devices.
+                        || adapter.NetworkInterfaceType == NetworkInterfaceType.Wwanpp2))
+                {
+                    //adapter probably is cellular
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         public void Dispose()
