@@ -8,14 +8,6 @@ using static Android.Net.Wifi.WifiManager;
 
 namespace ThirdGame
 {
-    public class AndroidVibratorWrapper
-    {
-        public AndroidVibratorWrapper(Vibrator Vibrator)
-        {
-
-        }
-    }
-
     [Activity(Label = "ó"
         , MainLauncher = true
         , Icon = "@drawable/icon"
@@ -30,8 +22,12 @@ namespace ThirdGame
         private WifiLock wifilock;
 
         protected override void OnCreate(Bundle bundle)
-        {
+        {            
             base.OnCreate(bundle);
+
+            StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().PermitAll().Build();
+            StrictMode.SetThreadPolicy(policy);
+
             var wifi = (WifiManager)GetSystemService(WifiService);
             var ConnectivityManager = (ConnectivityManager)GetSystemService(ConnectivityService);
 

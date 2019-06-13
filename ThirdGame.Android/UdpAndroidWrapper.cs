@@ -22,6 +22,7 @@ namespace ThirdGame
 
         //TODO: queue
         private string output = "";
+        private InetAddress broadcastIp;
 
         public UdpAndroidWrapper(WifiManager wifi, ConnectivityManager ConnectivityManager)
         {
@@ -29,51 +30,51 @@ namespace ThirdGame
             this.ConnectivityManager = ConnectivityManager;
 
             //TODO: get elsewhere.... to cover the case where wifi change in runtime
-            myIp = "/" + GetLocalIPAddress();
+            myIp = GetLocalIPAddress();
             Task.Factory.StartNew(sendBroadcast);
         }
 
         public async Task sendBroadcast()
         {
-            StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().PermitAll().Build();
-            StrictMode.SetThreadPolicy(policy);
-
             DatagramSocket socket = new DatagramSocket();
             socket.Broadcast = true;
 
-            var broadcastIps = getBroadcastAddress();
-
             while (NotDisposed)
-                if (output != "")
+            {
+                try
                 {
-                    try
-                    {
-                        byte[] sendData = System.Text.Encoding.ASCII.GetBytes(output);
-                        output = "";
+                    myIp = GetLocalIPAddress();
+                    broadcastIp = getBroadcastAddress();
 
-                        foreach (var broadcastIp in broadcastIps)
+                    while (NotDisposed)
+                    {
+                        if (output != "")
                         {
+
+                            byte[] sendData = System.Text.Encoding.ASCII.GetBytes(output);
+                            output = "";
+
                             DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.Length, broadcastIp, UdpConfig.PORT);
                             await socket.SendAsync(sendPacket);
                         }
-
-                    }
-                    catch (Exception e)
-                    {
-                        // await Task.Delay(100);
                     }
                 }
+                catch (Exception ex)
+                {
+                    await Task.Delay(500);
+                }
+            }
         }
 
-        private IEnumerable<InetAddress> getBroadcastAddress(bool listen = false)
+        private InetAddress getBroadcastAddress()
         {
             DhcpInfo dhcp = wifi.DhcpInfo;
 
             //TODO: min api level                      Added in API level 16 (Jelly Bean)
             if (wifi == null || !wifi.IsWifiEnabled || ConnectivityManager.IsActiveNetworkMetered)
             {
-                //yield return InetAddress.GetByName("192.168.42.255");
-                yield return InetAddress.GetByName("192.168.43.255");
+                //return InetAddress.GetByName("192.168.42.255");
+                return InetAddress.GetByName("192.168.43.255");
             }
             else
             {
@@ -81,7 +82,8 @@ namespace ThirdGame
                 byte[] quads = new byte[4];
                 for (int k = 0; k < 4; k++)
                     quads[k] = (byte)((broadcast >> k * 8) & 0xFF);
-                yield return InetAddress.GetByAddress(quads);
+
+                return InetAddress.GetByAddress(quads);
             }
         }
 
@@ -99,7 +101,7 @@ namespace ThirdGame
             {
                 if (ip.AddressFamily == AddressFamily.InterNetwork)
                 {
-                    myIp = ip.ToString();
+                    myIp = "/" + ip.ToString();
                 }
             }
 
@@ -111,44 +113,52 @@ namespace ThirdGame
             NotDisposed = false;
         }
 
+        //public void Listen(Action<string, string> messageReceivedHandler)
+        //{
+        //    Task.Factory.StartNew(async () => await Listen(messageReceivedHandler));
+        //}
+
         public void Listen(Action<string, string> messageReceivedHandler)
         {
-            foreach (var broadcastIp in getBroadcastAddress(true))
-                Task.Factory.StartNew(async () => await Listen(messageReceivedHandler, broadcastIp));
-        }
-
-        private async Task Listen(Action<string, string> messageReceivedHandler, InetAddress broadcastIp)
-        {
-            var socket = new DatagramSocket(UdpConfig.PORT, broadcastIp);
-            socket.SoTimeout = 500;
-
-            byte[] recvBuf = new byte[UdpConfig.PACKAGE_SIZE];
-
-            while (NotDisposed)
-                try
+            Task.Factory.StartNew(async () =>
+            {
+                while (NotDisposed)
                 {
-                    while (NotDisposed)
+                    myIp = GetLocalIPAddress();
+                    broadcastIp = getBroadcastAddress();
+
+                    try
                     {
+                        var socket = new DatagramSocket(UdpConfig.PORT, broadcastIp);
+                        socket.SoTimeout = 500;
 
-                        DatagramPacket packet = new DatagramPacket(recvBuf, recvBuf.Length);
-                        await socket.ReceiveAsync(packet);
+                        byte[] recvBuf = new byte[UdpConfig.PACKAGE_SIZE];
 
-                        var ip = packet.Address.ToString();
-                        if (myIp == ip)
-                            continue;
+                        while (NotDisposed)
+                        {
+                            try
+                            {
+                                DatagramPacket packet = new DatagramPacket(recvBuf, recvBuf.Length);
+                                await socket.ReceiveAsync(packet);
 
-                        var message = System.Text.Encoding.ASCII.GetString(packet.GetData());
-                        messageReceivedHandler(ip, message);
+                                var ip = packet.Address.ToString();
+                                if (myIp == ip)
+                                    continue;
+
+                                var message = System.Text.Encoding.ASCII.GetString(packet.GetData());
+                                messageReceivedHandler(ip, message);
+                            }
+                            catch (SocketTimeoutException)
+                            {
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        await Task.Delay(100);
                     }
                 }
-                catch (Java.Net.SocketTimeoutException ex)
-                {
-                }
-                catch (Exception ex)
-                {
-                    //await Task.Delay(100);
-                }
-
+            });
         }
     }
 }
