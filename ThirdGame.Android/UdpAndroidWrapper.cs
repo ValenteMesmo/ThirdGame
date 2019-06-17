@@ -3,7 +3,6 @@ using Android.Net.Wifi;
 using Common;
 using Java.Net;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
@@ -12,20 +11,109 @@ using System.Threading.Tasks;
 
 namespace ThirdGame
 {
+    public class UdpBroadcastForAndroid : UdpBroadcast
+    {
+        private readonly int port;
+        private int packageSize;
+        private readonly WifiManager wifi;
+        private readonly ConnectivityManager ConnectivityManager;
+
+        public UdpBroadcastForAndroid(
+             int port
+            , int packageSize
+            , WifiManager wifi
+            , ConnectivityManager ConnectivityManager)
+        {
+            this.packageSize = packageSize;
+            this.port = port;
+            this.wifi = wifi;
+            this.ConnectivityManager = ConnectivityManager;
+        }
+
+        public void Dispose() { }
+
+        public async Task<UdpMessage> Receive()
+        {
+            return await Task.Factory.StartNew(() =>
+            {
+                //TODO: move socket to constructor?
+                var socket = new DatagramSocket(
+                    port
+                    , InetAddress.GetByName("0.0.0.0")
+                    //, multicastIp
+                    );
+                socket.SoTimeout = 500;
+
+                byte[] recvBuf = new byte[packageSize];
+
+                DatagramPacket packet = new DatagramPacket(recvBuf, recvBuf.Length);
+                socket.Receive(packet);
+
+                var message = Encoding.ASCII.GetString(packet.GetData());
+                return new UdpMessage(packet.Address.ToString(), message);
+            });
+        }
+
+
+        private InetAddress GetBroadcastAddress()
+        {
+            DhcpInfo dhcp = wifi.DhcpInfo;
+
+            ////TODO: min api level                      Added in API level 16 (Jelly Bean)
+            //if (wifi == null || !wifi.IsWifiEnabled || ConnectivityManager.IsActiveNetworkMetered)
+            //{
+            //    //return InetAddress.GetByName("192.168.42.255");
+            //    return InetAddress.GetByName("192.168.43.255");
+            //}
+            //else
+            //{
+            int broadcast = (dhcp.IpAddress & dhcp.Netmask) | ~dhcp.Netmask;
+            byte[] quads = new byte[4];
+            for (int k = 0; k < 4; k++)
+                quads[k] = (byte)((broadcast >> k * 8) & 0xFF);
+
+            return InetAddress.GetByAddress(quads);
+            //}
+        }
+
+        public async Task SendAsync(string message)
+        {
+            await Task.Factory.StartNew(() =>
+            {
+                //TODO: move socket to constructor?
+                DatagramSocket socket = new DatagramSocket();
+                socket.Broadcast = true;
+
+                byte[] sendData = Encoding.ASCII.GetBytes(message);
+
+                DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.Length, GetBroadcastAddress(), port);
+                socket.Send(sendPacket);
+            });
+        }
+
+    }
+
     public class UdpAndroidWrapper : IDisposable, UdpService
     {
         private readonly Discoverer Discoverer;
 
         public string myIp => Discoverer.MyIp;
 
-        public UdpAndroidWrapper()
+        public UdpAndroidWrapper(WifiManager wifi
+            , ConnectivityManager ConnectivityManager)
         {
-            Discoverer = new Discoverer();
+            var broadcaster = new UdpBroadcastForAndroid(
+                 UdpConfig.PORT
+                , Guid.NewGuid().ToString().Length
+                , wifi
+                , ConnectivityManager
+            );
+            Discoverer = new Discoverer(broadcaster);
             Discoverer.Start();
             Discoverer.PeerJoined = ip =>
             {
                 Task.Factory.StartNew(() =>
-                {                    
+                {
                     var from = new IPEndPoint(IPAddress.Parse(ip), UdpConfig.PORT);
                     var _UdpClient = new UdpClient();
                     while (true)
@@ -69,7 +157,7 @@ namespace ThirdGame
             while (true)
             {
 
-                
+
                 try
                 {
                     //myIp = GetLocalIPAddress();
@@ -82,7 +170,8 @@ namespace ThirdGame
 
                             byte[] sendData = System.Text.Encoding.ASCII.GetBytes(output);
                             output = "";
-                            Task.WaitAll(Discoverer.OthersIps.ToList().Select(ip => {
+                            Task.WaitAll(Discoverer.OthersIps.ToList().Select(ip =>
+                            {
                                 return Task.Factory.StartNew(async () =>
                                 {
                                     var _UdpClient = new UdpClient();

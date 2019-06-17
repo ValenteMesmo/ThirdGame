@@ -35,7 +35,7 @@ namespace ThirdGame
             wifilock.Acquire();
 
 
-            game = new Game1(new UdpAndroidWrapper(), true);
+            game = new Game1(new UdpAndroidWrapper(wifi,ConnectivityManager), true);
             if ((int)Build.VERSION.SdkInt >= (int)BuildVersionCodes.O)
             {
                 Vibrator vibrator = (Vibrator)GetSystemService(VibratorService);

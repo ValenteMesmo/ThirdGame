@@ -3,73 +3,51 @@ using System;
 using System.Net;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
-using System.Runtime.Caching;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace WindowsDesktop
 {
-    public class Discoverer
+    //TODO: parei aqui...
+    //terminei de implementar o discovery..... 
+    //falta implementar a interface udp sem ser broadcast, para usar nos antigos wrappers, 
+    //que devem receber novos nomes... udp nao faz mais sentindo... algo tipo network
+    public class UdpBroadcastForWindows : UdpBroadcast
     {
-        static string MULTICAST_IP = "238.212.223.50"; //Random between 224.X.X.X - 239.X.X.X
-        static int MULTICAST_PORT = 2015;    //Random
+        private readonly string multicastIp;
+        private readonly int port;
+        private readonly UdpClient UdpClient;
+        private IPEndPoint from;
 
-        static UdpClient _UdpClient;
-        static Common.MemoryCache _Peers = new Common.MemoryCache();
-
-        public static Action<string> PeerJoined = null;
-        public static Action<string> PeerLeft = null;
-
-        public static void Start()
+        public UdpBroadcastForWindows(string multicastIp, int port)
         {
-            _UdpClient = new UdpClient();
-            _UdpClient.Client.Bind(new IPEndPoint(IPAddress.Any, MULTICAST_PORT));
-            _UdpClient.JoinMulticastGroup(IPAddress.Parse(MULTICAST_IP));
-
-
-            Task.Run(Receiver);
-            Task.Run(Sender);
+            from = new IPEndPoint(0, 0);
+            this.multicastIp = multicastIp;
+            this.port = port;
+            UdpClient = new UdpClient();
+            UdpClient.Client.Bind(new IPEndPoint(IPAddress.Any, port));
+            UdpClient.JoinMulticastGroup(IPAddress.Parse(multicastIp));
         }
 
-        static async Task Sender()
-        {
-            var IamHere = Encoding.UTF8.GetBytes("I AM ALIVE");
-            IPEndPoint mcastEndPoint = new IPEndPoint(IPAddress.Parse(MULTICAST_IP), MULTICAST_PORT);
+        public void Dispose() => UdpClient.Close();
 
-            while (true)
+        public async Task<UdpMessage> Receive()
+        {
+            return await Task.Factory.StartNew(() =>
             {
-                await _UdpClient.SendAsync(IamHere, IamHere.Length, mcastEndPoint);
-                await Task.Delay(1000);
-            }
+                var message = Encoding.UTF8.GetString(UdpClient.Receive(ref from));
+                return new UdpMessage(from.Address.ToString(), message);
+            });
         }
 
-        static void Receiver()
+        public async Task SendAsync(string message)
         {
-            var from = new IPEndPoint(0, 0);
-            while (true)
-            {
-                _UdpClient.Receive(ref from);
-                if (_Peers.Add(
-                        new CacheItem(
-                            from.Address.ToString()
-                            , from
-                        ),
-                        new CacheItemPolicy()
-                        {
-                            SlidingExpiration = TimeSpan.FromSeconds(20),
-                            RemovedCallback = (x) => { PeerLeft?.Invoke(x.CacheItem.Key); }
-                        }
-                    )
-                )
-                {
-                    PeerJoined?.Invoke(from.Address.ToString());
-                }
+            var bytes = Encoding.UTF8.GetBytes(message);
+            IPEndPoint mcastEndPoint = new IPEndPoint(IPAddress.Parse(multicastIp), port);
 
-                Console.WriteLine(from.Address.ToString());
-            }
+            await UdpClient.SendAsync(bytes, bytes.Length, mcastEndPoint);
         }
     }
-
 
     public class UdpWindowsWrapper : IDisposable, UdpService
     {
@@ -77,36 +55,10 @@ namespace WindowsDesktop
         private Action<string, string> MessageReceived;
         private IPEndPoint send_endpoint;
         private bool NotDisposed = true;
-        public string myIp { get; set; }
+        public string myIp => Discoverer.MyIp;
         string output = "";
-
-        public IPAddress GetBroadcastAddress()
-        {
-            NetworkInterface[] Interfaces = NetworkInterface.GetAllNetworkInterfaces();
-            foreach (NetworkInterface Interface in Interfaces)
-            {
-                if (Interface.NetworkInterfaceType == NetworkInterfaceType.Loopback) continue;
-                if (Interface.OperationalStatus != OperationalStatus.Up) continue;
-                Console.WriteLine(Interface.Description);
-                UnicastIPAddressInformationCollection UnicastIPInfoCol = Interface.GetIPProperties().UnicastAddresses;
-                foreach (UnicastIPAddressInformation UnicatIPInfo in UnicastIPInfoCol)
-                {
-                    Console.WriteLine("\tIP Address is {0}", UnicatIPInfo.Address);
-                    Console.WriteLine("\tSubnet Mask is {0}", UnicatIPInfo.IPv4Mask);
-                    return GetBroadcastAddress(UnicatIPInfo.Address, UnicatIPInfo.IPv4Mask);
-                }
-            }
-            return null;
-        }
-
-        public IPAddress GetBroadcastAddress(IPAddress address, IPAddress mask)
-        {
-            uint ipAddress = BitConverter.ToUInt32(address.GetAddressBytes(), 0);
-            uint ipMaskV4 = BitConverter.ToUInt32(mask.GetAddressBytes(), 0);
-            uint broadCastIpAddress = ipAddress | ~ipMaskV4;
-
-            return new IPAddress(BitConverter.GetBytes(broadCastIpAddress));
-        }
+        bool runnning;
+        private Discoverer Discoverer;
 
         public UdpWindowsWrapper()
         {
@@ -121,8 +73,6 @@ namespace WindowsDesktop
             //else 
             //    send_endpoint = new IPEndPoint(multicastaddress, UdpConfig.PORT);
             send_endpoint = new IPEndPoint(GetBroadcastAddress(), UdpConfig.PORT);
-
-            myIp = GetLocalIPAddress();
 
             Task.Factory.StartNew(async () =>
             {
@@ -142,7 +92,45 @@ namespace WindowsDesktop
                     }
                 }
             });
+
+
+            var broadcaster = new UdpBroadcastForWindows(
+                UdpConfig.IP_DISCOVER_BROADCAST_ADDRESS
+                , UdpConfig.IP_DISCOVER_PORT
+            );
+            Discoverer = new Discoverer(broadcaster);
+            Discoverer.Start();
         }
+
+        public IPAddress GetBroadcastAddress()
+        {
+            NetworkInterface[] Interfaces = NetworkInterface.GetAllNetworkInterfaces();
+            foreach (NetworkInterface Interface in Interfaces)
+            {
+                if (Interface.NetworkInterfaceType == NetworkInterfaceType.Loopback) continue;
+                if (Interface.OperationalStatus != OperationalStatus.Up) continue;
+                Console.WriteLine(Interface.Description);
+                UnicastIPAddressInformationCollection UnicastIPInfoCol = Interface.GetIPProperties().UnicastAddresses;
+                foreach (UnicastIPAddressInformation UnicatIPInfo in UnicastIPInfoCol)
+                {
+                    //Console.WriteLine("\tIP Address is {0}", UnicatIPInfo.Address);
+                    //Console.WriteLine("\tSubnet Mask is {0}", UnicatIPInfo.IPv4Mask);
+                    return GetBroadcastAddress(UnicatIPInfo.Address, UnicatIPInfo.IPv4Mask);
+                }
+            }
+            return null;
+        }
+
+        public IPAddress GetBroadcastAddress(IPAddress address, IPAddress mask)
+        {
+            uint ipAddress = BitConverter.ToUInt32(address.GetAddressBytes(), 0);
+            uint ipMaskV4 = BitConverter.ToUInt32(mask.GetAddressBytes(), 0);
+            uint broadCastIpAddress = ipAddress | ~ipMaskV4;
+
+            return new IPAddress(BitConverter.GetBytes(broadCastIpAddress));
+        }
+
+
 
         public bool IsMetered()
         {
@@ -189,7 +177,6 @@ namespace WindowsDesktop
             output = message;
         }
 
-        bool runnning;
         public void Listen(Action<string, string> messageReceivedHandler)
         {
             this.MessageReceived = messageReceivedHandler;

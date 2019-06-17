@@ -1,13 +1,28 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
-using System.Net.Sockets;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Common
 {
+    public struct UdpMessage
+    {
+        public UdpMessage(string From, string Content)
+        {
+            this.From = From;
+            this.Content = Content;
+        }
+
+        public string From { get; set; }
+        public string Content { get; set; }
+    }
+
+    public interface UdpBroadcast : IDisposable
+    {
+        Task SendAsync(string message);
+        Task<UdpMessage> Receive();
+    }
+
     public interface UdpService
     {
         void Send(string message);
@@ -21,6 +36,9 @@ namespace Common
         public const int PORT = 17111;
         public const int PACKAGE_SIZE = 23;
         public const string multicastaddress = "224.0.0.0";
+
+        public const int IP_DISCOVER_PORT = 2015;
+        public const string IP_DISCOVER_BROADCAST_ADDRESS = "238.212.223.50";
     }
 
     public class MemoryCache
@@ -65,11 +83,11 @@ namespace Common
     public class Discoverer : IDisposable
     {
         readonly string Id;
-        static string MULTICAST_IP = "238.212.223.50"; //Random between 224.X.X.X - 239.X.X.X
-        static int MULTICAST_PORT = 2015;    //Random
+        string MULTICAST_IP = "238.212.223.50"; //Random between 224.X.X.X - 239.X.X.X
+        int MULTICAST_PORT = 2015;    //Random
 
-        static UdpClient _UdpClient;
-        static MemoryCache _Peers;
+        UdpBroadcast udpBroadcastSender;
+        MemoryCache _Peers;
 
         public Action<string> PeerJoined = null;
         public Action<string> PeerLeft = null;
@@ -78,8 +96,10 @@ namespace Common
         public string MyIp { get; private set; }
         public IEnumerable<string> OthersIps => _Peers.GetValues();
 
-        public Discoverer()
+        public Discoverer(
+            UdpBroadcast udpBroadcastSender)
         {
+            this.udpBroadcastSender = udpBroadcastSender;
             Id = Guid.NewGuid().ToString();
         }
 
@@ -89,9 +109,6 @@ namespace Common
                 {
                     PeerLeft?.Invoke(x);
                 });
-            _UdpClient = new UdpClient();
-            _UdpClient.Client.Bind(new IPEndPoint(IPAddress.Any, MULTICAST_PORT));
-            _UdpClient.JoinMulticastGroup(IPAddress.Parse(MULTICAST_IP));
 
             Task.Run(Receiver);
             Task.Run(Sender);
@@ -99,42 +116,38 @@ namespace Common
 
         private async Task Sender()
         {
-            var IamHere = Encoding.UTF8.GetBytes(Id);
-            IPEndPoint mcastEndPoint = new IPEndPoint(IPAddress.Parse(MULTICAST_IP), MULTICAST_PORT);
-
             while (!Disposed)
             {
-                await _UdpClient.SendAsync(IamHere, IamHere.Length, mcastEndPoint);
+                await udpBroadcastSender.SendAsync(Id);
                 await Task.Delay(1000);
                 _Peers.Update();
             }
         }
 
-        private void Receiver()
+        private async Task Receiver()
         {
-            var from = new IPEndPoint(0, 0);
             while (!Disposed)
             {
-                var message = Encoding.UTF8.GetString(_UdpClient.Receive(ref from));
-                if (message == Id)
+                var message = await udpBroadcastSender.Receive();
+                if (message.Content == Id)
                 {
-                    MyIp = from.Address.ToString();
+                    MyIp = message.From;
                     continue;
                 }
 
-                if (_Peers.Add(from.Address.ToString(), 10))
+                if (_Peers.Add(message.From, 10))
                 {
-                    PeerJoined?.Invoke(from.Address.ToString());
+                    PeerJoined?.Invoke(message.From);
                 }
 
-                Console.WriteLine(from.Address.ToString());
+                //Console.WriteLine(message.From);
             }
         }
 
         public void Dispose()
         {
             Disposed = true;
-            _UdpClient.Close();
+            udpBroadcastSender.Dispose();
         }
     }
 
