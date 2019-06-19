@@ -12,7 +12,7 @@ namespace ThirdGame
         , MainLauncher = true
         , Icon = "@drawable/icon"
         , Theme = "@style/Theme.Splash"
-        , AlwaysRetainTaskState = true
+        , AlwaysRetainTaskState = true        
         , LaunchMode = LaunchMode.SingleInstance
         , ScreenOrientation = ScreenOrientation.Landscape
         , ConfigurationChanges = ConfigChanges.Orientation | ConfigChanges.Keyboard | ConfigChanges.KeyboardHidden | ConfigChanges.ScreenSize)]
@@ -24,7 +24,6 @@ namespace ThirdGame
         protected override void OnCreate(Bundle bundle)
         {            
             base.OnCreate(bundle);
-
             StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().PermitAll().Build();
             StrictMode.SetThreadPolicy(policy);
 
@@ -36,7 +35,7 @@ namespace ThirdGame
 
 
             game = new Game1(new UdpAndroidWrapper(wifi, ConnectivityManager), true);
-            if ((int)Build.VERSION.SdkInt >= (int)BuildVersionCodes.O)
+            if (Build.VERSION.SdkInt >= BuildVersionCodes.O)
             {
                 Vibrator vibrator = (Vibrator)GetSystemService(VibratorService);
                 Game1.AndroidVibrate = f => vibrator.Vibrate(VibrationEffect.CreateOneShot(f, VibrationEffect.DefaultAmplitude));
@@ -57,6 +56,7 @@ namespace ThirdGame
         private void SetViewFullScreen()
         {
             var view = (View)game.Services.GetService(typeof(View));
+         
             view.SystemUiVisibility = (StatusBarVisibility)
                 (SystemUiFlags.LayoutStable
                 | SystemUiFlags.LayoutHideNavigation
@@ -65,6 +65,9 @@ namespace ThirdGame
                 | SystemUiFlags.Fullscreen
                 | SystemUiFlags.ImmersiveSticky
                 );
+
+            if (Build.VERSION.SdkInt >= BuildVersionCodes.P)
+                Window.Attributes.LayoutInDisplayCutoutMode = LayoutInDisplayCutoutMode.ShortEdges;
 
             SetContentView(view);
         }
