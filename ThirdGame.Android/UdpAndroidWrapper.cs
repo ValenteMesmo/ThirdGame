@@ -17,6 +17,7 @@ namespace ThirdGame
         private int packageSize;
         private readonly WifiManager wifi;
         private readonly ConnectivityManager ConnectivityManager;
+        private readonly DatagramSocket socket;
 
         public UdpBroadcastForAndroid(
              int port
@@ -28,30 +29,43 @@ namespace ThirdGame
             this.port = port;
             this.wifi = wifi;
             this.ConnectivityManager = ConnectivityManager;
+
+            this.socket = new DatagramSocket(
+                port
+                , GetBroadcastAddress()
+            //,InetAddress.GetByName("0.0.0.0")                                       
+            //, multicastIp
+            );
         }
 
-        public void Dispose() { }
+        public void Dispose() { socket.Dispose(); }
 
-        public async Task<UdpMessage> Receive()
+        public async Task<UdpMessage> ReceiveAsync()
         {
-            return await Task.Factory.StartNew(() =>
+            //TODO: move socket to constructor?
+            try
             {
-                //TODO: move socket to constructor?
-                var socket = new DatagramSocket(
-                    port
-                    , InetAddress.GetByName("0.0.0.0")
-                    //, multicastIp
-                    );
                 socket.SoTimeout = 500;
 
                 byte[] recvBuf = new byte[packageSize];
 
-                DatagramPacket packet = new DatagramPacket(recvBuf, recvBuf.Length);
-                socket.Receive(packet);
+                using (DatagramPacket packet = new DatagramPacket(recvBuf, recvBuf.Length))
+                {
+                    await socket.ReceiveAsync(packet);
 
-                var message = Encoding.ASCII.GetString(packet.GetData());
-                return new UdpMessage(packet.Address.ToString(), message);
-            });
+                    var message = Encoding.ASCII.GetString(packet.GetData());
+
+                    return new UdpMessage(packet.Address.ToString(), message);
+                }
+            }
+            catch (Java.Net.SocketTimeoutException ex)
+            {
+                return default;
+            }
+            catch (Exception ex)
+            {
+                return default;
+            }
         }
 
 
@@ -60,35 +74,36 @@ namespace ThirdGame
             DhcpInfo dhcp = wifi.DhcpInfo;
 
             ////TODO: min api level                      Added in API level 16 (Jelly Bean)
-            //if (wifi == null || !wifi.IsWifiEnabled || ConnectivityManager.IsActiveNetworkMetered)
-            //{
-            //    //return InetAddress.GetByName("192.168.42.255");
-            //    return InetAddress.GetByName("192.168.43.255");
-            //}
-            //else
-            //{
-            int broadcast = (dhcp.IpAddress & dhcp.Netmask) | ~dhcp.Netmask;
-            byte[] quads = new byte[4];
-            for (int k = 0; k < 4; k++)
-                quads[k] = (byte)((broadcast >> k * 8) & 0xFF);
+            if (wifi == null || !wifi.IsWifiEnabled || ConnectivityManager.IsActiveNetworkMetered)
+            {
+                //return InetAddress.GetByName("192.168.42.255");
+                return InetAddress.GetByName("192.168.43.255");
+            }
+            else
+            {
+                int broadcast = (dhcp.IpAddress & dhcp.Netmask) | ~dhcp.Netmask;
+                byte[] quads = new byte[4];
+                for (int k = 0; k < 4; k++)
+                    quads[k] = (byte)((broadcast >> k * 8) & 0xFF);
 
-            return InetAddress.GetByAddress(quads);
-            //}
+                return InetAddress.GetByAddress(quads);
+            }
         }
 
         public async Task SendAsync(string message)
         {
-            await Task.Factory.StartNew(() =>
+            //TODO: move socket to constructor?
+            using (DatagramSocket socket = new DatagramSocket())
             {
-                //TODO: move socket to constructor?
-                DatagramSocket socket = new DatagramSocket();
                 socket.Broadcast = true;
 
                 byte[] sendData = Encoding.ASCII.GetBytes(message);
 
-                DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.Length, GetBroadcastAddress(), port);
-                socket.Send(sendPacket);
-            });
+                using (DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.Length, GetBroadcastAddress(), port))
+                {
+                    await socket.SendAsync(sendPacket);
+                }
+            }
         }
 
     }
@@ -112,16 +127,16 @@ namespace ThirdGame
             Discoverer.Start();
             Discoverer.PeerJoined = ip =>
             {
-                Task.Factory.StartNew(() =>
-                {
-                    var from = new IPEndPoint(IPAddress.Parse(ip), UdpConfig.PORT);
-                    var _UdpClient = new UdpClient();
-                    while (true)
-                    {
-                        var message = Encoding.UTF8.GetString(_UdpClient.Receive(ref from));
-                        messageReceivedHandler(ip, message);
-                    }
-                });
+                //Task.Factory.StartNew(() =>
+                //{
+                //    var from = new IPEndPoint(IPAddress.Parse(ip), UdpConfig.PORT);
+                //    var _UdpClient = new UdpClient();
+                //    while (true)
+                //    {
+                //        var message = Encoding.UTF8.GetString(_UdpClient.Receive(ref from));
+                //        messageReceivedHandler(ip, message);
+                //    }
+                //});
             };
 
             Task.Factory.StartNew(sendBroadcast);
@@ -170,15 +185,15 @@ namespace ThirdGame
 
                             byte[] sendData = System.Text.Encoding.ASCII.GetBytes(output);
                             output = "";
-                            Task.WaitAll(Discoverer.OthersIps.ToList().Select(ip =>
-                            {
-                                return Task.Factory.StartNew(async () =>
-                                {
-                                    var _UdpClient = new UdpClient();
-                                    IPEndPoint mcastEndPoint = new IPEndPoint(IPAddress.Parse(ip), UdpConfig.PORT);
-                                    await _UdpClient.SendAsync(sendData, sendData.Length, mcastEndPoint);
-                                });
-                            }).ToArray());
+                            //Task.WaitAll(Discoverer.OthersIps.ToList().Select(ip =>
+                            //{
+                            //    return Task.Factory.StartNew(async () =>
+                            //    {
+                            //        var _UdpClient = new UdpClient();
+                            //        IPEndPoint mcastEndPoint = new IPEndPoint(IPAddress.Parse(ip), UdpConfig.PORT);
+                            //        await _UdpClient.SendAsync(sendData, sendData.Length, mcastEndPoint);
+                            //    });
+                            //}).ToArray());
                         }
                     }
                 }

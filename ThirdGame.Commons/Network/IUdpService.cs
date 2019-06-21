@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Common
@@ -20,7 +21,7 @@ namespace Common
     public interface UdpBroadcast : IDisposable
     {
         Task SendAsync(string message);
-        Task<UdpMessage> Receive();
+        Task<UdpMessage> ReceiveAsync();
     }
 
     public interface UdpService
@@ -56,7 +57,7 @@ namespace Common
         {
             foreach (var key in Values.Keys.ToList())
             {
-                Values[key]--;
+                Values[key] = Values[key] - 1;
                 if (Values[key] == 0)
                 {
                     Values.Remove(key);
@@ -110,8 +111,8 @@ namespace Common
                     PeerLeft?.Invoke(x);
                 });
 
-            Task.Run(Receiver);
-            Task.Run(Sender);
+            Task.Factory.StartNew(Receiver);
+            Task.Factory.StartNew(Sender);
         }
 
         private async Task Sender()
@@ -119,8 +120,8 @@ namespace Common
             while (!Disposed)
             {
                 await udpBroadcastSender.SendAsync(Id);
-                await Task.Delay(1000);
                 _Peers.Update();
+                await Task.Delay(1000);
             }
         }
 
@@ -128,14 +129,16 @@ namespace Common
         {
             while (!Disposed)
             {
-                var message = await udpBroadcastSender.Receive();
-                if (message.Content == Id)
+                var message = await udpBroadcastSender.ReceiveAsync();
+                if (message.From == null)
+                {
+
+                }
+                else if (message.Content == Id)
                 {
                     MyIp = message.From;
-                    continue;
                 }
-
-                if (_Peers.Add(message.From, 10))
+                else if (_Peers.Add(message.From, 5))
                 {
                     PeerJoined?.Invoke(message.From);
                 }

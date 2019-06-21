@@ -17,35 +17,51 @@ namespace WindowsDesktop
         private readonly string multicastIp;
         private readonly int port;
         private readonly UdpClient UdpClient;
-        private IPEndPoint from;
 
         public UdpBroadcastForWindows(string multicastIp, int port)
         {
-            from = new IPEndPoint(0, 0);
             this.multicastIp = multicastIp;
             this.port = port;
-            UdpClient = new UdpClient();
+
+
+            UdpClient = new UdpClient(
+                //new IPEndPoint(IPAddress.Parse(multicastIp), port)
+            );
             UdpClient.Client.Bind(new IPEndPoint(IPAddress.Any, port));
+            UdpClient.Client.SendTimeout = 500;
+            UdpClient.Client.ReceiveTimeout = 500;
             UdpClient.JoinMulticastGroup(IPAddress.Parse(multicastIp));
         }
 
         public void Dispose() => UdpClient.Close();
 
-        public async Task<UdpMessage> Receive()
+        public async Task<UdpMessage> ReceiveAsync()
         {
-            return await Task.Factory.StartNew(() =>
+            try
             {
-                var message = Encoding.UTF8.GetString(UdpClient.Receive(ref from));
-                return new UdpMessage(from.Address.ToString(), message);
-            });
+                var result = await UdpClient.ReceiveAsync();
+                var message = Encoding.UTF8.GetString(result.Buffer);
+
+                return new UdpMessage(result.RemoteEndPoint.Address.ToString(), message);
+            }
+            catch (Exception ex)
+            {
+                return default;
+            }
         }
 
         public async Task SendAsync(string message)
         {
-            var bytes = Encoding.UTF8.GetBytes(message);
-            IPEndPoint mcastEndPoint = new IPEndPoint(IPAddress.Parse(multicastIp), port);
+            try
+            {
+                var bytes = Encoding.UTF8.GetBytes(message);
+                IPEndPoint mcastEndPoint = new IPEndPoint(IPAddress.Parse(multicastIp), port);
 
-            await UdpClient.SendAsync(bytes, bytes.Length, mcastEndPoint);
+                await UdpClient.SendAsync(bytes, bytes.Length, mcastEndPoint);
+            }
+            catch (Exception ex)
+            {
+            }
         }
     }
 
@@ -62,7 +78,7 @@ namespace WindowsDesktop
 
         public UdpWindowsWrapper()
         {
-            udpClient = new UdpClient(UdpConfig.PORT);
+            udpClient = new UdpClient(UdpConfig.IP_DISCOVER_PORT);
             udpClient.Client.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
             IPAddress multicastaddress = IPAddress.Parse(UdpConfig.multicastaddress);
             udpClient.JoinMulticastGroup(multicastaddress);
@@ -72,31 +88,31 @@ namespace WindowsDesktop
             //    send_endpoint = new IPEndPoint(IPAddress.Parse("192.168.43.255"), UdpConfig.PORT);
             //else 
             //    send_endpoint = new IPEndPoint(multicastaddress, UdpConfig.PORT);
-            send_endpoint = new IPEndPoint(GetBroadcastAddress(), UdpConfig.PORT);
+            send_endpoint = new IPEndPoint(GetBroadcastAddress(), UdpConfig.IP_DISCOVER_PORT);
 
-            Task.Factory.StartNew(async () =>
-            {
-                while (NotDisposed)
-                {
-                    if (output != "")
-                    {
-                        try
-                        {
-                            var bytes = System.Text.Encoding.ASCII.GetBytes(output);
-                            output = "";
-                            await udpClient.SendAsync(bytes, bytes.Length, send_endpoint);
-                        }
-                        catch
-                        {
-                        }
-                    }
-                }
-            });
+            //Task.Factory.StartNew(async () =>
+            //{
+            //    while (NotDisposed)
+            //    {
+            //        if (output != "")
+            //        {
+            //            try
+            //            {
+            //                var bytes = System.Text.Encoding.ASCII.GetBytes(output);
+            //                output = "";
+            //                await udpClient.SendAsync(bytes, bytes.Length, send_endpoint);
+            //            }
+            //            catch
+            //            {
+            //            }
+            //        }
+            //    }
+            //});
 
 
             var broadcaster = new UdpBroadcastForWindows(
                 UdpConfig.IP_DISCOVER_BROADCAST_ADDRESS
-                , UdpConfig.IP_DISCOVER_PORT
+                , UdpConfig.PORT
             );
             Discoverer = new Discoverer(broadcaster);
             Discoverer.Start();
@@ -174,32 +190,33 @@ namespace WindowsDesktop
 
         public void Send(string message)
         {
+            ThirdGame.Game1.LOG.Add(myIp);
             output = message;
         }
 
         public void Listen(Action<string, string> messageReceivedHandler)
         {
             this.MessageReceived = messageReceivedHandler;
-            if (runnning)
-                return;
-            runnning = true;
+            //if (runnning)
+            //    return;
+            //runnning = true;
 
-            Task.Factory.StartNew(async () =>
-            {
-                while (NotDisposed)
-                {
-                    try
-                    {
-                        var result = await udpClient.ReceiveAsync();
-                        var message = System.Text.Encoding.ASCII.GetString(result.Buffer);
-                        var ip = result.RemoteEndPoint.Address.ToString();
+            //Task.Factory.StartNew(async () =>
+            //{
+            //    while (NotDisposed)
+            //    {
+            //        try
+            //        {
+            //            var result = await udpClient.ReceiveAsync();
+            //            var message = System.Text.Encoding.ASCII.GetString(result.Buffer);
+            //            var ip = result.RemoteEndPoint.Address.ToString();
 
-                        if (ip != myIp)
-                            MessageReceived(ip, message);
-                    }
-                    catch { }
-                }
-            });
+            //            if (ip != myIp)
+            //                MessageReceived(ip, message);
+            //        }
+            //        catch { }
+            //    }
+            //});
         }
     }
 }
