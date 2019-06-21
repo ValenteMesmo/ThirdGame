@@ -30,6 +30,7 @@ namespace WindowsDesktop
             UdpClient.Client.Bind(new IPEndPoint(IPAddress.Any, port));
             UdpClient.Client.SendTimeout = 500;
             UdpClient.Client.ReceiveTimeout = 500;
+            UdpClient.Client.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReceiveTimeout, 0);
             UdpClient.JoinMulticastGroup(IPAddress.Parse(multicastIp));
         }
 
