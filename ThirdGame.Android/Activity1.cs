@@ -62,14 +62,6 @@ namespace ThirdGame
         private NetworkService CreateUdpService(WifiManager wifi, ConnectivityManager ConnectivityManager)
         {
             var udpService = new NetworkService(
-                //new Discoverer(
-                //    new UdpBroadcastForAndroid(
-                //        UdpConfig.IP_DISCOVER_PORT
-                //        , Guid.NewGuid().ToString().Length
-                //        , wifi
-                //        , ConnectivityManager
-                //    )
-                //)                , 
                 new UdpBroadcastForAndroid(
                     UdpConfig.PORT
                     , UdpConfig.PACKAGE_SIZE

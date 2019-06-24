@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace ThirdGame
-{    
+{
 
     public class UdpBroadcastForAndroid : UdpBroadcastSocket
     {
@@ -27,8 +27,7 @@ namespace ThirdGame
             this.port = port;
             this.wifi = wifi;
             this.ConnectivityManager = ConnectivityManager;
-            socket = new DatagramSocket(port
-                , GetBroadcastAddress());
+            socket = new DatagramSocket(port, GetBroadcastAddress());
             socket.Broadcast = true;
         }
 
