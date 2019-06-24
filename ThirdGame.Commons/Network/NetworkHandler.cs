@@ -9,7 +9,7 @@ namespace ThirdGame
     public class NetworkHandler
     {
         private MyMessageEncoder MyMessageEncoder = new MyMessageEncoder();
-        private readonly UdpService UdpWrapper;
+        private readonly NetworkService UdpWrapper;
         private readonly Inputs Inputs;
         private readonly ServerIpFinder ServerIpFinder;
         private readonly List<NetworkUpdateTracker> Sockets = new List<NetworkUpdateTracker>();
@@ -21,7 +21,7 @@ namespace ThirdGame
         public Action<string, Message> PlayerConnected = (ip, message) => { };
         public Action<string> PlayerDisconnected = (ip) => { };
 
-        public NetworkHandler(UdpService UdpWrapper, Inputs Inputs)
+        public NetworkHandler(NetworkService UdpWrapper, Inputs Inputs)
         {
             this.UdpWrapper = UdpWrapper;
             this.Inputs = Inputs;
@@ -29,12 +29,13 @@ namespace ThirdGame
             this.UdpWrapper.Listen(HandleReceivedUdpMessage);
         }
 
-        private void HandleReceivedUdpMessage(string ip, string message)
+        private void HandleReceivedUdpMessage(UdpMessage message)
         {
-            var infos = MyMessageEncoder.Decode(message);
+            var infos = MyMessageEncoder.Decode(message.Content);
             foreach (var info in infos)
             {
-                var socket = GetSourceSocket(ip, info);
+                //TODO: this getsourcesocket was used to track connected players.... but we have the discoverer now
+                var socket = GetSourceSocket(message.From, info);
 
                 socket.UpdatesSinceLastMessage = 0;
 
@@ -44,7 +45,7 @@ namespace ThirdGame
                     //if (ip == serverIp)
                     //    MessageReceivedFromServer(ip, info);
                     //else
-                        MessageReceivedFromOtherClients(ip, info);
+                        MessageReceivedFromOtherClients(message.From, info);
                 }
             }
         }

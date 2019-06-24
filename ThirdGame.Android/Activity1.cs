@@ -4,11 +4,13 @@ using Android.Net;
 using Android.Net.Wifi;
 using Android.OS;
 using Android.Views;
+using Common;
+using System;
 using static Android.Net.Wifi.WifiManager;
 
 namespace ThirdGame
 {
-    [Activity(Label = "ó"
+    [Activity(Label = "Ã³"
         , MainLauncher = true
         , Icon = "@drawable/icon"
         , Theme = "@style/Theme.Splash"
@@ -22,7 +24,7 @@ namespace ThirdGame
         private WifiLock wifilock;
 
         protected override void OnCreate(Bundle bundle)
-        {            
+        {
             base.OnCreate(bundle);
             StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().PermitAll().Build();
             StrictMode.SetThreadPolicy(policy);
@@ -33,8 +35,11 @@ namespace ThirdGame
             wifilock = wifi.CreateWifiLock(WifiMode.FullHighPerf, "WifiLock");
             wifilock.Acquire();
 
+            game = new Game1(
+                CreateUdpService(wifi, ConnectivityManager)
+                , RuningOnAndroid: true
+            );
 
-            game = new Game1(new UdpAndroidWrapper(wifi, ConnectivityManager), true);
             if (Build.VERSION.SdkInt >= BuildVersionCodes.O)
             {
                 Vibrator vibrator = (Vibrator)GetSystemService(VibratorService);
@@ -51,6 +56,20 @@ namespace ThirdGame
             //this.mWakeLock = pm.NewWakeLock(WakeLockFlags.ScreenDim, "My Tag");
             //this.mWakeLock.Acquire();
             game.Run();
+        }
+
+        private NetworkService CreateUdpService(WifiManager wifi, ConnectivityManager ConnectivityManager)
+        {
+            var udpService = new NetworkService(
+                new UdpBroadcastForAndroid(
+                    UdpConfig.PORT
+                    , UdpConfig.PACKAGE_SIZE
+                    , wifi
+                    , ConnectivityManager
+                )
+            );
+
+            return udpService;
         }
 
         private void SetViewFullScreen()

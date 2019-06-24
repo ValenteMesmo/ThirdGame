@@ -57,6 +57,7 @@
     <Compile Include="GameObjects\IHaveState.cs" />
     <Compile Include="GameObjects\PlayerState.cs" />
     <Compile Include="GameObjects\StateTransitions\CooldownTracker.cs" />
+    <Compile Include="Network\NetworkService.cs" />
     <Compile Include="Physics\AttackCollider.cs" />
     <Compile Include="Updates\UpdateByState.cs" />
     <Compile Include="Inputs\CircularBuffer.cs" />

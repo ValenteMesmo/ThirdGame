@@ -21,7 +21,7 @@ namespace ThirdGame.Tests
                         "Teste"
                         , inputs
                         , fixture.Create<Camera2d>()
-                        , new NetworkHandler(Substitute.For<UdpService>(), inputs)
+                        , new NetworkHandler(Substitute.For<NetworkService>(), inputs)
                         , true
                     )
                 );

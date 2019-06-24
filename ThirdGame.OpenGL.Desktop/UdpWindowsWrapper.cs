@@ -3,123 +3,62 @@ using System;
 using System.Net;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace WindowsDesktop
 {
-    public class UdpWindowsWrapper : IDisposable, UdpService
+    public class UdpBroadcastForWindows : UdpBroadcastSocket
     {
-        private readonly UdpClient udpClient;
-        private Action<string, string> MessageReceived;
-        private IPEndPoint send_endpoint;
-        private bool NotDisposed = true;
-        public string myIp { get; set; }
-        string output = "";
+        private readonly string multicastIp;
+        private readonly int port;
+        private readonly UdpClient UdpClient;
 
-        public UdpWindowsWrapper()
+        public UdpBroadcastForWindows(string multicastIp, int port)
         {
-            udpClient = new UdpClient(UdpConfig.PORT);
-            udpClient.Client.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
-            IPAddress multicastaddress = IPAddress.Parse(UdpConfig.multicastaddress);
-            udpClient.JoinMulticastGroup(multicastaddress);
+            this.multicastIp = multicastIp;
+            this.port = port;
 
-            //obs: o ip do desktop no hotspot é diferente de 43....
-            if (IsMetered())//if hotspot
-                send_endpoint = new IPEndPoint(IPAddress.Parse("192.168.43.255"), UdpConfig.PORT);
-            else 
-                send_endpoint = new IPEndPoint(multicastaddress, UdpConfig.PORT);
-
-            myIp = GetLocalIPAddress();
-
-            Task.Factory.StartNew(async () =>
-            {
-                while (NotDisposed)
-                {
-                    if (output != "")
-                    {
-                        try
-                        {
-                            var bytes = System.Text.Encoding.ASCII.GetBytes(output);
-                            output = "";
-                            await udpClient.SendAsync(bytes, bytes.Length, send_endpoint);
-                        }
-                        catch
-                        {
-                        }
-                    }
-                }
-            });
+            UdpClient = new UdpClient();
+            UdpClient.EnableBroadcast = true;
+            UdpClient.Client.Bind(new IPEndPoint(IPAddress.Any, port));
+            UdpClient.Client.SendTimeout = 500;
+            UdpClient.Client.ReceiveTimeout = 500;
+            UdpClient.Client.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReceiveTimeout, 500);
+            UdpClient.Client.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.SendTimeout, 500);
+            UdpClient.Client.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
+            UdpClient.JoinMulticastGroup(IPAddress.Parse(multicastIp));
         }
 
-        public bool IsMetered()
+        public void Dispose() => UdpClient.Close();
+
+        public async Task<UdpMessage> ReceiveAsync()
         {
-            NetworkInterface[] interfaces = NetworkInterface.GetAllNetworkInterfaces();
-            foreach (NetworkInterface adapter in interfaces)
+            try
             {
-                //Check if it's connected
-                if (adapter.OperationalStatus == OperationalStatus.Up
-                    //The network interface uses a mobile broadband interface for WiMax devices.
-                    && (adapter.NetworkInterfaceType == NetworkInterfaceType.Wman
-                        //The network interface uses a mobile broadband interface for GSM-based devices.
-                        || adapter.NetworkInterfaceType == NetworkInterfaceType.Wwanpp
-                        //The network interface uses a mobile broadband interface for CDMA-based devices.
-                        || adapter.NetworkInterfaceType == NetworkInterfaceType.Wwanpp2))
-                {
-                    //adapter probably is cellular
-                    return true;
-                }
+                var result = await UdpClient.ReceiveAsync();
+                var message = Encoding.UTF8.GetString(result.Buffer);
+
+                return new UdpMessage(result.RemoteEndPoint.Address.ToString(), message);
             }
-
-            return false;
-        }
-
-        public void Dispose()
-        {
-            NotDisposed = false;
-        }
-
-        private string GetLocalIPAddress()
-        {
-            var host = Dns.GetHostEntry(Dns.GetHostName());
-            foreach (var ip in host.AddressList)
+            catch (Exception ex)
             {
-                if (ip.AddressFamily == AddressFamily.InterNetwork)
-                {
-                    return ip.ToString();
-                }
+                return default;
             }
-            throw new Exception("No network adapters with an IPv4 address in the system!");
         }
 
-        public void Send(string message)
+        public async Task SendAsync(string message)
         {
-            output = message;
-        }
-
-        bool runnning;
-        public void Listen(Action<string, string> messageReceivedHandler)
-        {
-            this.MessageReceived = messageReceivedHandler;
-            if (runnning)
-                return;
-            runnning = true;
-
-            Task.Factory.StartNew(async () =>
+            try
             {
-                while (NotDisposed)
-                {
-                    try
-                    {
-                        var result = await udpClient.ReceiveAsync();
-                        var message = System.Text.Encoding.ASCII.GetString(result.Buffer);
-                        var ip = result.RemoteEndPoint.Address.ToString();
+                var bytes = Encoding.UTF8.GetBytes(message);
+                IPEndPoint mcastEndPoint = new IPEndPoint(IPAddress.Parse(multicastIp), port);
 
-                        if (ip != myIp)
-                            MessageReceived(ip, message);
-                    }
-                    catch { }
-                }
-            });
+                await UdpClient.SendAsync(bytes, bytes.Length, mcastEndPoint);
+            }
+            catch (Exception ex)
+            {
+            }
         }
     }
 }

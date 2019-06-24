@@ -59,7 +59,7 @@ namespace ThirdGame
 
         public IEnumerable<Message> Decode(string message)
         {
-            if (message.Length == UdpConfig.PACKAGE_SIZE)
+            if (message?.Length == UdpConfig.PACKAGE_SIZE)
                 yield return new Message(
                      int.Parse(message.Substring(12, 5)) * (message[11] == '-' ? -1 : 1)
                     , int.Parse(message.Substring(18, 5)) * (message[17] == '-' ? -1 : 1)
