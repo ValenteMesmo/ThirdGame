@@ -15,7 +15,7 @@ namespace ThirdGame
         private SpriteBatch spriteBatch;
         private SpriteBatch spriteBatchUi;
         public readonly bool RuningOnAndroid;
-        private readonly UdpService UdpWrapper;
+        private readonly NetworkService UdpWrapper;
         private GameLoop GameLoop;
         private Camera2d Camera;
         private Camera2d CameraUI;
@@ -26,7 +26,7 @@ namespace ThirdGame
         private SpriteFont SpriteFont;
         private FramerateCounter smartFPS = new FramerateCounter();
 
-        public Game1(UdpService UdpWrapper, bool RuningOnAndroid = false)
+        public Game1(NetworkService UdpWrapper, bool RuningOnAndroid = false)
         {
             this.RuningOnAndroid = RuningOnAndroid;
 

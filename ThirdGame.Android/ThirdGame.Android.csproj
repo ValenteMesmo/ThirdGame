@@ -63,7 +63,8 @@
     <Compile Include="HotSpotStarter.cs" />
     <Compile Include="Resources\Resource.Designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="UdpAndroidWrapper.cs" />
+    <Compile Include="UdpBroadcastForAndroid.cs" />
+    <Compile Include="UdpForAndroid.cs" />
     <Compile Include="WifiAndroidWrapper.cs" />
   </ItemGroup>
   <ItemGroup>

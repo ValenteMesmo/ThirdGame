@@ -13,7 +13,7 @@ namespace ThirdGame
         private readonly NetworkHandler network;
         public readonly QuadTree quadtree;
 
-        public GameLoop(UdpService UdpWrapper, Camera2d Camera, Camera2d CameraUI)
+        public GameLoop(NetworkService UdpWrapper, Camera2d Camera, Camera2d CameraUI)
         {
             this.Camera = Camera;
             quadtree = new QuadTree(new Rectangle(-11000, -7000, 23000, 15000), 50, 5);

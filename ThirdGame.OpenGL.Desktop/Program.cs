@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Common;
+using System;
 using WindowsDesktop;
 
 namespace ThirdGame.OpenGL.Desktop
@@ -14,7 +15,21 @@ namespace ThirdGame.OpenGL.Desktop
         [STAThread]
         static void Main()
         {
-            using (var game = new Game1(new UdpWindowsWrapper()))
+            using (var game = new Game1(
+                    new NetworkService(
+                        //new Discoverer(
+                        //    new UdpBroadcastForWindows(
+                        //        UdpConfig.IP_DISCOVER_BROADCAST_ADDRESS
+                        //        , UdpConfig.IP_DISCOVER_PORT
+                        //    )
+                        //)                        , 
+                        new UdpBroadcastForWindows(
+                            UdpConfig.multicastaddress
+                            , UdpConfig.PORT
+                        )
+                    )
+                )
+            )
                 game.Run();
         }
     }
